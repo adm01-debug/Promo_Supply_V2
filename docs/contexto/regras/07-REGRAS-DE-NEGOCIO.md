@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `88efac2090` · branch `main` · 2026-11-26 04:51 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d74d61c476` · branch `main` · 2026-11-26 05:10 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1073,7 +1073,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `pago` | compara | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/components/pagamentos/PagamentoAdvancedKPIs.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/pages/catalogo-xbz/XbzPedidosTab.tsx`<br>… +4 |
 | `status` | `parcial` | compara | `src/pages/recebimento/RecebimentoOffline.tsx` |
 | `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>… +12 |
-| `status` | `pending` | compara, escreve, filtra | `src/components/compras/CriticalAlertsBar.tsx`<br>`src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts`<br>`src/components/security/PasswordResetRequestsPanel.tsx`<br>… +14 |
+| `status` | `pending` | compara, escreve, filtra | `src/components/compras/CriticalAlertsBar.tsx`<br>`src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts`<br>`src/components/security/PasswordResetRequestsPanel.tsx`<br>… +13 |
 | `status` | `planning` | compara | `src/pages/admin/SourcingPipeline.tsx` |
 | `status` | `processed` | compara, escreve, filtra | `supabase/functions/_shared/idempotency.ts`<br>`supabase/functions/receive-os-sync/index.ts` |
 | `status` | `processing` | compara | `src/components/ui/indicators/StatusIndicator.tsx` |
@@ -2063,6 +2063,7 @@ _nenhum item encontrado_
 | `AND COALESCE((metadata->>'last_seen')::timestamptz, created_at) < now() - interval '24 hours'` | `supabase/migrations/20261122140000_dedupe_system_error_alerts.sql` |
 | `-- (resolved_at IS NOT NULL AND resolved_at < now() - interval '60 days')` | `supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql` |
 | `-- OR (resolved_at IS NULL AND created_at < now() - interval '180 days')` | `supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql` |
+| `v_lease interval := interval '10 minutes';` | `supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql` |
 | `await page.waitForSelector('input[type="email"]', { timeout: 15_000 });` | `tests-e2e/global-setup.ts` |
 | `await page.waitForURL((url) => !url.pathname.startsWith('/auth'), { timeout: 15_000 });` | `tests-e2e/global-setup.ts` |
 
@@ -2937,6 +2938,7 @@ _nenhum item encontrado_
 | Campos sem os quais o documento não pode ser dado como conciliável. */ | `supabase/functions/process-invoice-idp/extraction.ts` |
 | Limite de 10 MB por documento — PDF/imagem de NF-e não passa disso. */ | `supabase/functions/process-invoice-idp/index.ts` |
 | Prevent path traversal: filePath must be a relative path without .. | `supabase/functions/process-invoice-idp/index.ts` |
+| mesmo UPDATE e nao pode se perder. O insert best-effort que existia | `supabase/functions/process-outbox/index.ts` |
 | no banco: este edge apenas preenche o formulario. | `supabase/functions/process-solicitacao-neural/index.ts` |
 | * Mesmo padrao de auth/rate-limit/fallback do ai-supplier-suggestion (auth JWT | `supabase/functions/process-solicitacao-neural/index.ts` |
 | de usuario autenticado, rate limit por usuario, fallback deterministico). | `supabase/functions/process-solicitacao-neural/index.ts` |

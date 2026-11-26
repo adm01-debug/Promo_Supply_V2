@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `88efac2090` · branch `main` · 2026-11-26 04:51 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d74d61c476` · branch `main` · 2026-11-26 05:10 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -387,6 +387,7 @@
 | tenant | `blocked_countries` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `qualification_history` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `qualification_requirements` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
+| rpc | RPC `claim_outbox_batch` chamada mas não definida nas migrations/types | `supabase/functions/process-outbox/index.ts` |
 | dinâmico | 4 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `src/hooks/useOfflineSync.ts` |
 | dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/check-sla-alerts/index.ts` |
 | dinâmico | 4 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/external-db-bridge/index.ts` |

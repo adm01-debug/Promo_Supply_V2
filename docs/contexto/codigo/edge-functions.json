@@ -844,16 +844,17 @@
    "nome": "process-outbox",
    "entrada": "supabase/functions/process-outbox/index.ts",
    "arquivos": 1,
-   "linhas": 137,
+   "linhas": 124,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
    ],
    "tabelas": [
-    "integration_outbox",
-    "system_alerts"
+    "integration_outbox"
    ],
-   "rpcs": [],
+   "rpcs": [
+    "claim_outbox_batch"
+   ],
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"

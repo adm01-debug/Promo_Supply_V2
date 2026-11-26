@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "88efac2090a5ab03bc6d05878467f6a4f4c510c1",
+  "sha": "d74d61c476f4a5200dce10d215f9bda3b7c2fea9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 04:51 UTC",
-  "files_total": 1482,
-  "code_files": 1308,
-  "code_lines": 220416,
+  "generated_at": "2026-11-26 05:10 UTC",
+  "files_total": 1485,
+  "code_files": 1310,
+  "code_lines": 220530,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "528ad1cd0419c0b2",
+ "facts_hash": "5229e805d42e301b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 441,
    ".tsx": 433,
-   ".sql": 357,
+   ".sql": 359,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -27231,12 +27231,14 @@
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
    "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
+   "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
    "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
+   "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -31247,6 +31249,30 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "claim_outbox_batch",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "claim_outbox_batch",
+    "objkind": "function",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "claim_outbox_batch",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql"
    }
   ],
   "raises": [
@@ -32304,7 +32330,6 @@
     "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
     "tables": [
      "integration_outbox",
-     "system_alerts",
      "user_tenants"
     ],
     "env": [
@@ -32313,7 +32338,7 @@
     ],
     "external": [],
     "invokes": [],
-    "doc": "INT-06 / OBS-01 — Outbox Worker Processa `integration_outbox` (padrão outbox para integrações outbound). Chamado periodicamente por cron (pg_net) ou manualmente. Comportamento: - SELECT ... FOR UPDATE SKIP LOCKED (via RPC) para concorrência segura - Backoff exponencial em falha: retries=0..5, next_a …",
+    "doc": "",
     "errors": [
      "http_${res.status}"
     ],
@@ -36298,7 +36323,7 @@
   {
    "module": "supabase/functions",
    "files": 121,
-   "lines": 19652,
+   "lines": 19639,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36491,8 +36516,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 342,
-   "lines": 28882,
+   "files": 343,
+   "lines": 28975,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36583,8 +36608,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 6,
-   "lines": 568,
+   "files": 7,
+   "lines": 602,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36596,7 +36621,8 @@
     "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
-    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql"
+    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
+    "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql"
    ]
   },
   {
@@ -37246,9 +37272,6 @@
     ]
    },
    "integration_outbox": {
-    "select": [
-     "supabase/functions/process-outbox/index.ts"
-    ],
     "update": [
      "supabase/functions/process-outbox/index.ts"
     ]
@@ -37930,7 +37953,6 @@
      "supabase/functions/alert-dispatcher/index.ts"
     ],
     "insert": [
-     "supabase/functions/process-outbox/index.ts",
      "supabase/functions/xbz-sync-pedidos/index.ts"
     ]
    },
@@ -38512,14 +38534,7 @@
     "status"
    ],
    "integration_outbox": [
-    "endpoint",
-    "headers",
-    "id",
-    "next_attempt_at",
-    "payload",
-    "retries",
-    "status",
-    "target"
+    "id"
    ],
    "ip_whitelist": [
     "id"
@@ -39498,6 +39513,9 @@
    ],
    "check_workflow_sod": [
     "supabase/functions/workflow-engine/index.ts"
+   ],
+   "claim_outbox_batch": [
+    "supabase/functions/process-outbox/index.ts"
    ],
    "clear_login_lockout": [
     "src/hooks/useAccountLockout.ts",
@@ -43769,6 +43787,10 @@
    {
     "file": "supabase/functions/process-invoice-idp/index.ts",
     "text": "Prevent path traversal: filePath must be a relative path without .."
+   },
+   {
+    "file": "supabase/functions/process-outbox/index.ts",
+    "text": "mesmo UPDATE e nao pode se perder. O insert best-effort que existia"
    },
    {
     "file": "supabase/functions/process-solicitacao-neural/index.ts",
@@ -57016,12 +57038,6 @@
     "kind": "escreve"
    },
    {
-    "file": "supabase/functions/process-outbox/index.ts",
-    "field": "status",
-    "value": "pending",
-    "kind": "filtra"
-   },
-   {
     "file": "supabase/functions/process-solicitacao-neural/index.ts",
     "field": "role",
     "value": "system",
@@ -58810,6 +58826,10 @@
    {
     "file": "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
     "line": "-- OR (resolved_at IS NULL AND created_at < now() - interval '180 days')"
+   },
+   {
+    "file": "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
+    "line": "v_lease interval := interval '10 minutes';"
    },
    {
     "file": "tests-e2e/global-setup.ts",
@@ -81940,8 +81960,7 @@
       "filtra:src/hooks/useApprovalWorkflow.ts",
       "filtra:src/hooks/usePasswordResetRequests.ts",
       "filtra:src/hooks/useSidebarBadges.ts",
-      "filtra:supabase/functions/check-approval-escalations/index.ts",
-      "filtra:supabase/functions/process-outbox/index.ts"
+      "filtra:supabase/functions/check-approval-escalations/index.ts"
      ],
      "delayed": [
       "compara:src/components/compras/DeliveryCalendar.tsx",
@@ -89181,6 +89200,30 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "claim_outbox_batch",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "claim_outbox_batch",
+    "objkind": "function",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "claim_outbox_batch",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql"
    }
   ],
   "guards": [
@@ -91979,6 +92022,13 @@
     "kind": "tenant",
     "msg": "`qualification_requirements` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
     "where": []
+   },
+   {
+    "kind": "rpc",
+    "msg": "RPC `claim_outbox_batch` chamada mas não definida nas migrations/types",
+    "where": [
+     "supabase/functions/process-outbox/index.ts"
+    ]
    },
    {
     "kind": "dinâmico",
@@ -119140,37 +119190,25 @@
   },
   "supabase/functions/process-outbox/index.ts": {
    "path": "supabase/functions/process-outbox/index.ts",
-   "lines": 137,
+   "lines": 124,
    "tables": [
     {
      "table": "integration_outbox",
-     "op": "select"
-    },
-    {
-     "table": "integration_outbox",
      "op": "update"
     },
     {
      "table": "integration_outbox",
      "op": "update"
-    },
-    {
-     "table": "system_alerts",
-     "op": "insert"
     }
    ],
    "table_cols": {
     "integration_outbox": [
-     "endpoint",
-     "headers",
-     "id",
-     "next_attempt_at",
-     "payload",
-     "retries",
-     "status",
-     "target"
+     "id"
     ]
    },
+   "rpc": [
+    "claim_outbox_batch"
+   ],
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
@@ -119193,14 +119231,11 @@
      "field": "status",
      "value": "delivered",
      "kind": "escreve"
-    },
-    {
-     "field": "status",
-     "value": "pending",
-     "kind": "filtra"
     }
    ],
-   "doc": "INT-06 / OBS-01 — Outbox Worker Processa `integration_outbox` (padrão outbox para integrações outbound). Chamado periodicamente por cron (pg_net) ou manualmente. Comportamento: - SELECT ... FOR UPDATE SKIP LOCKED (via RPC) para concorrência segura - Backoff exponencial em falha: retries=0..5, next_a …",
+   "rule_comments": [
+    "mesmo UPDATE e nao pode se perder. O insert best-effort que existia"
+   ],
    "uses_service_role": true
   },
   "supabase/functions/process-solicitacao-neural/index.ts": {
@@ -122733,6 +122768,13 @@
    "path": "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
    "lines": 214
   },
+  "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql": {
+   "path": "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
+   "lines": 93,
+   "temporal": [
+    "v_lease interval := interval '10 minutes';"
+   ]
+  },
   "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "lines": 67
@@ -122756,6 +122798,10 @@
   "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql": {
    "path": "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
    "lines": 161
+  },
+  "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql": {
+   "path": "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql",
+   "lines": 34
   },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
@@ -122992,10 +123038,26 @@
   }
  },
  "git": {
-  "sha": "88efac2090a5ab03bc6d05878467f6a4f4c510c1",
+  "sha": "d74d61c476f4a5200dce10d215f9bda3b7c2fea9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d74d61c",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)",
+    "files": [
+     "AGENTS.md",
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "docs/pendencias/_indice.md",
+     "docs/pendencias/job-outbox-worker.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/process-outbox/index.ts",
+     "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
+     "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql"
+    ]
+   },
    {
     "sha": "88efac2",
     "date": "2026-11-26",
@@ -123335,16 +123397,6 @@
      "src/components/compras/__tests__/contratoAbasItensDocs.test.tsx",
      "src/pages/fornecedores/Fornecedores.tsx"
     ]
-   },
-   {
-    "sha": "20216fb",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(build): para de publicar os sourcemaps do bundle (etapa 287) (#493)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "vite.config.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -123354,7 +123406,11 @@
    ],
    [
     "AGENTS.md",
-    3
+    4
+   ],
+   [
+    "docs/pendencias/_indice.md",
+    2
    ],
    [
     "src/hooks/__tests__/useDevolucoes.test.tsx",
@@ -123381,6 +123437,26 @@
     2
    ],
    [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    1
+   ],
+   [
+    "docs/pendencias/job-outbox-worker.md",
+    1
+   ],
+   [
+    "supabase/functions/process-outbox/index.ts",
+    1
+   ],
+   [
+    "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql",
+    1
+   ],
+   [
     "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
     1
    ],
@@ -123402,30 +123478,6 @@
    ],
    [
     "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useLicitacoes.ts",
-    1
-   ],
-   [
-    "src/hooks/useRealtimeSubscription.ts",
-    1
-   ],
-   [
-    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.kpisInvalidados.test.tsx",
-    1
-   ],
-   [
-    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useFornecedores.kpisInvalidados.test.tsx",
     1
    ]
   ]

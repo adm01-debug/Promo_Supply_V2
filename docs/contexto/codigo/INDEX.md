@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `88efac2090a5ab03bc6d05878467f6a4f4c510c1` (2026-11-26T01:45:09-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d74d61c476f4a5200dce10d215f9bda3b7c2fea9` (2026-11-26T02:09:38-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (874), SQL (357), Markdown (100), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (874), SQL (359), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1481 |
+| arquivos_total | 1484 |
 | arquivos_codigo | 949 |
-| linhas_codigo | 189842 |
+| linhas_codigo | 189829 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,12 +46,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 94 |
 | edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 342 |
+| migrations | 343 |
 | cron_jobs | 74 |
 | testes | 310 |
 | workflows | 15 |
 | scripts | 52 |
-| docs_md | 100 |
+| docs_md | 101 |
 
 ## Onde ficam as coisas
 - telas: src/pages (53)
@@ -207,7 +207,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `maintain-partitions` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `migrate-storage-paths` — tabelas: profiles; chamada por 1 arquivo(s) do front
 - `process-invoice-idp` — tabelas: -; chamada por 1 arquivo(s) do front
-- `process-outbox` — tabelas: integration_outbox, system_alerts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `process-outbox` — tabelas: integration_outbox; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `process-solicitacao-neural` — tabelas: -; chamada por 2 arquivo(s) do front
 - `punchout-encrypt` — tabelas: user_tenants; chamada por 1 arquivo(s) do front
 - `punchout-receive` (verify_jwt=false) — tabelas: profiles, punchout_catalogs, punchout_sessions, solicitacoes; chamada por 0 arquivo(s) do front
@@ -338,16 +338,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (146)
+- docs/qa/05-PROGRESSO.md (147)
 - docs/pendencias/_indice.md (31)
-- AGENTS.md (10)
+- AGENTS.md (11)
 - docs/ci/README.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (8)
 - src/hooks/useApprovalWorkflow.ts (8)
 - src/hooks/usePagamentos.ts (8)
 - src/pages/pedidos/Pedidos.tsx (8)
 - .github/workflows/main.yml (7)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (7)
 - src/features/auth/hooks/useAuth.tsx (7)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (7)
 - src/hooks/useDevolucoes.ts (7)
@@ -418,10 +418,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
 - `docs/auditoria-implementacao-261120.md` — Auditoria: o que foi planejado × o que está implementado — Promo Supply V2 (1286 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (546 linhas)
-- subpastas de docs/: docs/agentes (11), docs/pendencias (10), docs/qa (6), docs/arsenal-auditoria (5), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1), docs/planos (1)
+- subpastas de docs/: docs/agentes (11), docs/pendencias (11), docs/qa (6), docs/arsenal-auditoria (5), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1), docs/planos (1)
 
 
 ## Últimos commits
+- 2026-11-26 `d74d61c` fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)
 - 2026-11-26 `88efac2` fix(alertas): cron watchdog mede falha por janela de tempo, nao por contagem (etapa 202) (#523)
 - 2026-11-26 `8c87ad1` fix(retencao): cron de system_alerts passa a chamar a funcao oficial (etapa 201) (#522)
 - 2026-11-26 `dac477d` fix(licitacoes): lista e tempo real deixam de depender do claim tenant_id ausente (etapa 200) (#521)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `0856406` ci(push): declara VITE_VAPID_PUBLIC_KEY no exemplo e no .env do CI (etapa 288) (#498)
 - 2026-11-26 `e18b65d` fix(historico): botao Limpar filtros passa a descrever os filtros ativos (etapa 197) (#512)
 - 2026-11-26 `fed20c2` fix(auth): remove switchTenant do contexto de auth (etapa 012) (#511)
-- 2026-11-26 `c3e5f96` fix(admin): resolve alerta pelo RPC resolve_alert (etapas 030, 189 e 029) (#510)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

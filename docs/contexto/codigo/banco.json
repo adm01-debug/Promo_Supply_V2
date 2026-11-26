@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 342,
+ "migrations": 343,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -196,6 +196,7 @@
   "check_secret_rotation_due",
   "check_telemetry_alerts",
   "check_workflow_sod",
+  "claim_outbox_batch",
   "cleanup_deadlock_snapshots",
   "cleanup_expired_challenges",
   "cleanup_expired_password_resets",
@@ -19580,7 +19581,6 @@
    "usada_em_edges": [
     "alert-dispatcher",
     "health-dashboard",
-    "process-outbox",
     "xbz-sync-pedidos"
    ],
    "triggers": [],
@@ -23893,6 +23893,11 @@
   },
   {
    "nome": "check_workflow_sod",
+   "definida": true,
+   "usada_em": 1
+  },
+  {
+   "nome": "claim_outbox_batch",
    "definida": true,
    "usada_em": 1
   },
