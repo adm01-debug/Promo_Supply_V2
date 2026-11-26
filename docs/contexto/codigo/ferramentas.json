@@ -4,7 +4,7 @@
  "stack": {
   "linguagens": [
    "TypeScript (893)",
-   "SQL (365)",
+   "SQL (367)",
    "Markdown (101)",
    "JavaScript (72)",
    "JSON (25)",
@@ -623,7 +623,7 @@
   {
    "arquivo": "AGENTS.md",
    "titulo": "AGENTS.md — Promo Supply V2",
-   "linhas": 166
+   "linhas": 165
   },
   {
    "arquivo": "CLAUDE.md",

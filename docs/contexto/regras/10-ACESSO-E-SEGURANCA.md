@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `1aeb89ba83` · branch `main` · 2026-11-26 13:29 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c3cb7d74d4` · branch `main` · 2026-11-26 13:44 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -478,7 +478,7 @@ Middleware matcher (Next.js): nenhum
 | grant | authenticated | select, insert | `audit_logs`, `audit_logs`, `telemetry_logs`, `audit_logs` |
 | grant | authenticated | select, insert, update | `integration_outbox` |
 | grant | authenticated | select, insert, update, delete | `produto_fornecedores`, `repurchase_suggestions`, `produto_fornecedores`, `repurchase_suggestions`, `erp_connections`, `punchout_catalogs`, `aliquotas_tributarias`, `alert_subscriptions`, `secret_rotation_schedule`, `xbz_credentials` |
-| grant | authenticated, service_role | execute | `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group` … +15 |
+| grant | authenticated, service_role | execute | `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group` … +17 |
 | grant | authenticated, service_role | select | `cron_job_staleness` |
 | grant | ci_snapshot | execute | `_invoke_edge_function` |
 | grant | postgres | select | `mv_dashboard_kpis` |
@@ -489,7 +489,7 @@ Middleware matcher (Next.js): nenhum
 | grant | service_role | usage, select | `wal_rate_snapshots_id_seq`, `checkpoint_snapshots_id_seq` |
 | grant | service_role, authenticated | execute | `check_rate_limit` |
 | revoke | PUBLIC | all | `update_estoque_saldo`, `exec_sql`, `count_legacy_storage_urls`, `alerts_severity_timeseries`, `alerts_mttr_by_type`, `alerts_noisy_scanners`, `resolve_alert`, `ensure_audit_logs_partition`, `archive_audit_logs_older_than`, `archive_telemetry_logs_older_than`, `simulate_scan_sla_loop`, `scan_table_growth`, `scan_unused_indexes`, `scan_duplicate_indexes`, `scan_txid_wraparound` … +4 |
-| revoke | PUBLIC | execute | `check_rate_limit`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `grant_tenant_access_on_insert`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group`, `cleanup_old_security_logs`, `cleanup_old_audit_logs`, `_invoke_edge_function`, `cleanup_old_webhook_events`, `cleanup_old_integration_outbox` … +30 |
+| revoke | PUBLIC | execute | `check_rate_limit`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `grant_tenant_access_on_insert`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group`, `cleanup_old_security_logs`, `cleanup_old_audit_logs`, `_invoke_edge_function`, `cleanup_old_webhook_events`, `cleanup_old_integration_outbox` … +32 |
 | revoke | PUBLIC, anon | all | `cron_job_staleness`, `verificar_integridade_audit_logs`, `assign_numero_solicitacao` |
 | revoke | PUBLIC, anon | execute | `generate_sequential_number`, `normalize_email_lowercase`, `is_valid_cnpj`, `normalize_cnpj_digits`, `get_cron_job_staleness`, `get_dashboard_kpis`, `get_compras_dashboard_metrics`, `get_compras_dashboard_metrics`, `user_belongs_to_tenant`, `get_compras_dashboard_metrics`, `auto_transition_solicitacao_on_workflow_approved`, `get_cost_center_performance_report`, `get_cost_center_performance_report` |
 | revoke | PUBLIC, anon, authenticated | all | `exec_sql`, `scan_stale_statistics`, `scan_cache_hit_ratio`, `xbz_cron_key_get`, `verify_xbz_cron_key`, `_invoke_xbz_sync`, `xbz_sync_watchdog`, `exec_sql`, `xbz_cron_key_get`, `verify_xbz_cron_key`, `_invoke_edge_function`, `_invoke_xbz_sync`, `_invoke_spot_sync`, `xbz_sync_watchdog`, `cron_watchdog` … +3 |

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(banco): catalogo real de SLA dos scanners (etapa 148) (#565)",
    "chore(ci): confere jobs vivos de cron.job contra as migrations (#528)",
    "perf: etapa 221 derruba 24 indices redundantes comprovados por prefixo (#546)",
    "chore(cron): reduz o sync de estoque da SPOT para cada 30 minutos (#554)",
-   "chore(db): sincronizar types.ts com o banco [auto] (#544)",
-   "fix(edge): alerta esgotado vira alerta de segundo nivel (etapa 171) (#563)"
+   "chore(db): sincronizar types.ts com o banco [auto] (#544)"
   ]
  },
  "pr_template": null,

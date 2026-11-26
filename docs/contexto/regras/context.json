@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "1aeb89ba839397fd990795985dde11d4e8483131",
+  "sha": "c3cb7d74d42339cebb125431731b8beb97613282",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 13:29 UTC",
-  "files_total": 1510,
-  "code_files": 1335,
-  "code_lines": 223678,
+  "generated_at": "2026-11-26 13:44 UTC",
+  "files_total": 1512,
+  "code_files": 1337,
+  "code_lines": 223813,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "7ad9b4219cc752ce",
+ "facts_hash": "0642f25112117d05",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 365,
+   ".sql": 367,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -21961,7 +21961,7 @@
     "args": "",
     "returns": "TABLE (\n  scan_name        text,\n  last_run_at      timestamptz,\n  age_minutes      integer,\n  sla_minutes      integer,\n  last_status      text,\n  health           text\n)",
     "lang": "sql",
-    "src": "supabase/migrations/20260712223608_27e977bb-634d-42c4-b07d-23cb5f25956a.sql",
+    "src": "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql",
     "security_definer": true,
     "search_path": true,
     "body": "WITH sla(scan_name, sla_minutes) AS ( VALUES ('archive_audit_logs', 44640), ('archive_telemetry_logs', 44640), ('cleanup_health_scan_runs',1440), ('secret_rotation_check', 1440), ('ensure_partitions', 44640), ('slack_watchdog', 60), ('security_scan', 1440) ), latest AS ( SELECT DISTINCT ON (h.scan_name) h.scan_name, COALESCE(h.finished_at, h.started_at) AS last_run_at, COALESCE(h.status, CASE WHEN h.failed_count > 0 THEN 'failed' ELSE 'ok' END) AS last_status FROM public.health_scan_runs h WHERE h.scan_name IS NOT NULL ORDER BY h.scan_name, COALESCE(h.finished_at, h.started_at) DESC ) SELECT COALESCE(l.scan_name, sla.scan_name) AS scan_name, l.last_run_at AS last_run_at, CASE WHEN l.last_run …",
@@ -27282,6 +27282,8 @@
    "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
    "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql",
    "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
+   "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql",
+   "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql",
    "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
@@ -31310,6 +31312,38 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "admin_scan_runs_sla_status",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "admin_scan_runs_sla_status",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "admin_scan_runs_sla_status",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "admin_scan_runs_sla_status",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql"
    },
    {
     "kind": "revoke",
@@ -36650,8 +36684,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 347,
-   "lines": 29306,
+   "files": 349,
+   "lines": 29441,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -80339,7 +80373,7 @@
     "args": "",
     "returns": "TABLE (\n  scan_name        text,\n  last_run_at      timestamptz,\n  age_minutes      integer,\n  sla_minutes      integer,\n  last_status      text,\n  health           text\n)",
     "lang": "sql",
-    "src": "supabase/migrations/20260712223608_27e977bb-634d-42c4-b07d-23cb5f25956a.sql",
+    "src": "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql",
     "security_definer": true,
     "search_path": true,
     "body": "WITH sla(scan_name, sla_minutes) AS ( VALUES ('archive_audit_logs', 44640), ('archive_telemetry_logs', 44640), ('cleanup_health_scan_runs',1440), ('secret_rotation_check', 1440), ('ensure_partitions', 44640), ('slack_watchdog', 60), ('security_scan', 1440) ), latest AS ( SELECT DISTINCT ON (h.scan_name) h.scan_name, COALESCE(h.finished_at, h.started_at) AS last_run_at, COALESCE(h.status, CASE WHEN h.failed_count > 0 THEN 'failed' ELSE 'ok' END) AS last_status FROM public.health_scan_runs h WHERE h.scan_name IS NOT NULL ORDER BY h.scan_name, COALESCE(h.finished_at, h.started_at) DESC ) SELECT COALESCE(l.scan_name, sla.scan_name) AS scan_name, l.last_run_at AS last_run_at, CASE WHEN l.last_run …",
@@ -89993,6 +90027,38 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "admin_scan_runs_sla_status",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "admin_scan_runs_sla_status",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "admin_scan_runs_sla_status",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "admin_scan_runs_sla_status",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql"
    },
    {
     "kind": "revoke",
@@ -124067,6 +124133,14 @@
    "path": "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
    "lines": 81
   },
+  "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql": {
+   "path": "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql",
+   "lines": 74
+  },
+  "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql": {
+   "path": "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql",
+   "lines": 61
+  },
   "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql": {
    "path": "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
    "lines": 662
@@ -124389,10 +124463,22 @@
   }
  },
  "git": {
-  "sha": "1aeb89ba839397fd990795985dde11d4e8483131",
+  "sha": "c3cb7d74d42339cebb125431731b8beb97613282",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "c3cb7d7",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(banco): catalogo real de SLA dos scanners (etapa 148) (#565)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql",
+     "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql"
+    ]
+   },
    {
     "sha": "1aeb89b",
     "date": "2026-11-26",
@@ -124803,16 +124889,6 @@
      "docs/qa/05-PROGRESSO.md",
      "supabase/functions/send-push-notification/index.ts"
     ]
-   },
-   {
-    "sha": "24512f4",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(edge): alert-dispatcher normaliza severity antes do fan-out (#210) (#534)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/alert-dispatcher/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -124825,16 +124901,12 @@
     4
    ],
    [
-    "supabase/functions/alert-dispatcher/index.ts",
+    "AGENTS.md",
     3
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     3
-   ],
-   [
-    "AGENTS.md",
-    2
    ],
    [
     "src/integrations/supabase/types.ts",
@@ -124846,6 +124918,10 @@
    ],
    [
     "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    2
+   ],
+   [
+    "supabase/functions/alert-dispatcher/index.ts",
     2
    ],
    [
@@ -124881,19 +124957,19 @@
     2
    ],
    [
+    "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql",
+    1
+   ],
+   [
     ".github/workflows/paridade-banco.yml",
     1
    ],
    [
     "docs/ci/README.md",
-    1
-   ],
-   [
-    "scripts/ci/paridade-migrations-banco.allowlist.json",
-    1
-   ],
-   [
-    "scripts/ci/paridade-migrations-banco.mjs",
     1
    ]
   ]
