@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -44,7 +44,8 @@ import { toast } from "@/lib/feedbackToast";
 import { useAuth } from "@/features/auth";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { logger } from "@/lib/logger";
-import { getStorageTenantId, privateStoragePath } from "@/lib/storageFiles";
+import { getStorageTenantId, privateStoragePath, resolveStoredFileUrl } from "@/lib/storageFiles";
+import { formatBytes } from "@/lib/imageCompression";
 import type { Contract, ContractItem, ContractPenalty, ContractDocument, ContractHistory, StatusConfig, TypeConfig } from "@/types/contract";
 import { Input } from "@/components/ui/input";
 import { ContractSLAReadonlyTab, ContractPenaltiesTab } from "./contract/ContractDetailsTabs";
@@ -79,6 +80,8 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
   const [loading, setLoading] = useState(true);
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [openingDocId, setOpeningDocId] = useState<string | null>(null);
+  const docInputRef = useRef<HTMLInputElement>(null);
   const { user, tenantId } = useAuth();
 
   const fetchContractDetails = useCallback(async () => {
@@ -110,9 +113,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
     }
   }, [contract, open, fetchContractDetails]);
 
-  const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleUploadDocument = async (file: File) => {
     if (!user) return;
     setUploading(true);
     try {
@@ -139,6 +140,19 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
       toast.error('Erro ao enviar documento');
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleOpenDocument = async (doc: ContractDocument) => {
+    setOpeningDocId(doc.id);
+    try {
+      const url = await resolveStoredFileUrl('documentos', doc.file_url);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (err: unknown) {
+      logger.error('Error opening contract document', { error: err });
+      toast.error('Erro ao abrir o documento');
+    } finally {
+      setOpeningDocId(null);
     }
   };
 
@@ -314,6 +328,128 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
 
             <TabsContent value="sla" className="space-y-4">
               <ContractSLAReadonlyTab contract={contract} />
+            </TabsContent>
+
+            <TabsContent value="items" className="space-y-4">
+              {loading ? (
+                <div className="flex items-center justify-center py-8 text-muted-foreground">
+                  <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                  Carregando itens...
+                </div>
+              ) : items.length === 0 ? (
+                <div className="text-center py-8">
+                  <Package className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-muted-foreground">Nenhum item cadastrado neste contrato</p>
+                </div>
+              ) : (
+                <Table aria-label="Itens do contrato">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Item</TableHead>
+                      <TableHead>Unidade</TableHead>
+                      <TableHead className="text-right">Qtd</TableHead>
+                      <TableHead className="text-right">Preço Unit.</TableHead>
+                      <TableHead className="text-right">Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {items.map((item, index) => (
+                      <TableRow key={item.id ?? index}>
+                        <TableCell className="font-medium">
+                          {item.item_name}
+                          {item.description && (
+                            <span className="block text-xs text-muted-foreground">{item.description}</span>
+                          )}
+                        </TableCell>
+                        <TableCell>{item.unit}</TableCell>
+                        <TableCell className="text-right">{item.quantity}</TableCell>
+                        <TableCell className="text-right">{formatCurrency(Number(item.unit_price))}</TableCell>
+                        <TableCell className="text-right font-medium">{formatCurrency(Number(item.total_price))}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+
+              {!loading && (
+                <p className="text-xs text-muted-foreground">
+                  {linkedOrders.length === 0
+                    ? "Nenhuma ordem de compra vinculada a este contrato"
+                    : `${linkedOrders.length} ${linkedOrders.length === 1 ? "ordem de compra vinculada" : "ordens de compra vinculadas"} a este contrato`}
+                </p>
+              )}
+            </TabsContent>
+
+            <TabsContent value="docs" className="space-y-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium">Documentos anexados</p>
+                  <p className="text-xs text-muted-foreground">PDF, imagens ou documentos do contrato</p>
+                </div>
+                <input
+                  ref={docInputRef}
+                  type="file"
+                  aria-label="Anexar documento ao contrato"
+                  className="hidden"
+                  onChange={(e) => {
+                    const selected = e.target.files?.[0];
+                    e.target.value = "";
+                    if (selected) void handleUploadDocument(selected);
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="gap-2"
+                  disabled={uploading}
+                  onClick={() => docInputRef.current?.click()}
+                >
+                  {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  {uploading ? "Enviando..." : "Anexar documento"}
+                </Button>
+              </div>
+
+              {loading ? (
+                <div className="flex items-center justify-center py-8 text-muted-foreground">
+                  <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                  Carregando documentos...
+                </div>
+              ) : documents.length === 0 ? (
+                <div className="text-center py-8">
+                  <Paperclip className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-muted-foreground">Nenhum documento anexado</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {documents.map((doc) => (
+                    <div key={doc.id} className="flex items-center justify-between gap-3 p-3 border rounded-lg">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <File className="w-5 h-5 text-muted-foreground shrink-0" />
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium truncate">{doc.file_name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {format(new Date(doc.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                            {doc.file_size != null ? ` · ${formatBytes(doc.file_size)}` : ""}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="gap-2 shrink-0"
+                        disabled={openingDocId === doc.id}
+                        onClick={() => void handleOpenDocument(doc)}
+                      >
+                        {openingDocId === doc.id
+                          ? <Loader2 className="w-4 h-4 animate-spin" />
+                          : <Download className="w-4 h-4" />}
+                        Abrir
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="penalties">
