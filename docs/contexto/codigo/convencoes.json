@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(seguranca): manutencao de particoes e heartbeat de cron deixam de aceitar usuario comum (#573)",
    "fix(rls): current_tenant_id resolve o tenant pelo cadastro quando o token nao traz (#572)",
    "fix(estoque): movimentacao passa a exigir papel e item da propria organizacao (#571)",
    "fix(auth): autocadastro deixa de nascer com papel de comprador (#570)",
-   "fix(pedidos): banco recusa ordem de compra para solicitacao nao aprovada (#569)",
-   "fix(cotacoes): selecionar a cotacao vencedora nao aprova mais a solicitacao (#568)"
+   "fix(pedidos): banco recusa ordem de compra para solicitacao nao aprovada (#569)"
   ]
  },
  "pr_template": null,

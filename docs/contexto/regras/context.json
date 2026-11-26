@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "fc2bfbb785f2a90e7d8a1425e1d9e2046614dfca",
+  "sha": "087f827eb794fd27b1bb37a78261dca1f614d4de",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 16:24 UTC",
-  "files_total": 1530,
-  "code_files": 1355,
-  "code_lines": 225478,
+  "generated_at": "2026-11-26 16:30 UTC",
+  "files_total": 1532,
+  "code_files": 1357,
+  "code_lines": 225542,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "220b1ee45b96b2bf",
+ "facts_hash": "6203a6e1b56ddc18",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 385,
+   ".sql": 387,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -27316,6 +27316,7 @@
    "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
    "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
    "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
+   "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
@@ -27336,6 +27337,7 @@
    "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
    "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
    "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql",
+   "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -31387,6 +31389,38 @@
    },
    {
     "kind": "revoke",
+    "privs": "execute",
+    "object": "maintain_monthly_partitions",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "maintain_monthly_partitions",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "upsert_cron_heartbeat",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "upsert_cron_heartbeat",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "claim_outbox_batch",
     "objkind": "function",
@@ -31432,6 +31466,22 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/migrations/20261128090000_grant_get_dashboard_kpis_authenticated.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "maintain_monthly_partitions",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "upsert_cron_heartbeat",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql"
    }
   ],
   "raises": [
@@ -36735,8 +36785,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 360,
-   "lines": 30405,
+   "files": 361,
+   "lines": 30458,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36827,8 +36877,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 13,
-   "lines": 944,
+   "files": 14,
+   "lines": 955,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36842,6 +36892,7 @@
     "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
     "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
     "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql",
+    "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql",
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -90199,6 +90250,38 @@
    },
    {
     "kind": "revoke",
+    "privs": "execute",
+    "object": "maintain_monthly_partitions",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "maintain_monthly_partitions",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "upsert_cron_heartbeat",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "upsert_cron_heartbeat",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "claim_outbox_batch",
     "objkind": "function",
@@ -90244,6 +90327,22 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/migrations/20261128090000_grant_get_dashboard_kpis_authenticated.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "maintain_monthly_partitions",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "upsert_cron_heartbeat",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql"
    }
   ],
   "guards": [
@@ -124381,6 +124480,10 @@
    "path": "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
    "lines": 94
   },
+  "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql": {
+   "path": "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
+   "lines": 53
+  },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "lines": 418
@@ -124479,6 +124582,10 @@
   "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql": {
    "path": "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql",
    "lines": 23
+  },
+  "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql": {
+   "path": "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql",
+   "lines": 11
   },
   "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql": {
    "path": "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
@@ -124739,10 +124846,22 @@
   }
  },
  "git": {
-  "sha": "fc2bfbb785f2a90e7d8a1425e1d9e2046614dfca",
+  "sha": "087f827eb794fd27b1bb37a78261dca1f614d4de",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "087f827",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(seguranca): manutencao de particoes e heartbeat de cron deixam de aceitar usuario comum (#573)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
+     "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql"
+    ]
+   },
    {
     "sha": "fc2bfbb",
     "date": "2026-11-26",
@@ -125094,26 +125213,6 @@
      "supabase/functions/check-cotacao-followup/index.ts",
      "supabase/functions/send-push-notification/index.ts"
     ]
-   },
-   {
-    "sha": "f72f728",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(edge): devolve ao usuario a mensagem em portugues das edge functions (#549)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/NovaSolicitacaoModal.tsx",
-     "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
-     "src/hooks/useCatalogoPim.ts",
-     "src/lib/__tests__/invokeEdge.test.ts",
-     "src/lib/invokeEdge.ts",
-     "src/pages/admin/AlertDetail.tsx",
-     "src/pages/admin/ERPConnections.tsx",
-     "src/pages/admin/PunchOutCatalogs.tsx",
-     "src/pages/admin/StorageMigration.tsx",
-     "src/pages/catalogo-spot/useSpotCatalog.ts",
-     "src/services/rlsAuditService.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -125123,7 +125222,7 @@
    ],
    [
     "AGENTS.md",
-    13
+    14
    ],
    [
     "supabase/functions/send-push-notification/index.ts",
@@ -125142,15 +125241,7 @@
     2
    ],
    [
-    "src/hooks/useCatalogoPim.ts",
-    2
-   ],
-   [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    2
-   ],
-   [
-    "src/pages/catalogo-spot/useSpotCatalog.ts",
     2
    ],
    [
@@ -125160,6 +125251,14 @@
    [
     "supabase/functions/spot-api/index.ts",
     2
+   ],
+   [
+    "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql",
+    1
    ],
    [
     "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
