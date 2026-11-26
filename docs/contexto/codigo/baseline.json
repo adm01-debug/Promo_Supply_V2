@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f2f21c878fea59471a96f5a5b5421863d9642779",
+  "commit": "24512f46f0b0b3655da696e329305497cf42eb47",
   "branch": "main",
-  "data_commit": "2026-11-26T03:12:54-03:00",
+  "data_commit": "2026-11-26T03:30:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "24512f4",
+    "data": "2026-11-26",
+    "assunto": "fix(edge): alert-dispatcher normaliza severity antes do fan-out (#210) (#534)"
+   },
    {
     "sha": "f2f21c8",
     "data": "2026-11-26",
@@ -126,22 +131,17 @@
     "sha": "2398b93",
     "data": "2026-11-25",
     "assunto": "fix(edge): escopa a idempotencia por chamador e nao memoriza falha (etapas 179 e 180) (#505)"
-   },
-   {
-    "sha": "49dbb82",
-    "data": "2026-11-25",
-    "assunto": "docs(ledger): fecha a etapa 006 com a prova do estado real do banco (#504)"
    }
   ],
   "arquivos_mudados_7d": 1509,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 191
+    "mudancas": 190
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 150
+    "mudancas": 151
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 150
+    "mudancas": 151
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1488,
   "arquivos_codigo": 951,
-  "linhas_codigo": 189939,
+  "linhas_codigo": 189943,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 123,
-   "linhas": 19749
+   "linhas": 19753
   },
   "tailwind.config.ts": {
    "arquivos": 1,

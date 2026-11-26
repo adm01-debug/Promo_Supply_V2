@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(edge): alert-dispatcher normaliza severity antes do fan-out (#210) (#534)",
    "fix(edge): SCIM passa a desativar usuario de verdade no PATCH active (#531)",
    "fix(edge): aplica a janela de 24h no dedupe do follow-up de cotacao (#529)",
    "chore(cron): versiona os 5 jobs de manutencao e o vigia da XBZ (#527)",
-   "fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)",
-   "fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)"
+   "fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)"
   ]
  },
  "pr_template": null,

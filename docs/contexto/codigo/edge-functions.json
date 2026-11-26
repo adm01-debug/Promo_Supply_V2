@@ -204,7 +204,7 @@
    "nome": "alert-dispatcher",
    "entrada": "supabase/functions/alert-dispatcher/index.ts",
    "arquivos": 1,
-   "linhas": 396,
+   "linhas": 400,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"

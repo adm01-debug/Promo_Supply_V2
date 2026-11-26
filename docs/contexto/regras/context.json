@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "f2f21c878fea59471a96f5a5b5421863d9642779",
+  "sha": "24512f46f0b0b3655da696e329305497cf42eb47",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 06:13 UTC",
+  "generated_at": "2026-11-26 06:30 UTC",
   "files_total": 1489,
   "code_files": 1314,
-  "code_lines": 220748,
+  "code_lines": 220752,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "a8c1a5449d80d85c",
+ "facts_hash": "4fe412b8895db321",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -36325,7 +36325,7 @@
   {
    "module": "supabase/functions",
    "files": 123,
-   "lines": 19749,
+   "lines": 19753,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -117543,7 +117543,7 @@
   },
   "supabase/functions/alert-dispatcher/index.ts": {
    "path": "supabase/functions/alert-dispatcher/index.ts",
-   "lines": 396,
+   "lines": 400,
    "tables": [
     {
      "table": "system_alerts",
@@ -123094,10 +123094,20 @@
   }
  },
  "git": {
-  "sha": "f2f21c878fea59471a96f5a5b5421863d9642779",
+  "sha": "24512f46f0b0b3655da696e329305497cf42eb47",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "24512f4",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(edge): alert-dispatcher normaliza severity antes do fan-out (#210) (#534)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/alert-dispatcher/index.ts"
+    ]
+   },
    {
     "sha": "f2f21c8",
     "date": "2026-11-26",
@@ -123440,19 +123450,6 @@
      "docs/qa/05-PROGRESSO.md",
      "src/tests/integration/supabase-db.test.ts"
     ]
-   },
-   {
-    "sha": "7736405",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs(higiene): data os documentos de auditoria e corrige fatos ja fechados (etapas 294 e 295) (#499)",
-    "files": [
-     "AGENTS.md",
-     "DOCS/ESTADO/00_INDICE.md",
-     "ESTADO_ATUAL.md",
-     "docs/agentes/regras-dominio.md",
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
@@ -123462,7 +123459,7 @@
    ],
    [
     "AGENTS.md",
-    6
+    5
    ],
    [
     "package.json",
@@ -123483,6 +123480,10 @@
    [
     "tests-e2e/production-ready.spec.ts",
     2
+   ],
+   [
+    "supabase/functions/alert-dispatcher/index.ts",
+    1
    ],
    [
     "supabase/functions/scim-v2/active.ts",
@@ -123530,10 +123531,6 @@
    ],
    [
     "supabase/functions/process-outbox/index.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
     1
    ]
   ]
