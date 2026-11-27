@@ -311,13 +311,12 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
-  const { data: alerts, error } = await admin
-    .from("system_alerts")
-    .select("id, tenant_id, alert_type, severity, message, metadata, created_at")
-    .in("severity", ["HIGH", "CRITICAL", "EMERGENCY", "high", "critical", "emergency"])
-    .is("dispatched_at", null)
-    .order("created_at", { ascending: true })
-    .limit(50);
+  // 159/160: a fila e' reservada no banco (`claim_alerts_batch`, FOR UPDATE
+    // SKIP LOCKED + lease de 10 min). Antes o select solto + carimbo no fim
+    // deixava duas rodadas sobrepostas entregarem o mesmo alerta duas vezes.
+    const { data: alerts, error } = await admin.rpc("claim_alerts_batch", {
+      p_batch_size: 50,
+    });
 
   if (error) {
       logger.error("alert_dispatcher_query_failed", { error: error.message });
@@ -342,7 +341,7 @@ serve(async (req) => {
       // janela, e entregue.
       await admin
         .from("system_alerts")
-        .update({ dispatch_status: "suppressed_dedup" })
+              .update({ dispatch_status: "suppressed_dedup", dispatch_lease_until: null })
         .eq("id", alert.id);
       results.push({ id: alert.id, ok: true, status: "suppressed_dedup", error: "deduped" });
       continue;
@@ -466,6 +465,9 @@ serve(async (req) => {
       .from("system_alerts")
       .update({
             dispatched_at: outcome.dispatchedAt,
+              // 159/160: solta a posse. Entregue sai da fila por `dispatched_at`;
+              // nao-entregue volta na proxima rodada de 1 min, como antes do claim.
+              dispatch_lease_until: null,
         dispatch_status: dispatchStatus,
         dispatch_error: allErrors.length > 0
           ? allErrors.join(" | ").slice(0, 500)
