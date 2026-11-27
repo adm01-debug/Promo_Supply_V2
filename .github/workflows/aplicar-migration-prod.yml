@@ -1,11 +1,13 @@
 # docs:
-#   gatilho: dispatch manual, exigindo o nome exato do arquivo em supabase/migrations/ e a confirmacao APLICAR
+#   gatilho: dispatch manual, exigindo o nome exato do arquivo em supabase/migrations/, a confirmacao APLICAR e o arquivo identico ao da main
 #   prova: o arquivo versionado no git roda inteiro em UMA transacao no banco de producao; erro em qualquer ponto desfaz tudo
 #   falha: nada e' commitado no banco (rollback) e o job fica vermelho com a linha do erro do Postgres
 #   avisa: o resumo do run mostra o antes/depois de cron.job e a lista de jobs criados
 # nao-e-bug:
 #   - transacao-unica: migration nao roda em pedacos de proposito; meio aplicado seria pior que nao aplicado
 #   - arquivo-nao-versionado: arquivo fora de supabase/migrations/ ou com alteracao nao commitada e' recusado; o canal so aplica o que o git conhece
+#   - branch-nao-mergeada: o blob do arquivo no ref dispatchado precisa ser identico ao da main; dispatch aceita qualquer ref, entao sem isso uma branch rodava DDL sem nunca ter passado por PR
+#   - aprovacao-de-environment: o job `aplicar` pede aprovacao no environment `banco-producao`; aprovacao registrada e' o segundo par de olhos do DDL
 #   - secret-ausente: sem SUPABASE_DB_URL o job falha fechado -- aplicar DDL "no escuro" nao e' opcao
 # ==================================================================
 # PROMO SUPPLY - Aplicar migration versionada no banco de producao
@@ -20,6 +22,11 @@
 # Nao aplica SQL colado como entrada, nao aplica pasta inteira, nao aceita
 # arquivo modificado no worktree -- se o texto aplicado nao for exatamente o
 # texto versionado, a paridade semanal passa a mentir.
+#
+# ORDEM OBRIGATORIA (AGENTS.md, secao Banco): arquivo -> PR -> merge -> deploy
+# do codigo -> apply. O dispatch do GitHub aceita QUALQUER ref, entao o passo
+# "Exigir que a migration esteja na main" recusa qualquer blob que nao seja
+# identico ao da main: sem ele, uma branch nao mergeada rodava DDL em producao.
 #
 # FALHA FECHADA: sem SUPABASE_DB_URL, sem o arquivo, ou com o arquivo fora de
 # supabase/migrations/ o job nao roda. Sair verde sem aplicar esconderia
@@ -55,6 +62,12 @@ jobs:
     name: Rodar a migration em uma transacao
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # O environment `banco-producao` existe com revisor obrigatorio (adm01-debug,
+    # o unico colaborador do repositorio) e `prevent_self_review: false`: o run
+    # fica "waiting" ate alguem aprovar, mas o proprio dono nao fica trancado
+    # fora do canal -- o achado CI-06 registra que travar o unico operador seria
+    # efeito colateral pior que a ausencia do gate.
+    environment: banco-producao
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -85,6 +98,28 @@ jobs:
             exit 1
           fi
           echo "migration validada: supabase/migrations/${MIGRATION}"
+
+      # A regra do AGENTS.md (secao Banco) e' "arquivo -> PR -> merge -> deploy do
+      # codigo -> apply". A validacao acima amarra o SQL ao git do REF DISPATCHADO,
+      # nao ao historico aprovado -- e `workflow_dispatch` aceita qualquer branch.
+      # Comparar o blob (nao so a existencia do nome) garante que o texto aplicado
+      # e' exatamente o texto que passou por PR e esta na main.
+      - name: Exigir que a migration esteja na main
+        env:
+          MIGRATION: ${{ inputs.migration }}
+        run: |
+          git fetch --no-tags --depth=1 origin main
+          blob_main="$(git rev-parse --verify --quiet "FETCH_HEAD:supabase/migrations/${MIGRATION}" || true)"
+          blob_ref="$(git rev-parse "HEAD:supabase/migrations/${MIGRATION}")"
+          if [[ -z "${blob_main}" ]]; then
+            echo "::error::supabase/migrations/${MIGRATION} existe em ${GITHUB_REF_NAME}, mas nao existe na main. O canal so aplica DDL ja mergeado."
+            exit 1
+          fi
+          if [[ "${blob_main}" != "${blob_ref}" ]]; then
+            echo "::error::o conteudo de supabase/migrations/${MIGRATION} neste ref difere do que esta na main (blob do ref: ${blob_ref}; blob da main: ${blob_main}). Merge primeiro e dispare da main."
+            exit 1
+          fi
+          echo "migration identica a main: supabase/migrations/${MIGRATION} (${blob_main})"
 
       - name: Fotografar o estado antes
         env:
