@@ -99,6 +99,19 @@ FUNCTIONS=(
   "migrate-storage-paths"
   "external-db-bridge"
   "spot-proxy"
+
+  # Publicadas por outro caminho ate 2026-11-26: faltavam aqui, entao o --only
+  # recusava e o deploy manual nunca republicava (a funcao ficava no codigo antigo).
+  "spot-api"
+  "xbz-proxy"
+  "xbz-sync-pedidos"
+  "punchout-encrypt"
+  "erp-credential-encrypt"
+  "receive-os-sync"
+  "escalate-solicitacao"
+  "health-dashboard"
+  "maintain-partitions"
+  "process-solicitacao-neural"
 )
 
 # Nunca publicar, nem por --only. `migrate-helper` devolve a service_role e a URL
@@ -109,7 +122,7 @@ BLOCKED_FUNCTIONS=("migrate-helper")
 # QA-024/025: esta lista espelha supabase/config.toml (fonte unica). So entram funcoes que
 # autenticam por conta propria. run-audit, system-simulation e telemetry validam JWT/role no
 # codigo, entao o gateway pode exigir JWT.
-NO_JWT_FUNCTIONS=("scim-v2" "punchout-receive" "webauthn-authenticate" "dependency-health")
+NO_JWT_FUNCTIONS=("scim-v2" "punchout-receive" "webauthn-authenticate" "dependency-health" "receive-os-sync" "spot-api")
 
 CRITICAL_FNS=(
   "workflow-engine"
@@ -128,6 +141,35 @@ contem() {
   done
   return 1
 }
+
+# Guarda contra deriva (etapa 184): NO_JWT_FUNCTIONS tem de ser exatamente o conjunto
+# de funcoes com verify_jwt = false em supabase/config.toml. Divergencia aqui ja
+# religou o JWT em producao e derrubou a funcao com 401 do gateway, sem log dela.
+CONFIG_TOML="supabase/config.toml"
+if [ -f "$CONFIG_TOML" ]; then
+  ISENTAS_NO_CONFIG=()
+  while IFS= read -r fn_isento; do
+    [ -n "$fn_isento" ] && ISENTAS_NO_CONFIG+=("$fn_isento")
+  done < <(awk '
+    /^\[functions\./ { atual = $0; sub(/^\[functions\./, "", atual); sub(/\].*$/, "", atual); next }
+    /^\[/ { atual = ""; next }
+    /^[[:space:]]*verify_jwt[[:space:]]*=[[:space:]]*false/ { if (atual != "") print atual }
+  ' "$CONFIG_TOML")
+
+  for fn in "${NO_JWT_FUNCTIONS[@]}"; do
+    if ! contem "$fn" ${ISENTAS_NO_CONFIG[@]+"${ISENTAS_NO_CONFIG[@]}"}; then
+      echo "❌ [$fn] esta em NO_JWT_FUNCTIONS mas nao declara verify_jwt = false em $CONFIG_TOML. Nada foi publicado." >&2
+      exit 2
+    fi
+  done
+  for fn in ${ISENTAS_NO_CONFIG[@]+"${ISENTAS_NO_CONFIG[@]}"}; do
+    if ! contem "$fn" "${NO_JWT_FUNCTIONS[@]}"; then
+      echo "❌ [$fn] declara verify_jwt = false em $CONFIG_TOML e nao esta em NO_JWT_FUNCTIONS (deploy manual religaria o JWT). Nada foi publicado." >&2
+      exit 2
+    fi
+  done
+  echo "Isencoes de JWT conferidas com $CONFIG_TOML: ${ISENTAS_NO_CONFIG[*]}"
+fi
 
 # ── Seleção (--only) ─────────────────────────────────────────────────────────
 SELECTED=()

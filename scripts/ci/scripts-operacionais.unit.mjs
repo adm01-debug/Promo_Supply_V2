@@ -840,7 +840,7 @@ test('deploy: tudo certo sai 0 — publica cada função uma vez, JWT desligado 
     assert.equal(deploys.length, amb.lista.length);
     assert.ok(!deploys.some((l) => l.includes('migrate-helper')));
     const semJwt = deploys.filter((l) => l.includes('--no-verify-jwt')).map((l) => l.split(' ')[2]).sort();
-    assert.deepEqual(semJwt, ['dependency-health', 'punchout-receive', 'scim-v2', 'webauthn-authenticate']);
+    assert.deepEqual(semJwt, ['dependency-health', 'punchout-receive', 'receive-os-sync', 'scim-v2', 'spot-api', 'webauthn-authenticate']);
     assert.ok(deploys.every((l) => l.includes('--project-ref lmypcdfsrgfftzhxawao')));
     assert.match(amb.curl(), /Authorization: Bearer chave-publica-do-env/);
     assert.equal(amb.curl().trim().split('\n').length, 6, 'uma verificação por função crítica');
