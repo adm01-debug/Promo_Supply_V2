@@ -1,12 +1,13 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
+import { resolverTenantId } from '@/lib/tenant';
 import { toast } from '@/lib/feedbackToast';
 import { logger } from '@/lib/logger';
 import type { ApprovalRule, ApprovalDelegation } from './approvalWorkflowTypes';
 
 export const useApprovalRules = () => {
-  const { user, organizationId } = useAuth();
+  const { user, organizationId, tenantId } = useAuth();
   const [rules, setRules] = useState<ApprovalRule[]>([]);
   const [delegations, setDelegations] = useState<ApprovalDelegation[]>([]);
   const [loading, setLoading] = useState(false);
@@ -66,6 +67,7 @@ export const useApprovalRules = () => {
         prioridade: rule.prioridade || 0,
         created_by: user?.id,
         organization_id: organizationId,
+        tenant_id: resolverTenantId(tenantId, organizationId),
       };
       if (rule.id) {
         const { error } = await supabase.from('approval_rules').update(ruleData).eq('id', rule.id);
@@ -79,7 +81,7 @@ export const useApprovalRules = () => {
       await fetchRules();
     } catch (error) { logger.error('Error saving rule', { error }); toast.error('Erro ao salvar regra'); }
     finally { setLoading(false); }
-  }, [user, fetchRules, organizationId]);
+  }, [user, fetchRules, organizationId, tenantId]);
 
   const deleteRule = useCallback(async (ruleId: string) => {
     try {
@@ -106,6 +108,7 @@ export const useApprovalRules = () => {
         valor_maximo: delegation.valor_maximo,
         ativo: delegation.ativo ?? true,
         organization_id: organizationId,
+        tenant_id: resolverTenantId(tenantId, organizationId),
       };
       if (delegation.id) {
         const { error } = await supabase.from('approval_delegations').update(delegationData).eq('id', delegation.id);
@@ -119,7 +122,7 @@ export const useApprovalRules = () => {
       await fetchDelegations();
     } catch (error) { logger.error('Error saving delegation', { error }); toast.error('Erro ao salvar delegação'); }
     finally { setLoading(false); }
-  }, [fetchDelegations, organizationId]);
+  }, [fetchDelegations, organizationId, tenantId]);
 
   const deleteDelegation = useCallback(async (delegationId: string) => {
     try {

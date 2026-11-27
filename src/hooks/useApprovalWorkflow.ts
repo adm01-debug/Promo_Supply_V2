@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
+import { resolverTenantId } from '@/lib/tenant';
 import { toast } from '@/lib/feedbackToast';
 import { logger } from '@/lib/logger';
 import { useWorkflowDLQ } from './useWorkflowDLQ';
@@ -42,7 +43,7 @@ const mensagemDeErro = (error: unknown): string =>
     : ((error as { message?: string } | null)?.message ?? String(error));
 
 export const useApprovalWorkflow = () => {
-  const { user, organizationId } = useAuth();
+  const { user, organizationId, tenantId } = useAuth();
   const [workflows, setWorkflows] = useState<ApprovalWorkflowWithRelations[]>([]);
   const [pendingSteps, setPendingSteps] = useState<ApprovalStep[]>([]);
   // Tudo o que ja passou pela aprovacao existe so no espelho filtrado de pendentes
@@ -189,6 +190,7 @@ export const useApprovalWorkflow = () => {
         categoria_id: categoriaId,
         prazo_limite: prazoLimite.toISOString(),
         organization_id: organizationId,
+        tenant_id: resolverTenantId(tenantId, organizationId),
       }).select().single();
       if (workflowError) throw workflowError;
       const typedWorkflow = workflow as ApprovalWorkflow;
@@ -205,6 +207,7 @@ export const useApprovalWorkflow = () => {
           delegacao_id: effective?.[0]?.delegation_id || null,
           prazo_limite: new Date(Date.now() + (rule?.tempo_limite_horas || 24) * 3600_000).toISOString(),
           organization_id: organizationId,
+          tenant_id: resolverTenantId(tenantId, organizationId),
         });
       }
 
@@ -220,6 +223,7 @@ export const useApprovalWorkflow = () => {
             delegacao_id: effective?.[0]?.delegation_id || null,
             prazo_limite: new Date(Date.now() + (i + 2) * rule.tempo_limite_horas * 3600_000).toISOString(),
             organization_id: organizationId,
+            tenant_id: resolverTenantId(tenantId, organizationId),
           });
         }
       }
@@ -231,6 +235,7 @@ export const useApprovalWorkflow = () => {
       }
 
       await supabase.from('approval_history').insert({
+        tenant_id: resolverTenantId(tenantId, organizationId),
         workflow_id: typedWorkflow.id, solicitacao_id: solicitacaoId, acao: 'created',
         usuario_id: user?.id, usuario_nome: user?.email,
         detalhes: { rule_id: rule?.id, rule_nome: rule?.nome || 'Aprovação por Centro de Custo' },
@@ -248,7 +253,7 @@ export const useApprovalWorkflow = () => {
       }
       return null;
     } finally { setLoading(false); }
-  }, [user, rulesApi, fetchPendingWorkflows, organizationId, pushToDLQ]);
+  }, [user, rulesApi, fetchPendingWorkflows, organizationId, tenantId, pushToDLQ]);
 
   // ── Step actions ─────────────────────────────────────────────────────────
 
@@ -330,6 +335,7 @@ export const useApprovalWorkflow = () => {
       }
 
       await supabase.from('approval_history').insert({
+        tenant_id: resolverTenantId(tenantId, organizationId),
         workflow_id: step.workflow_id, step_id: stepId, acao: 'approved',
         usuario_id: user?.id, usuario_nome: user?.email, detalhes: { comentario },
       });
@@ -346,7 +352,7 @@ export const useApprovalWorkflow = () => {
       }
       return false;
     } finally { setLoading(false); }
-  }, [user, fetchPendingSteps, fetchPendingWorkflows, pushToDLQ]);
+  }, [user, fetchPendingSteps, fetchPendingWorkflows, organizationId, tenantId, pushToDLQ]);
 
   const rejectStep = useCallback(async (stepId: string, comentario: string, fromDLQ = false): Promise<boolean> => {
     try {
@@ -399,6 +405,7 @@ export const useApprovalWorkflow = () => {
         }
       }
       await supabase.from('approval_history').insert({
+        tenant_id: resolverTenantId(tenantId, organizationId),
         workflow_id: step.workflow_id, step_id: stepId, acao: 'rejected',
         usuario_id: user?.id, usuario_nome: user?.email, detalhes: { comentario },
       });
@@ -415,7 +422,7 @@ export const useApprovalWorkflow = () => {
       }
       return false;
     } finally { setLoading(false); }
-  }, [user, fetchPendingSteps, fetchPendingWorkflows, pushToDLQ]);
+  }, [user, fetchPendingSteps, fetchPendingWorkflows, organizationId, tenantId, pushToDLQ]);
 
   // ── Dead-letter queue retry ─────────────────────────────────────────────
   // Re-dispatches a stored DLQ operation through the real action. Uses
@@ -477,9 +484,11 @@ export const useApprovalWorkflow = () => {
           workflow_id: wf.id, etapa: wf.etapa_atual + 1, aprovador_id: rule.escalacao_para,
             // Sem organization_id a etapa nasce invisível: fetchPendingSteps filtra por ele.
             organization_id: organizationId,
+            tenant_id: resolverTenantId(tenantId, organizationId),
           prazo_limite: new Date(Date.now() + rule.tempo_limite_horas * 3600_000).toISOString(),
         });
         await supabase.from('approval_history').insert({
+          tenant_id: resolverTenantId(tenantId, organizationId),
           workflow_id: wf.id, solicitacao_id: wf.solicitacao_id, acao: 'escalated',
           detalhes: { escalado_para: rule.escalacao_para, motivo: 'Prazo expirado' },
         });
@@ -487,7 +496,7 @@ export const useApprovalWorkflow = () => {
       await fetchPendingWorkflows();
       await fetchPendingSteps();
     } catch (error) { logger.error('Error checking escalations', { error }); }
-    }, [fetchPendingWorkflows, fetchPendingSteps, organizationId]);
+    }, [fetchPendingWorkflows, fetchPendingSteps, organizationId, tenantId]);
 
   // ── Bootstrap ────────────────────────────────────────────────────────────
 

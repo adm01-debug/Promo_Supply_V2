@@ -23,6 +23,8 @@ import {
   Check
 } from "lucide-react";
 import { useSourcingEvents } from "@/hooks/useLicitacoes";
+import { useAuth } from "@/features/auth";
+import { resolverTenantId } from "@/lib/tenant";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -58,6 +60,7 @@ const UI_TYPE_TO_EVENT_TYPE: Record<RFxUiType, SourcingEventType> = {
 const RFxCreate = () => {
   const navigate = useNavigate();
   const { createEvent } = useSourcingEvents();
+  const { tenantId, organizationId } = useAuth();
   const [step, setStep] = useState(1);
   const [supplierSearch, setSupplierSearch] = useState("");
   const [formData, setFormData] = useState<{
@@ -129,6 +132,8 @@ const RFxCreate = () => {
         return;
       }
 
+      const tenantIdEvento = resolverTenantId(tenantId, organizationId);
+
       const event = await createEvent.mutateAsync({
         title: formData.title,
         description: formData.description,
@@ -147,6 +152,7 @@ const RFxCreate = () => {
           const { error: lotsError } = await supabase.from('sourcing_event_lots').insert(
             formData.lots.map(lot => ({ 
               event_id: event.id,
+              tenant_id: tenantIdEvento,
               nome: lot.title,
               descricao: lot.description,
               preco_referencia: parseFloat(lot.target_price) || null
@@ -160,6 +166,7 @@ const RFxCreate = () => {
           const { error: critError } = await supabase.from('sourcing_event_criteria').insert(
             formData.criteria.map(c => ({ 
               event_id: event.id,
+              tenant_id: tenantIdEvento,
               nome: c.label,
               peso: c.weight,
               config: { type: c.type }
@@ -174,6 +181,7 @@ const RFxCreate = () => {
           const { error: invError } = await supabase.from('sourcing_invitations').insert(
             selectedSuppliers.map(s => ({ 
               event_id: event.id, 
+              tenant_id: tenantIdEvento,
               fornecedor_id: s.id,
               email_contato: s.email || 'contato@fornecedor.com',
               token: crypto.randomUUID()

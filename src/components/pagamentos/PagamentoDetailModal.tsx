@@ -22,6 +22,7 @@ import type { Pagamento } from "@/hooks/usePagamentos";
 import { formatCurrency } from "@/lib/utils";
 import { calcularAbatimentoCredito, mensagemAbatimentoBloqueado, statusAbatimentoAlcancavel, statusAlvoAbatimento } from "@/lib/creditoFornecedor";
 import { getStorageTenantId, privateStoragePath, resolveStoredFileUrl } from "@/lib/storageFiles";
+import { resolverTenantId } from "@/lib/tenant";
 
 interface Props {
   pagamento: Pagamento | null;
@@ -32,7 +33,7 @@ interface Props {
 }
 
   export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirmarPagamento, onAprovarPagamento }: Props) => {
-  const { user, tenantId } = useAuth();
+  const { user, tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
   const [valorParcial, setValorParcial] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -114,6 +115,7 @@ interface Props {
       
       // Log in payment history
       await supabase.from('payment_history').insert({
+        tenant_id: storageTenantId,
         pagamento_id: pagamento.id,
         valor_parcela: 0,
         comprovante_url: path,
@@ -187,6 +189,7 @@ interface Props {
 
       // Log history
       await supabase.from('payment_history').insert({
+        tenant_id: resolverTenantId(tenantId, organizationId),
         pagamento_id: pagamento.id,
         valor_parcela: aplicar,
         observacoes: `Crédito de devolução aplicado: ${formatCurrency(aplicar)}`,
@@ -200,7 +203,7 @@ interface Props {
     } catch (err: unknown) {
       toast({ title: "Erro", description: (err as Error).message, variant: "destructive" });
     }
-  }, [pagamento, user, saldoRestante, queryClient]);
+  }, [pagamento, user, saldoRestante, queryClient, tenantId, organizationId]);
 
   const handleAprovar = async () => {
     if (!pagamento || !onAprovarPagamento) return;
@@ -225,12 +228,17 @@ interface Props {
       const success = await onConfirmarPagamento(pagamento.id, valor);
       if (success) {
         // Log history
-        await supabase.from('payment_history').insert({
-          pagamento_id: pagamento.id,
-          valor_parcela: valor || saldoRestante,
-          observacoes: valor ? 'Pagamento parcial' : 'Pagamento integral',
-          registrado_por: user?.id,
-        });
+        try {
+          await supabase.from('payment_history').insert({
+            tenant_id: resolverTenantId(tenantId, organizationId),
+            pagamento_id: pagamento.id,
+            valor_parcela: valor || saldoRestante,
+            observacoes: valor ? 'Pagamento parcial' : 'Pagamento integral',
+            registrado_por: user?.id,
+          });
+        } catch (err) {
+          console.error('Falha ao registrar histórico do pagamento', err);
+        }
         queryClient.invalidateQueries({ queryKey: ['payment-history'] });
         setValorParcial("");
         onOpenChange(false);

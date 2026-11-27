@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/lib/feedbackToast';
 import { useAuth } from '@/features/auth';
+import { resolverTenantId } from '@/lib/tenant';
 import { logger } from '@/lib/logger';
 
 export interface PerformanceReport {
@@ -18,7 +19,7 @@ export interface PerformanceReport {
 
 export const useBudgetManagement = () => {
   const queryClient = useQueryClient();
-  const { user, organizationId } = useAuth();
+  const { user, organizationId, tenantId } = useAuth();
 
   const { data: budgets = [], isLoading } = useQuery({
     queryKey: ['department-budgets', organizationId],
@@ -66,6 +67,7 @@ export const useBudgetManagement = () => {
           ...budget,
           created_by: user?.id,
           organization_id: organizationId,
+          tenant_id: resolverTenantId(tenantId, organizationId),
         });
       if (error) throw error;
     },

@@ -54,6 +54,16 @@ vi.mock('@/lib/feedbackToast', () => ({
   toast: { error: vi.fn(), success: vi.fn() },
 }));
 
+// ContractModal resolve o tenant do insert via useAuth (tenant_id deixou de ter
+// default no banco), entao o teste precisa de um contexto de sessao.
+vi.mock('@/features/auth', () => ({
+  useAuth: () => ({
+    user: { id: 'user-1', email: 'comprador@empresa.com' },
+    tenantId: 'tenant-1',
+    organizationId: 'org-1',
+  }),
+}));
+
 vi.mock('@/components/ui/dialog', () => ({
   Dialog: ({ children }: any) => <div>{children}</div>,
   DialogContent: ({ children }: any) => <div>{children}</div>,

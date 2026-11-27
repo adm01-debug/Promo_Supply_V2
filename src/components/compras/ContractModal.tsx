@@ -34,6 +34,8 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
 import type { Contract, ContractItem } from "@/types/contract";
+import { useAuth } from "@/features/auth";
+import { resolverTenantId } from "@/lib/tenant";
 
 interface ContractModalProps {
   open: boolean;
@@ -44,6 +46,7 @@ interface ContractModalProps {
 
 export function ContractModal({ open, onOpenChange, contract, onSuccess }: ContractModalProps) {
   const isEditing = !!contract;
+  const { tenantId, organizationId } = useAuth();
   
   const [formData, setFormData] = useState({
     contract_number: "",
@@ -206,6 +209,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
     setLoading(true);
 
     try {
+          const tenantDoContrato = resolverTenantId(tenantId, organizationId);
       const contractData = {
         contract_number: formData.contract_number,
         title: formData.title,
@@ -228,6 +232,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
         return_policy: formData.return_policy,
         min_supplier_score: formData.min_supplier_score,
         auto_block_below_score: formData.auto_block_below_score,
+                tenant_id: tenantDoContrato,
       };
 
       if (isEditing) {
@@ -239,11 +244,12 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
         if (error) throw error;
 
         // Update items - insert new first, then delete old (no loss if insert fails)
-        await replaceContractItems(supabase, contract.id, items);
+        await replaceContractItems(supabase, contract.id, items, tenantDoContrato);
 
         // Add history entry
         await supabase.from('contract_history').insert({
           contract_id: contract.id,
+                  tenant_id: tenantDoContrato,
           action_type: 'updated',
           action_description: 'Contrato atualizado',
         });
@@ -262,6 +268,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
         if (items.length > 0 && newContract) {
           const itemsToInsert = items.map(item => ({
             contract_id: newContract.id,
+                      tenant_id: tenantDoContrato,
             item_name: item.item_name,
             description: item.description,
             unit: item.unit,
@@ -277,6 +284,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
         if (newContract) {
           await supabase.from('contract_history').insert({
             contract_id: newContract.id,
+                      tenant_id: tenantDoContrato,
             action_type: 'created',
             action_description: 'Contrato criado',
           });

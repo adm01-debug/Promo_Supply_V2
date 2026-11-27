@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
+import { resolverTenantId } from '@/lib/tenant';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -40,7 +41,7 @@ const pickFornecedor = (f: BonificationRow['fornecedor']): FornecedorRef | null 
   Array.isArray(f) ? f[0] ?? null : f;
 
 export const SupplierBonificationsPanel = () => {
-  const { user } = useAuth();
+  const { user, tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({
@@ -83,6 +84,7 @@ export const SupplierBonificationsPanel = () => {
     mutationFn: async () => {
       if (!user?.id) throw new Error('Usuário não autenticado');
       const { error } = await supabase.from('supplier_bonifications').insert([{
+        tenant_id: resolverTenantId(tenantId, organizationId),
         fornecedor_id: form.fornecedor_id,
         bonification_type: form.bonification_type,
         value_percent: parseFloat(form.value_percent) || 0,

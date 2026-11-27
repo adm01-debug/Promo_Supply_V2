@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { abrirCanalPostgres } from '@/lib/realtime';
 import { useAuth } from '@/features/auth';
+import { resolverTenantId } from '@/lib/tenant';
 import { toast } from '@/lib/feedbackToast';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -304,7 +305,7 @@ export function useSourcingEventDetails(eventId: string | null) {
 }
 
 export function useLicitacaoLances(licitacaoId: string | null) {
-  const { user } = useAuth();
+  const { user, tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: lances = [], isLoading } = useQuery({
@@ -326,6 +327,7 @@ export function useLicitacaoLances(licitacaoId: string | null) {
     if (!licitacaoId) return false;
     try {
       const { error } = await supabase.from('licitacao_lances').insert({
+        tenant_id: resolverTenantId(tenantId, organizationId),
         licitacao_id: licitacaoId,
         fornecedor_id: fornecedorId,
         valor_lance: valor
@@ -339,7 +341,7 @@ export function useLicitacaoLances(licitacaoId: string | null) {
       toast.error('Erro ao enviar lance: ' + (err instanceof Error ? err.message : 'Erro desconhecido'));
       return false;
     }
-  }, [licitacaoId, queryClient]);
+  }, [licitacaoId, queryClient, tenantId, organizationId]);
 
   // Subscribe to real-time bids
   const subscribeToBids = useCallback(() => {
