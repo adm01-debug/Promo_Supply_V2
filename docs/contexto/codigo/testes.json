@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 325,
+ "total": 326,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 307
+  "unit": 308
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 229
+   "arquivos": 230
   },
   {
    "padrao": "outro",
@@ -2003,6 +2003,15 @@
    "casos": 1
   },
   {
+   "arquivo": "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
+   "tipo": "unit",
+   "linhas": 86,
+   "testa": [
+    "src/pages/catalogo-spot/useSpotCatalog.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts",
    "tipo": "unit",
    "linhas": 26,
@@ -3121,7 +3130,7 @@
   "src/pages/buyer/buyerDashboardHelpers.tsx": 1,
   "src/pages/catalogo-spot/SpotCatalogTab.tsx": 2,
   "src/pages/catalogo-spot/spotHelpers.ts": 1,
-  "src/pages/catalogo-spot/useSpotCatalog.ts": 2,
+  "src/pages/catalogo-spot/useSpotCatalog.ts": 3,
   "src/pages/catalogo-xbz/xbzHelpers.ts": 4,
   "src/pages/catalogo-xbz/xbzNetworkHealth.ts": 1,
   "src/pages/catalogo-xbz/xbzNetworkTrend.ts": 1,

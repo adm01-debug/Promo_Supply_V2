@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (229)",
+   "co-localizado (__tests__) (230)",
    "outro (44)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(compras): catalogo SPOT acha o fornecedor real e busca por nome no PIM (#621)",
    "feat(compras): catalogo de Compras le o PIM e o espelho local deixa de ser alimentado (163-166) (#619)",
    "fix(infra): fronteira publica das edges declarada e isencoes de JWT sem deriva (etapa 184) (#604)",
    "ci(deploy): apply de producao exige migration na main e aprovacao de environment (#600)",
-   "chore(deps): bump react-day-picker from 8.10.2 to 10.0.2 (#479)",
-   "chore(deps): bump i18next from 26.7.2 to 27.2.4 (#481)"
+   "chore(deps): bump react-day-picker from 8.10.2 to 10.0.2 (#479)"
   ]
  },
  "pr_template": null,

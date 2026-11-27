@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `999a087be9` · branch `main` · 2026-11-27 20:02 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `936959e47f` · branch `main` · 2026-11-27 20:35 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1795,7 +1795,7 @@ _nenhum item encontrado_
 | `SPOT_CATALOG_PAGE_SIZE` | `60` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `SPOT_COLECAO_PADRAO` | `'SPOT'` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `SPOT_BRIDGE_PAGE` | `500` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
-| `SPOT_BRIDGE_MAX_ROWS` | `2000` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
+| `SPOT_BRIDGE_MAX_ROWS` | `6000` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `REFRESH_MS` | `5_000` | `src/pages/catalogo-xbz/XbzNetworkPanel.tsx` |
 | `XBZ_BUSCA_MIN` | `3` | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | `MIN_SAMPLE` | `10` | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
@@ -2541,7 +2541,7 @@ _nenhum item encontrado_
 | `coordinator` | `supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql` |
 | `admin` | `supabase/migrations/20261128160000_lockout_servidor_guarda.sql` |
 
-## K. Testes como especificação (3596 testes em 273 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3601 testes em 274 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2739,6 +2739,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
 | `src/pages/acompanhamento/__tests__/statusKanban.test.ts` | 5 | avaliarAlteracaoStatusKanban · bloqueia a entrega feita pelo Kanban · traduz as colunas válidas para o status do banco · recusa transição que o banco rejeitaria, com mensagem de negócio … |
 | `src/pages/auth/__tests__/Auth.destino.test.tsx` | 5 | Auth: destino pos-login (etapa 043 / AUT-08) · volta para a rota que o ProtectedRoute registrou, com a query string · sem origem registrada cai na raiz, que o AppRoutes manda para /compras · recusa origem protocol-relative (//evil.com) e cai na raiz … |
+| `src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx` | 5 | useSpotProducts - leitura do PIM · filtra o fornecedor pelas grafias que o PIM usa, nao so por  · busca por nome com ilike e escapa curinga e barra digitados · escapa a barra invertida antes dos curetas … |
 | `src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx` | 5 | DocumentosFiscais - falha e carga nao viram  · mostra o erro da consulta e um botao de nova tentativa · o botao de nova tentativa refaz a busca da lista · com a consulta em curso, mostra carregando e nao zera os contadores … |
 | `src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx` | 5 | Pagamentos - detalhe do pagamento acessivel pelo teclado (etapa 235) · a linha ganha um controle nomeado, focavel e nativo (Enter/espaco sao do navegador) · o acionamento do controle abre o detalhe do pagamento · o clique no controle abre o detalhe uma unica vez … |
 | `src/pages/pagamentos/__tests__/pagamentosStatusBanco.test.tsx` | 5 | Pagamentos - os 7 status do CHECK aparecem na tela (J7-16 e J7-17) · pagamento  · pagamento  · a aba CANCELADOS lista o pagamento cancelado com o badge CANCELADO … |
@@ -2952,7 +2953,7 @@ _nenhum item encontrado_
 | Dialog Adicionar/Editar Regra SoD */} | `src/pages/admin/WorkflowAdmin.tsx` |
 | Registra a visualização apenas para quem realmente enxerga a trilha (admin), | `src/pages/auditoria/Auditoria.tsx` |
 | Validation schemas | `src/pages/auth/Auth.tsx` |
-| Teto de leitura da tela; acima disso a busca é que deve recortar. */ | `src/pages/catalogo-spot/useSpotCatalog.ts` |
+| * Teto de leitura da tela; acima disso a busca é que deve recortar. | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | Agrupa as linhas da view por produto: preço mínimo e estoque somado das variantes. */ | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | Tamanho mínimo de `busca` aceito pela XBZ (abaixo disso `consultaEstoque` devolve []). */ | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | partir de um volume mínimo de chamadas; abaixo disso o painel exibe estado | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "999a087be91ebf65775ee7bacd8d7133967af4d3",
+  "sha": "936959e47f257f5743982fe860b82006b25a90fa",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 20:02 UTC",
-  "files_total": 1591,
-  "code_files": 1416,
-  "code_lines": 230879,
+  "generated_at": "2026-11-27 20:35 UTC",
+  "files_total": 1592,
+  "code_files": 1417,
+  "code_lines": 230982,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "e89fc12647e06ae2",
+ "facts_hash": "23c7168177dceeab",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".sql": 445,
-   ".tsx": 441,
+   ".tsx": 442,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -35545,8 +35545,8 @@
   },
   {
    "module": "src/pages",
-   "files": 161,
-   "lines": 35827,
+   "files": 162,
+   "lines": 35930,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35620,7 +35620,7 @@
     "SpotFinancialTab.tsx: SpotFinancialTab",
     "SpotSyncPanel.tsx: SpotSyncPanel",
     "spotHelpers.ts: SPOT_COLLECTIONS, SpotCategoryFilter, SPOT_CATEGORY_FILTERS, STATUS_CONFIG, openExternalSpotUrl, extractSpotProductId",
-    "useSpotCatalog.ts: SPOT_QUOTA_CATALOGO_DIA, SPOT_SUPPLIER_CODE, SpotCachedProduct, SpotCachedSku, SpotStockRow, SpotSyncStatus",
+    "useSpotCatalog.ts: SPOT_QUOTA_CATALOGO_DIA, SPOT_SUPPLIER_CODE, SPOT_SUPPLIER_CODES, SpotCachedProduct, SpotCachedSku, SpotStockRow",
     "CatalogoXbz.tsx: CatalogoXbz",
     "XbzCarrinhoTab.tsx: XbzCarrinhoTab",
     "XbzCatalogoTab.tsx: XbzCatalogoTab",
@@ -35728,6 +35728,7 @@
     "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
     "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts",
     "src/pages/catalogo-spot/__tests__/useSpotCatalog.invalidacao.test.tsx",
+    "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
     "src/pages/catalogo-xbz/CatalogoXbz.tsx",
     "src/pages/catalogo-xbz/XbzCarrinhoTab.tsx",
     "src/pages/catalogo-xbz/XbzCatalogoTab.tsx",
@@ -35754,8 +35755,7 @@
     "src/pages/cotacao/cotacaoHelpers.ts",
     "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
     "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
-    "src/pages/dashboard/ComprasDashboard.tsx",
-    "src/pages/dashboard/DashboardExecutivo.tsx"
+    "src/pages/dashboard/ComprasDashboard.tsx"
    ]
   },
   {
@@ -43074,7 +43074,7 @@
    },
    {
     "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
-    "text": "Teto de leitura da tela; acima disso a busca é que deve recortar. */"
+    "text": "* Teto de leitura da tela; acima disso a busca é que deve recortar."
    },
    {
     "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
@@ -50569,7 +50569,7 @@
    {
     "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
     "name": "SPOT_BRIDGE_MAX_ROWS",
-    "value": "2000"
+    "value": "6000"
    },
    {
     "file": "src/pages/catalogo-xbz/XbzNetworkPanel.tsx",
@@ -68656,6 +68656,26 @@
    {
     "file": "src/pages/catalogo-spot/__tests__/useSpotCatalog.invalidacao.test.tsx",
     "name": "invalida produtos e estoque com as mesmas chaves que as queries usam"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
+    "name": "useSpotProducts - leitura do PIM"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
+    "name": "filtra o fornecedor pelas grafias que o PIM usa, nao so por "
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
+    "name": "busca por nome com ilike e escapa curinga e barra digitados"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
+    "name": "escapa a barra invertida antes dos curetas"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
+    "name": "le paginas no limite aceito pelo bridge"
    },
    {
     "file": "src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts",
@@ -112123,10 +112143,11 @@
   },
   "src/pages/catalogo-spot/useSpotCatalog.ts": {
    "path": "src/pages/catalogo-spot/useSpotCatalog.ts",
-   "lines": 330,
+   "lines": 347,
    "exports": [
     "const SPOT_QUOTA_CATALOGO_DIA",
     "const SPOT_SUPPLIER_CODE",
+    "const SPOT_SUPPLIER_CODES",
     "interface SpotCachedProduct",
     "interface SpotCachedSku",
     "interface SpotStockRow",
@@ -112192,7 +112213,7 @@
     },
     {
      "name": "SPOT_BRIDGE_MAX_ROWS",
-     "value": "2000"
+     "value": "6000"
     }
    ],
    "status_values": [
@@ -112203,7 +112224,7 @@
     }
    ],
    "rule_comments": [
-    "Teto de leitura da tela; acima disso a busca é que deve recortar. */",
+    "* Teto de leitura da tela; acima disso a busca é que deve recortar.",
     "Agrupa as linhas da view por produto: preço mínimo e estoque somado das variantes. */"
    ],
    "hooks": [
@@ -112308,6 +112329,18 @@
    "tests": [
     "useTriggerSpotSync - invalidacao das chaves reais (HK-06)",
     "invalida produtos e estoque com as mesmas chaves que as queries usam"
+   ]
+  },
+  "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx": {
+   "path": "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
+   "lines": 86,
+   "is_test": true,
+   "tests": [
+    "useSpotProducts - leitura do PIM",
+    "filtra o fornecedor pelas grafias que o PIM usa, nao so por ",
+    "busca por nome com ilike e escapa curinga e barra digitados",
+    "escapa a barra invertida antes dos curetas",
+    "le paginas no limite aceito pelo bridge"
    ]
   },
   "src/pages/catalogo-xbz/CatalogoXbz.tsx": {
@@ -124883,10 +124916,20 @@
   }
  },
  "git": {
-  "sha": "999a087be91ebf65775ee7bacd8d7133967af4d3",
+  "sha": "936959e47f257f5743982fe860b82006b25a90fa",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "936959e",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "fix(compras): catalogo SPOT acha o fornecedor real e busca por nome no PIM (#621)",
+    "files": [
+     "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
+     "src/pages/catalogo-spot/useSpotCatalog.ts"
+    ]
+   },
    {
     "sha": "999a087",
     "date": "2026-11-27",
@@ -125240,24 +125283,12 @@
      "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
      "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql"
     ]
-   },
-   {
-    "sha": "0943a88",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(ci): inventario cobre tests-rls e tests-e2e e a suite de RLS reprova em vez de pular (etapas 040 e 041) (#598)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "scripts/ci/check-test-inventory.mjs",
-     "scripts/ci/check-test-inventory.unit.mjs",
-     "tests-rls/rls-isolation.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    17
+    16
    ],
    [
     "AGENTS.md",
@@ -125266,6 +125297,10 @@
    [
     "src/integrations/supabase/types.ts",
     4
+   ],
+   [
+    "src/pages/catalogo-spot/useSpotCatalog.ts",
+    2
    ],
    [
     "bun.lock",
@@ -125278,6 +125313,10 @@
    [
     "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
     2
+   ],
+   [
+    "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
+    1
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -125308,10 +125347,6 @@
     1
    ],
    [
-    "src/pages/catalogo-spot/useSpotCatalog.ts",
-    1
-   ],
-   [
     "src/tests/spot/spotApi.test.ts",
     1
    ],
@@ -125329,10 +125364,6 @@
    ],
    [
     "supabase/functions/_shared/xbz_fiscal_cache.ts",
-    1
-   ],
-   [
-    "supabase/functions/spot-api/index.ts",
     1
    ]
   ]

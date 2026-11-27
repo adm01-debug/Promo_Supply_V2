@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `999a087be91ebf65775ee7bacd8d7133967af4d3` (2026-11-27T17:02:02-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `936959e47f257f5743982fe860b82006b25a90fa` (2026-11-27T17:35:13-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (894), SQL (445), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (895), SQL (445), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1590 |
-| arquivos_codigo | 969 |
-| linhas_codigo | 192571 |
+| arquivos_total | 1591 |
+| arquivos_codigo | 970 |
+| linhas_codigo | 192674 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 154 |
 | migrations | 386 |
 | cron_jobs | 80 |
-| testes | 325 |
+| testes | 326 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 101 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (214), src/pages (79), src/features (33)
 - hooks: src/hooks (62), src/features (14), src/components (11)
 - servicos_logica: src/lib (31), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (229), outro (44), co-localizado (*.test) (42)
+- testes: co-localizado (__tests__) (230), outro (44), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-27 `936959e` fix(compras): catalogo SPOT acha o fornecedor real e busca por nome no PIM (#621)
 - 2026-11-27 `999a087` feat(compras): catalogo de Compras le o PIM e o espelho local deixa de ser alimentado (163-166) (#619)
 - 2026-11-27 `ac9fdc3` fix(infra): fronteira publica das edges declarada e isencoes de JWT sem deriva (etapa 184) (#604)
 - 2026-11-27 `c54e49f` ci(deploy): apply de producao exige migration na main e aprovacao de environment (#600)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `dbfed79` chore(progresso): 21 etapas com PR aberta passam a [A] e citam a PR (#607)
 - 2026-11-26 `e623754` fix(db): neg10 volta a ser idempotente e aplicavel (policy ja existia em prod) (#610)
 - 2026-11-26 `5068a49` fix(orcamento): trava le department_budgets e gatilhos param de perder/duplicar o gasto (090/092/137/138) (#599)
-- 2026-11-26 `14f107a` fix(rls): arquivo de auditoria/telemetria e leitura de organizacao passam a filtrar empresa (etapas 066, 067 e 068) (#59
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
