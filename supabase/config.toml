@@ -33,6 +33,16 @@ verify_jwt = false
 [functions.receive-os-sync]
 verify_jwt = false
 
+# Proxy do catalogo do fornecedor (Spot). Autentica por conta propria em
+# supabase/functions/spot-api/index.ts:131-160: x-cron-key (SPOT_CRON_KEY,
+# comparado em tempo constante), service_role key e JWT de usuario com role na
+# allowlist. Aqui o gateway NAO pode exigir JWT: o cron public._invoke_spot_sync
+# (20261112171742_cron_edge_projeto_correto_vault.sql:101-116) manda so x-cron-key,
+# sem Bearer, entao verify_jwt = true derruba a sincronizacao agendada com 401
+# antes de o pedido chegar na funcao.
+[functions.spot-api]
+verify_jwt = false
+
 # QA-268 (sonda em 2026-11-25, sem Management API): o gateway do projeto responde
 # {"code":"UNAUTHORIZED_NO_AUTH_HEADER"} quando verify_jwt=true, e a resposta e da
 # propria funcao quando o pedido chega ate ela. Medido com GET sem Authorization:
@@ -47,3 +57,14 @@ verify_jwt = false
 # e a fonte unica e o padrao e verify_jwt = true. Chamadores que ja mandam Bearer
 # do projeto: o navegador com sessao (telemetry, run-audit, system-simulation) e
 # _invoke_edge_function, que le edge_invoke_service_key do Vault (process-outbox).
+#
+# QA-INT12 (sonda em 2026-11-26 nas 41 pastas de supabase/functions, GET sem
+# Authorization): 30 exigem JWT no gateway (401 UNAUTHORIZED_NO_AUTH_HEADER) e
+# estao corretas assim - xbz-proxy, xbz-sync-pedidos, punchout-encrypt,
+# erp-credential-encrypt, external-db-bridge, process-invoice-idp,
+# escalate-solicitacao, health-dashboard, maintain-partitions,
+# process-solicitacao-neural, spot-proxy, punchout-setup, workflow-engine e as
+# demais. Chegam na funcao: as 6 isencoes declaradas acima, run-audit,
+# system-simulation, telemetry e process-outbox (a decisao acima vale) e spot-api
+# (isento logo acima: o cron manda x-cron-key sem Bearer). migrate-helper responde
+# 404 - nao existe em producao e segue bloqueada no script de deploy.
