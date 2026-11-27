@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e623754d33be59adfcb48963b6c0a2acf9b1c340",
+  "commit": "adc4ff7e1d0f4845dc007e0d1fa20249b55178e0",
   "branch": "main",
-  "data_commit": "2026-11-26T22:18:28-03:00",
+  "data_commit": "2026-11-26T22:35:35-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "adc4ff7",
+    "data": "2026-11-26",
+    "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#612)"
+   },
+   {
+    "sha": "dbfed79",
+    "data": "2026-11-26",
+    "assunto": "chore(progresso): 21 etapas com PR aberta passam a [A] e citam a PR (#607)"
+   },
    {
     "sha": "e623754",
     "data": "2026-11-26",
@@ -121,23 +131,13 @@
     "sha": "cc209d3",
     "data": "2026-11-26",
     "assunto": "fix(banco): spot_pedidos ganha empresa e isolamento por grupo (etapa 050) (#585)"
-   },
-   {
-    "sha": "f113336",
-    "data": "2026-11-26",
-    "assunto": "fix(banco): filhos de historico e de dinheiro deixam de ser apagados em cascata (etapa 131) (#584)"
-   },
-   {
-    "sha": "4fb9075",
-    "data": "2026-11-26",
-    "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#583)"
    }
   ],
   "arquivos_mudados_7d": 1610,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 217
+    "mudancas": 218
    },
    {
     "pasta": "src/components/compras",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/features/layout",
-    "mudancas": 59
+    "mudancas": 58
    },
    {
     "pasta": "src/hooks/__tests__",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 217
+    "mudancas": 218
    },
    {
     "arquivo": "AGENTS.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -219,10 +219,6 @@
    },
    {
     "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "src/hooks/useApprovalWorkflow.ts",
     "mudancas": 9
    },
    {
@@ -239,6 +235,10 @@
    },
    {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "src/hooks/useApprovalWorkflow.ts",
     "mudancas": 8
    },
    {
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 287
+    "commits": 286
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 9
+    "commits": 10
    },
    {
     "autor": "dependabot[bot]",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1591,
   "arquivos_codigo": 972,
-  "linhas_codigo": 193788,
+  "linhas_codigo": 193822,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -444,7 +444,7 @@
   },
   "src/integrations": {
    "arquivos": 3,
-   "linhas": 10562
+   "linhas": 10596
   },
   "src/lib": {
    "arquivos": 64,
@@ -550,7 +550,7 @@
  "maiores_arquivos": [
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "linhas": 10503
+   "linhas": 10537
   },
   {
    "arquivo": "scripts/regras_negocio/generate.py",

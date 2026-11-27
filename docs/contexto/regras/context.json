@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "e623754d33be59adfcb48963b6c0a2acf9b1c340",
+  "sha": "adc4ff7e1d0f4845dc007e0d1fa20249b55178e0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 01:18 UTC",
+  "generated_at": "2026-11-27 01:36 UTC",
   "files_total": 1592,
   "code_files": 1417,
-  "code_lines": 232027,
+  "code_lines": 232061,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "8e45a0e3742e87ac",
+ "facts_hash": "61fdee9d997af99c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -22848,6 +22848,17 @@
     "raises": [],
     "tables": []
    },
+   "aprovador_pode_decidir_etapa": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
    "audit_rls_policies": {
     "args": "",
     "returns": "?",
@@ -22893,6 +22904,28 @@
     "tables": []
    },
    "claim_outbox_batch": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
+   "recalculate_department_budgets": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
+   "solicitacao_retem_orcamento": {
     "args": "",
     "returns": "?",
     "lang": "",
@@ -36720,7 +36753,7 @@
   {
    "module": "src/integrations",
    "files": 3,
-   "lines": 10562,
+   "lines": 10596,
    "tables": [],
    "exports": [
     "index.ts: lovable",
@@ -82530,6 +82563,17 @@
     "raises": [],
     "tables": []
    },
+   "aprovador_pode_decidir_etapa": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
    "audit_rls_policies": {
     "args": "",
     "returns": "?",
@@ -82575,6 +82619,28 @@
     "tables": []
    },
    "claim_outbox_batch": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
+   "recalculate_department_budgets": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
+   "solicitacao_retem_orcamento": {
     "args": "",
     "returns": "?",
     "lang": "",
@@ -110970,7 +111036,7 @@
   },
   "src/integrations/supabase/types.ts": {
    "path": "src/integrations/supabase/types.ts",
-   "lines": 10503,
+   "lines": 10537,
    "exports": [
     "type Json",
     "type Database",
@@ -127249,10 +127315,28 @@
   }
  },
  "git": {
-  "sha": "e623754d33be59adfcb48963b6c0a2acf9b1c340",
+  "sha": "adc4ff7e1d0f4845dc007e0d1fa20249b55178e0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "adc4ff7",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#612)",
+    "files": [
+     "src/integrations/supabase/types.ts"
+    ]
+   },
+   {
+    "sha": "dbfed79",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "chore(progresso): 21 etapas com PR aberta passam a [A] e citam a PR (#607)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "e623754",
     "date": "2026-11-26",
@@ -127600,44 +127684,20 @@
      "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql",
      "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
     ]
-   },
-   {
-    "sha": "1de9078",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(banco): nota fiscal ganha unicidade por chave de acesso e por fornecedor/serie/numero (#580)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql",
-     "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql"
-    ]
-   },
-   {
-    "sha": "eeff86e",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
-     "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    23
+    22
    ],
    [
     "AGENTS.md",
-    11
+    9
    ],
    [
     "src/integrations/supabase/types.ts",
-    5
+    6
    ],
    [
     "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",

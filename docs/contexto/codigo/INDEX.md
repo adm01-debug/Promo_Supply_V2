@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e623754d33be59adfcb48963b6c0a2acf9b1c340` (2026-11-26T22:18:28-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `adc4ff7e1d0f4845dc007e0d1fa20249b55178e0` (2026-11-26T22:35:35-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1591 |
 | arquivos_codigo | 972 |
-| linhas_codigo | 193788 |
+| linhas_codigo | 193822 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -344,17 +344,17 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (217)
+- docs/qa/05-PROGRESSO.md (218)
 - AGENTS.md (41)
-- src/integrations/supabase/types.ts (12)
+- src/integrations/supabase/types.ts (13)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (9)
-- src/hooks/useApprovalWorkflow.ts (9)
 - src/hooks/useDevolucoes.ts (9)
 - src/hooks/usePagamentos.ts (9)
 - src/pages/pedidos/Pedidos.tsx (9)
 - src/features/auth/hooks/useAuth.tsx (8)
+- src/hooks/useApprovalWorkflow.ts (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
 - bun.lock (7)
 - package.json (7)
@@ -428,6 +428,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `adc4ff7` chore(db): sincronizar types.ts com o banco [auto] (#612)
+- 2026-11-26 `dbfed79` chore(progresso): 21 etapas com PR aberta passam a [A] e citam a PR (#607)
 - 2026-11-26 `e623754` fix(db): neg10 volta a ser idempotente e aplicavel (policy ja existia em prod) (#610)
 - 2026-11-26 `5068a49` fix(orcamento): trava le department_budgets e gatilhos param de perder/duplicar o gasto (090/092/137/138) (#599)
 - 2026-11-26 `14f107a` fix(rls): arquivo de auditoria/telemetria e leitura de organizacao passam a filtrar empresa (etapas 066, 067 e 068) (#59
@@ -441,8 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `3220347` feat(db): alcada de auto-aprovacao configuravel (etapa 114 - NEG-14) (#603)
 - 2026-11-26 `2515513` fix(db): contratos ligam no fornecedor por uuid com FK e backfill (etapa 127 - DB-02) (#602)
 - 2026-11-26 `fea414f` fix(sod): conserta a checagem de segregacao e fecha a decisao de etapa (093) (#601)
-- 2026-11-26 `8383ee7` fix(banco): lockout normaliza e-mail e deriva o IP do request (etapa 140) (#597)
-- 2026-11-26 `2b1e27a` fix(seguranca): multa e bloqueio de fornecedor notificam so a empresa do evento (#139) (#591)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

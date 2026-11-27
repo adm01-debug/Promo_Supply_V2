@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(db): sincronizar types.ts com o banco [auto] (#612)",
+   "chore(progresso): 21 etapas com PR aberta passam a [A] e citam a PR (#607)",
    "fix(db): neg10 volta a ser idempotente e aplicavel (policy ja existia em prod) (#610)",
    "fix(orcamento): trava le department_budgets e gatilhos param de perder/duplicar o gasto (090/092/137/138) (#599)",
-   "fix(rls): arquivo de auditoria/telemetria e leitura de organizacao passam a filtrar empresa (etapas 066, 067 e 068) (#590)",
-   "fix(orcamento): trava de orcamento le department_budgets (#606)",
-   "fix(alertas): claim atomico da fila do alert-dispatcher (#596)"
+   "fix(rls): arquivo de auditoria/telemetria e leitura de organizacao passam a filtrar empresa (etapas 066, 067 e 068) (#590)"
   ]
  },
  "pr_template": null,
