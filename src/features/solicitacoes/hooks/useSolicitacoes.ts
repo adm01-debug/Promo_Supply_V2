@@ -198,16 +198,24 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
         
         if (budgetError) {
           logger.error('Erro ao verificar orçamento', { error: budgetError, costCenterId: input.cost_center_id });
-        } else if (availability && !(availability as { available: boolean; message?: string }).available) {
-          logger.warn('Saldo insuficiente no centro de custo', {
-            costCenterId: input.cost_center_id,
-            valor: input.valor_estimado
-          });
-          toast.error((availability as { available: boolean; message?: string }).message || 'Saldo insuficiente no centro de custo.');
-          if (input.prioridade !== 'urgente') {
-            return null;
+        } else if (availability) {
+          const budget = availability as { available: boolean; has_budget?: boolean; message?: string };
+          if (budget.has_budget === false) {
+            // Centro sem orçamento cadastrado: não há restrição orçamentária a violar.
+            logger.info('Centro de custo sem orçamento cadastrado; solicitação segue sem trava orçamentária', {
+              costCenterId: input.cost_center_id
+            });
+          } else if (!budget.available) {
+            logger.warn('Saldo insuficiente no centro de custo', {
+              costCenterId: input.cost_center_id,
+              valor: input.valor_estimado
+            });
+            toast.error(budget.message || 'Saldo insuficiente no centro de custo.');
+            if (input.prioridade !== 'urgente') {
+              return null;
+            }
+            toast.info('Solicitação urgente: ignorando restrição orçamentária temporariamente.');
           }
-          toast.info('Solicitação urgente: ignorando restrição orçamentária temporariamente.');
         }
       }
 
