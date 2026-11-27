@@ -603,7 +603,7 @@
     "ContractDetailsModal"
    ],
    "export_default": null,
-   "linhas": 507,
+   "linhas": 508,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth"
@@ -627,9 +627,11 @@
     "ContractModal"
    ],
    "export_default": null,
-   "linhas": 557,
+   "linhas": 565,
    "dominio": "components/compras",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useAuth"
+   ],
    "tabelas": [
     "contract_history",
     "contract_items",
@@ -1203,7 +1205,7 @@
     "PenaltyEscalationConfigPanel"
    ],
    "export_default": null,
-   "linhas": 231,
+   "linhas": 233,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth"
@@ -1616,7 +1618,7 @@
     "SupplierBonificationsPanel"
    ],
    "export_default": null,
-   "linhas": 245,
+   "linhas": 247,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth"
@@ -2151,7 +2153,7 @@
     "PagamentoDetailModal"
    ],
    "export_default": null,
-   "linhas": 496,
+   "linhas": 504,
    "dominio": "components/pagamentos",
    "hooks_locais": [
     "useAuth"
@@ -4748,9 +4750,10 @@
     "ConfiguracoesCentroCusto"
    ],
    "export_default": "ConfiguracoesCentroCusto",
-   "linhas": 357,
+   "linhas": 360,
    "dominio": "pages/configuracoes",
    "hooks_locais": [
+    "useAuth",
     "useSolicitacoes"
    ],
    "tabelas": [
@@ -5466,9 +5469,10 @@
     "RFxCreate"
    ],
    "export_default": "RFxCreate",
-   "linhas": 522,
+   "linhas": 530,
    "dominio": "pages/sourcing",
    "hooks_locais": [
+    "useAuth",
     "useSourcingEvents"
    ],
    "tabelas": [

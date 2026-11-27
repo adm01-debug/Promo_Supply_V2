@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a54eaf5cf209c58f4e2c3ae5992de7dc6d48e9cd",
+  "commit": "85e47689bf9d3ad9ef309a67651bcc2ed3f8a186",
   "branch": "main",
-  "data_commit": "2026-11-26T19:40:34-03:00",
+  "data_commit": "2026-11-26T21:01:08-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "85e4768",
+    "data": "2026-11-26",
+    "assunto": "fix(tipos): inserts informam tenant_id e destravam o types-sync (issue #131) (#609)"
+   },
+   {
+    "sha": "c82a447",
+    "data": "2026-11-26",
+    "assunto": "docs(agentes): AGENTS.md volta a declarar o numero real de migrations (377) (#611)"
+   },
    {
     "sha": "a54eaf5",
     "data": "2026-11-26",
@@ -121,19 +131,9 @@
     "sha": "53abd53",
     "data": "2026-11-26",
     "assunto": "fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)"
-   },
-   {
-    "sha": "63f3816",
-    "data": "2026-11-26",
-    "assunto": "fix(banco): numero de devolucao passa a ser unico como nas outras seis numeracoes (#576)"
-   },
-   {
-    "sha": "054f49e",
-    "data": "2026-11-26",
-    "assunto": "fix(banco): ancora da cadeia de auditoria sobrevive ao expurgo da retencao LGPD (#575)"
    }
   ],
-  "arquivos_mudados_7d": 1592,
+  "arquivos_mudados_7d": 1593,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/compras",
-    "mudancas": 206
+    "mudancas": 211
    },
    {
     "pasta": "src/components/ui",
@@ -160,12 +160,12 @@
     "mudancas": 54
    },
    {
-    "pasta": "src/lib/__tests__",
+    "pasta": "AGENTS.md",
     "mudancas": 37
    },
    {
-    "pasta": "AGENTS.md",
-    "mudancas": 36
+    "pasta": "src/lib/__tests__",
+    "mudancas": 37
    },
    {
     "pasta": "src/features/auth",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 36
+    "mudancas": 37
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
@@ -214,11 +214,15 @@
     "mudancas": 10
    },
    {
-    "arquivo": "docs/pendencias/_indice.md",
+    "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
     "mudancas": 9
    },
    {
-    "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
+    "arquivo": "src/hooks/useApprovalWorkflow.ts",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "src/hooks/useDevolucoes.ts",
     "mudancas": 9
    },
    {
@@ -238,19 +242,15 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/hooks/useApprovalWorkflow.ts",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/hooks/useDevolucoes.ts",
-    "mudancas": 8
-   },
-   {
     "arquivo": "src/pages/solicitacoes/Solicitacoes.tsx",
     "mudancas": 8
    },
    {
     "arquivo": "bun.lock",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "docs/pendencias/_indice.md",
     "mudancas": 7
    },
    {
@@ -263,10 +263,6 @@
    },
    {
     "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/pages/cotacao/Cotacao.tsx",
     "mudancas": 7
    },
    {
@@ -294,6 +290,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "src/pages/cotacao/Cotacao.tsx",
+    "mudancas": 6
+   },
+   {
     "arquivo": "src/pages/pagamentos/Pagamentos.tsx",
     "mudancas": 6
    }
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1573,
-  "arquivos_codigo": 971,
-  "linhas_codigo": 193634,
+  "arquivos_total": 1574,
+  "arquivos_codigo": 972,
+  "linhas_codigo": 193735,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -428,7 +428,7 @@
   },
   "src/components": {
    "arquivos": 287,
-   "linhas": 52551
+   "linhas": 52594
   },
   "src/features": {
    "arquivos": 97,
@@ -436,7 +436,7 @@
   },
   "src/hooks": {
    "arquivos": 104,
-   "linhas": 17616
+   "linhas": 17636
   },
   "src/i18n": {
    "arquivos": 3,
@@ -447,8 +447,8 @@
    "linhas": 10532
   },
   "src/lib": {
-   "arquivos": 63,
-   "linhas": 7529
+   "arquivos": 64,
+   "linhas": 7547
   },
   "src/main.tsx": {
    "arquivos": 1,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 161,
-   "linhas": 35644
+   "linhas": 35664
   },
   "src/routes": {
    "arquivos": 1,
@@ -637,16 +637,16 @@
    "linhas": 604
   },
   {
+   "arquivo": "src/hooks/useApprovalWorkflow.ts",
+   "linhas": 569
+  },
+  {
    "arquivo": "src/components/compras/BulkOperationsPreview.tsx",
    "linhas": 568
   },
   {
    "arquivo": "src/pages/pedidos/PedidoDetailsDialog.tsx",
    "linhas": 568
-  },
-  {
-   "arquivo": "src/hooks/useApprovalWorkflow.ts",
-   "linhas": 560
   }
  ],
  "qualidade": {
@@ -655,7 +655,7 @@
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 6,
-  "arquivos_acima_500_linhas": 40
+  "arquivos_acima_500_linhas": 41
  },
  "todos": [
   {

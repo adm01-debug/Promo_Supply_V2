@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "a54eaf5cf209c58f4e2c3ae5992de7dc6d48e9cd",
+  "sha": "85e47689bf9d3ad9ef309a67651bcc2ed3f8a186",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 23:07 UTC",
-  "files_total": 1574,
-  "code_files": 1399,
-  "code_lines": 230208,
+  "generated_at": "2026-11-27 00:06 UTC",
+  "files_total": 1575,
+  "code_files": 1400,
+  "code_lines": 230309,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "44d76d9e976617f3",
+ "facts_hash": "247aa0ab1e46ccc7",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 455,
+   ".ts": 456,
    ".tsx": 441,
    ".sql": 426,
    ".mjs": 69,
@@ -35652,7 +35652,7 @@
   {
    "module": "src/components",
    "files": 287,
-   "lines": 52551,
+   "lines": 52594,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -36227,7 +36227,7 @@
   {
    "module": "src/hooks",
    "files": 104,
-   "lines": 17616,
+   "lines": 17636,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -36499,8 +36499,8 @@
   },
   {
    "module": "src/lib",
-   "files": 64,
-   "lines": 7549,
+   "files": 65,
+   "lines": 7567,
    "tables": [
     "profiles"
    ],
@@ -36533,6 +36533,7 @@
     "storageFiles.ts: PrivateBucket, getStorageTenantId, privateStoragePath, storagePathFromStoredValue, resolveStoredFileUrl",
     "supabaseQuery.ts: escapeIlike",
     "supabaseRpc.ts: BudgetAvailability, KpiMetrics, ApprovalRule, EffectiveApprover, AccountLockStatus, LoginAttemptResult",
+    "tenant.ts: resolverTenantId",
     "unicidadeCadastro.ts: somenteDigitos, MENSAGEM_CHAVE_DUPLICADA, mensagemCnpjJaCadastrado, mensagemCodigoFornecedorJaCadastrado, mensagemCodigoCentroCustoJaCadastrado, mensagemDuplicidadeFornecedor",
     "utils.ts: cn, generateUniqueKey, formatCurrency, formatCurrencyCompact, parseDateValue, formatDate",
     "fuzzSeed.ts: mulberry32, FuzzRng, createFuzzRng"
@@ -36594,6 +36595,7 @@
     "src/lib/storageFiles.ts",
     "src/lib/supabaseQuery.ts",
     "src/lib/supabaseRpc.ts",
+    "src/lib/tenant.ts",
     "src/lib/unicidadeCadastro.ts",
     "src/lib/utils.ts",
     "src/lib/__tests__/clearFiltersShortcut.test.ts",
@@ -36635,7 +36637,7 @@
   {
    "module": "src/pages",
    "files": 161,
-   "lines": 35644,
+   "lines": 35664,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -42778,6 +42780,10 @@
    {
     "file": "src/lib/supabaseRpc.ts",
     "msg": ", params) as unknown as RpcResult<void>;\n}\n\nexport function rpcCountLegacyStorageUrls(supabase: SupabaseClient): RpcResult<number> {\n  return supabase.rpc("
+   },
+   {
+    "file": "src/lib/tenant.ts",
+    "msg": "Sua sessão não está vinculada a nenhuma empresa"
    },
    {
     "file": "src/pages/acompanhamento/Acompanhamento.tsx",
@@ -98383,7 +98389,7 @@
   },
   "src/components/compras/ContractDetailsModal.tsx": {
    "path": "src/components/compras/ContractDetailsModal.tsx",
-   "lines": 507,
+   "lines": 508,
    "exports": [
     "function ContractDetailsModal"
    ],
@@ -98455,7 +98461,7 @@
   },
   "src/components/compras/ContractModal.tsx": {
    "path": "src/components/compras/ContractModal.tsx",
-   "lines": 557,
+   "lines": 565,
    "exports": [
     "function ContractModal"
    ],
@@ -99346,7 +99352,7 @@
   },
   "src/components/compras/PenaltyEscalationConfigPanel.tsx": {
    "path": "src/components/compras/PenaltyEscalationConfigPanel.tsx",
-   "lines": 231,
+   "lines": 233,
    "exports": [
     "const PenaltyEscalationConfigPanel"
    ],
@@ -100204,7 +100210,7 @@
   },
   "src/components/compras/SupplierBonificationsPanel.tsx": {
    "path": "src/components/compras/SupplierBonificationsPanel.tsx",
-   "lines": 245,
+   "lines": 247,
    "exports": [
     "const SupplierBonificationsPanel"
    ],
@@ -100480,7 +100486,7 @@
   },
   "src/components/compras/__tests__/contractFornecedorId.test.tsx": {
    "path": "src/components/compras/__tests__/contractFornecedorId.test.tsx",
-   "lines": 223,
+   "lines": 233,
    "is_test": true,
    "calc_fns": [
     {
@@ -100512,7 +100518,7 @@
   },
   "src/components/compras/__tests__/contratoCamposRotulos.test.tsx": {
    "path": "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
-   "lines": 113,
+   "lines": 123,
    "is_test": true,
    "tests": [
     "ContractModal - nome acessivel dos campos (etapa 239)",
@@ -100910,7 +100916,7 @@
   },
   "src/components/compras/contract/replaceContractItems.ts": {
    "path": "src/components/compras/contract/replaceContractItems.ts",
-   "lines": 42,
+   "lines": 44,
    "exports": [
     "function replaceContractItems"
    ],
@@ -102605,7 +102611,7 @@
   },
   "src/components/pagamentos/PagamentoDetailModal.tsx": {
    "path": "src/components/pagamentos/PagamentoDetailModal.tsx",
-   "lines": 496,
+   "lines": 504,
    "tables": [
     {
      "table": "creditos_fornecedor",
@@ -106554,7 +106560,7 @@
   },
   "src/hooks/useApprovalRules.ts": {
    "path": "src/hooks/useApprovalRules.ts",
-   "lines": 165,
+   "lines": 168,
    "exports": [
     "const useApprovalRules"
    ],
@@ -106618,7 +106624,7 @@
   },
   "src/hooks/useApprovalWorkflow.ts": {
    "path": "src/hooks/useApprovalWorkflow.ts",
-   "lines": 560,
+   "lines": 569,
    "exports": [
     "const useApprovalWorkflow"
    ],
@@ -106908,7 +106914,7 @@
   },
   "src/hooks/useBudgetManagement.ts": {
    "path": "src/hooks/useBudgetManagement.ts",
-   "lines": 165,
+   "lines": 167,
    "exports": [
     "interface PerformanceReport",
     "const useBudgetManagement"
@@ -107119,7 +107125,7 @@
   },
   "src/hooks/useContactNotes.ts": {
    "path": "src/hooks/useContactNotes.ts",
-   "lines": 165,
+   "lines": 167,
    "exports": [
     "interface ContactNote",
     "interface CreateContactNoteInput",
@@ -107285,7 +107291,7 @@
   },
   "src/hooks/useDevolucoes.ts": {
    "path": "src/hooks/useDevolucoes.ts",
-   "lines": 418,
+   "lines": 420,
    "exports": [
     "type Devolucao",
     "type DevolucaoItem",
@@ -108003,7 +108009,7 @@
   },
   "src/hooks/useLicitacoes.ts": {
    "path": "src/hooks/useLicitacoes.ts",
-   "lines": 363,
+   "lines": 365,
    "exports": [
     "type Licitacao",
     "type LicitacaoProposta",
@@ -110877,6 +110883,17 @@
      "body": "return supabase.rpc(\"is_account_locked\", params) as unknown as RpcResult<AccountLockStatus>;"
     }
    ]
+  },
+  "src/lib/tenant.ts": {
+   "path": "src/lib/tenant.ts",
+   "lines": 18,
+   "exports": [
+    "function resolverTenantId"
+   ],
+   "errors": [
+    "Sua sessão não está vinculada a nenhuma empresa"
+   ],
+   "doc": "Tenant do usuario logado para as colunas `tenant_id` geradas como obrigatorias. O banco perdeu o default do tenant zero (`tenant_id` ficou NOT NULL sem default na etapa 143), entao quem insere precisa mandar a coluna. O contexto entrega `tenantId` (`current_tenant_id()`), que em producao so vem quan …"
   },
   "src/lib/unicidadeCadastro.ts": {
    "path": "src/lib/unicidadeCadastro.ts",
@@ -114254,7 +114271,7 @@
   },
   "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx": {
    "path": "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
-   "lines": 357,
+   "lines": 360,
    "exports": [
     "default ConfiguracoesCentroCusto"
    ],
@@ -114304,7 +114321,7 @@
   },
   "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx": {
    "path": "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
-   "lines": 120,
+   "lines": 129,
    "is_test": true,
    "tests": [
     "ConfiguracoesCentroCusto · codigo unico (VAL-09)",
@@ -117096,7 +117113,7 @@
   },
   "src/pages/sourcing/RFxCreate.tsx": {
    "path": "src/pages/sourcing/RFxCreate.tsx",
-   "lines": 522,
+   "lines": 530,
    "exports": [
     "default RFxCreate"
    ],
@@ -126406,10 +126423,46 @@
   }
  },
  "git": {
-  "sha": "a54eaf5cf209c58f4e2c3ae5992de7dc6d48e9cd",
+  "sha": "85e47689bf9d3ad9ef309a67651bcc2ed3f8a186",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "85e4768",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(tipos): inserts informam tenant_id e destravam o types-sync (issue #131) (#609)",
+    "files": [
+     "src/components/compras/ContractDetailsModal.tsx",
+     "src/components/compras/ContractModal.tsx",
+     "src/components/compras/PenaltyEscalationConfigPanel.tsx",
+     "src/components/compras/SupplierBonificationsPanel.tsx",
+     "src/components/compras/__tests__/contractFornecedorId.test.tsx",
+     "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
+     "src/components/compras/contract/__tests__/replaceContractItems.test.ts",
+     "src/components/compras/contract/replaceContractItems.ts",
+     "src/components/pagamentos/PagamentoDetailModal.tsx",
+     "src/hooks/useApprovalRules.ts",
+     "src/hooks/useApprovalWorkflow.ts",
+     "src/hooks/useBudgetManagement.ts",
+     "src/hooks/useContactNotes.ts",
+     "src/hooks/useDevolucoes.ts",
+     "src/hooks/useLicitacoes.ts",
+     "src/lib/tenant.ts",
+     "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
+     "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
+     "src/pages/sourcing/RFxCreate.tsx"
+    ]
+   },
+   {
+    "sha": "c82a447",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "docs(agentes): AGENTS.md volta a declarar o numero real de migrations (377) (#611)",
+    "files": [
+     "AGENTS.md"
+    ]
+   },
    {
     "sha": "a54eaf5",
     "date": "2026-11-26",
@@ -126738,40 +126791,16 @@
      "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
      "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql"
     ]
-   },
-   {
-    "sha": "061c773",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(estoque): movimentacao passa a exigir papel e item da propria organizacao (#571)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
-     "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql"
-    ]
-   },
-   {
-    "sha": "22852aa",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(auth): autocadastro deixa de nascer com papel de comprador (#570)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126122905_handle_new_user_papel_viewer.sql",
-     "supabase/rollbacks/20261126122905_revert_handle_new_user_papel_viewer.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    26
+    24
    ],
    [
     "AGENTS.md",
-    14
+    13
    ],
    [
     "src/integrations/supabase/types.ts",
@@ -126782,67 +126811,67 @@
     2
    ],
    [
-    "supabase/functions/_shared/cors-allowlist.test.ts",
+    "src/components/compras/ContractDetailsModal.tsx",
     1
    ],
    [
-    "supabase/functions/_shared/security.ts",
+    "src/components/compras/ContractModal.tsx",
     1
    ],
    [
-    "docs/qa/verificacoes/20261128180000_diag_alcada_auto_aprovacao.sql",
+    "src/components/compras/PenaltyEscalationConfigPanel.tsx",
     1
    ],
    [
-    "docs/qa/verificacoes/20261128180500_diag_alcada_fonte_configuravel.sql",
+    "src/components/compras/SupplierBonificationsPanel.tsx",
     1
    ],
    [
-    "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql",
+    "src/components/compras/__tests__/contractFornecedorId.test.tsx",
     1
    ],
    [
-    "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
+    "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
     1
    ],
    [
-    "docs/qa/verificacoes/20261128160000_diag_contracts_supplier_id.sql",
+    "src/components/compras/contract/__tests__/replaceContractItems.test.ts",
     1
    ],
    [
-    "docs/qa/verificacoes/20261128160100_diag_contracts_funcoes.sql",
+    "src/components/compras/contract/replaceContractItems.ts",
     1
    ],
    [
-    "docs/qa/verificacoes/20261128160200_diag_contracts_tipos.sql",
+    "src/components/pagamentos/PagamentoDetailModal.tsx",
     1
    ],
    [
-    "docs/qa/verificacoes/20261128160300_diag_contracts_funcoes_def.sql",
+    "src/hooks/useApprovalRules.ts",
     1
    ],
    [
-    "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql",
+    "src/hooks/useApprovalWorkflow.ts",
     1
    ],
    [
-    "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
+    "src/hooks/useBudgetManagement.ts",
     1
    ],
    [
-    "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
+    "src/hooks/useContactNotes.ts",
     1
    ],
    [
-    "supabase/rollbacks/20261128150000_revert_neg10_sod_e_policy_approval_steps.sql",
+    "src/hooks/useDevolucoes.ts",
     1
    ],
    [
-    "DOCS/qa/verificacoes/20261128201000_lockout_rpc_publica_validacao.sql",
+    "src/hooks/useLicitacoes.ts",
     1
    ],
    [
-    "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
+    "src/lib/tenant.ts",
     1
    ]
   ]

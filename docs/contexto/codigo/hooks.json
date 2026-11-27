@@ -330,12 +330,13 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 78,
+   "usado_por": 81,
    "usado_por_arquivos": [
     "src/App.tsx",
     "src/components/admin/DependencyHealthBadge.tsx",
     "src/components/compras/BuyerPerformancePanel.tsx",
     "src/components/compras/ContractDetailsModal.tsx",
+    "src/components/compras/ContractModal.tsx",
     "src/components/compras/CostCenterPerformanceAnalysis.tsx",
     "src/components/compras/DemandPredictionPanel.tsx",
     "src/components/compras/FiltrosAvancados.tsx",
@@ -360,8 +361,7 @@
     "src/features/auth/components/ProtectedRoute.tsx",
     "src/features/cotacoes/hooks/useCotacoes.ts",
     "src/features/layout/components/AppSidebar.tsx",
-    "src/features/layout/components/CommandPalette.tsx",
-    "src/features/layout/components/SLASettingsPanel.tsx"
+    "src/features/layout/components/CommandPalette.tsx"
    ],
    "coberto_por_testes": 3
   },
@@ -818,7 +818,7 @@
    "hooks_exportados": [
     "useApprovalRules"
    ],
-   "linhas": 165,
+   "linhas": 168,
    "dominio": "hooks",
    "tabelas": [
     "approval_delegations",
@@ -846,7 +846,7 @@
    "hooks_exportados": [
     "useApprovalWorkflow"
    ],
-   "linhas": 560,
+   "linhas": 569,
    "dominio": "hooks",
    "tabelas": [
     "approval_history",
@@ -885,7 +885,7 @@
    "hooks_exportados": [
     "useBudgetManagement"
    ],
-   "linhas": 165,
+   "linhas": 167,
    "dominio": "hooks",
    "tabelas": [
     "department_budgets"
@@ -1017,7 +1017,7 @@
    "hooks_exportados": [
     "useContactNotes"
    ],
-   "linhas": 165,
+   "linhas": 167,
    "dominio": "hooks",
    "tabelas": [
     "contact_notes"
@@ -1166,7 +1166,7 @@
     "useDevolucoes",
     "useDevolucoesKPIs"
    ],
-   "linhas": 418,
+   "linhas": 420,
    "dominio": "hooks",
    "tabelas": [
     "creditos_fornecedor",
@@ -1525,7 +1525,7 @@
     "useSourcingEventDetails",
     "useSourcingEvents"
    ],
-   "linhas": 363,
+   "linhas": 365,
    "dominio": "hooks",
    "tabelas": [
     "categorias",

@@ -413,7 +413,7 @@
   {
    "arquivo": "src/components/compras/__tests__/contractFornecedorId.test.tsx",
    "tipo": "contrato",
-   "linhas": 223,
+   "linhas": 233,
    "testa": [
     "src/components/compras/ContractModal.tsx",
     "src/lib/feedbackToast.ts"
@@ -433,7 +433,7 @@
   {
    "arquivo": "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
    "tipo": "unit",
-   "linhas": 113,
+   "linhas": 123,
    "testa": [
     "src/components/compras/ContractModal.tsx"
    ],
@@ -2059,7 +2059,7 @@
   {
    "arquivo": "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
    "tipo": "unit",
-   "linhas": 120,
+   "linhas": 129,
    "testa": [
     "src/lib/feedbackToast.ts",
     "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx"

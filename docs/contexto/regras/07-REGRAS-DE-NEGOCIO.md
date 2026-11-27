@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a54eaf5cf2` · branch `main` · 2026-11-26 23:07 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `85e47689bf` · branch `main` · 2026-11-27 00:06 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2513,7 +2513,7 @@ _nenhum item encontrado_
 | User not authenticated | `src/hooks/useMFA.ts` |
 | ${apagadosCount} de ${ids.length} pagamento(s) excluído(s). Os demais estão sem permissão. | `src/hooks/usePagamentos.ts` |
 | ${atualizadosCount} de ${validIds.length} pagamento(s) atualizado(s). | `src/hooks/usePagamentos.ts` |
-| … +292 linhas — lista completa em `context.json` | |
+| … +293 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

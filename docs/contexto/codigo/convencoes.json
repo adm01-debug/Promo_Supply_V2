@@ -16,7 +16,7 @@
    "src/components (11)"
   ],
   "servicos_logica": [
-   "src/lib (30)",
+   "src/lib (31)",
    "src/stores (5)",
    "src/integrations (3)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(tipos): inserts informam tenant_id e destravam o types-sync (issue #131) (#609)",
+   "docs(agentes): AGENTS.md volta a declarar o numero real de migrations (377) (#611)",
    "chore(db): sincronizar types.ts com o banco [auto] (#587)",
    "fix(edge): responses deriva o CORS da requisicao e a constante estatica sai do _shared (#605)",
-   "feat(db): alcada de auto-aprovacao configuravel (etapa 114 - NEG-14) (#603)",
-   "fix(db): contratos ligam no fornecedor por uuid com FK e backfill (etapa 127 - DB-02) (#602)",
-   "fix(sod): conserta a checagem de segregacao e fecha a decisao de etapa (093) (#601)"
+   "feat(db): alcada de auto-aprovacao configuravel (etapa 114 - NEG-14) (#603)"
   ]
  },
  "pr_template": null,

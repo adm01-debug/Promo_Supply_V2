@@ -422,7 +422,7 @@
    "modulo": "components/compras",
    "arquivos": 105,
    "testes": 34,
-   "linhas": 26209,
+   "linhas": 26224,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -1249,7 +1249,7 @@
    "modulo": "components/pagamentos",
    "arquivos": 9,
    "testes": 1,
-   "linhas": 1836,
+   "linhas": 1844,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -1834,6 +1834,7 @@
     "pages/admin",
     "pages/auditoria",
     "pages/auth",
+    "pages/configuracoes",
     "pages/cotacao",
     "pages/gerar-ordem",
     "pages/negociacao-ia",
@@ -1843,6 +1844,7 @@
     "pages/relatorio-negociacoes",
     "pages/seguranca",
     "pages/solicitacoes",
+    "pages/sourcing",
     "routes"
    ],
    "depende_de_modulos": [
@@ -2416,7 +2418,7 @@
    "modulo": "hooks",
    "arquivos": 63,
    "testes": 0,
-   "linhas": 12140,
+   "linhas": 12160,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3022,9 +3024,9 @@
   },
   {
    "modulo": "lib",
-   "arquivos": 30,
+   "arquivos": 31,
    "testes": 0,
-   "linhas": 2953,
+   "linhas": 2971,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -4589,7 +4591,7 @@
    "modulo": "pages/configuracoes",
    "arquivos": 1,
    "testes": 1,
-   "linhas": 357,
+   "linhas": 360,
    "itens_menu": [
     "Centros de Custo"
    ],
@@ -4794,6 +4796,7 @@
    "depende_de_modulos": [
     "components/animations",
     "components/ui",
+    "features/auth",
     "features/layout",
     "features/solicitacoes",
     "integrations/supabase",
@@ -7480,7 +7483,7 @@
    "modulo": "pages/sourcing",
    "arquivos": 4,
    "testes": 0,
-   "linhas": 1280,
+   "linhas": 1288,
    "itens_menu": [
     "Sourcing (RFx)"
    ],
@@ -7555,6 +7558,7 @@
    ],
    "depende_de_modulos": [
     "components/ui",
+    "features/auth",
     "hooks",
     "integrations/supabase",
     "lib"

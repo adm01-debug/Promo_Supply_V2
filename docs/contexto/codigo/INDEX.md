@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a54eaf5cf209c58f4e2c3ae5992de7dc6d48e9cd` (2026-11-26T19:40:34-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `85e47689bf9d3ad9ef309a67651bcc2ed3f8a186` (2026-11-26T21:01:08-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (896), SQL (426), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (897), SQL (426), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1573 |
-| arquivos_codigo | 971 |
-| linhas_codigo | 193634 |
+| arquivos_total | 1574 |
+| arquivos_codigo | 972 |
+| linhas_codigo | 193735 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -57,7 +57,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - telas: src/pages (53)
 - componentes: src/components (214), src/pages (79), src/features (33)
 - hooks: src/hooks (62), src/features (14), src/components (11)
-- servicos_logica: src/lib (30), src/stores (5), src/integrations (3)
+- servicos_logica: src/lib (31), src/stores (5), src/integrations (3)
 - testes: co-localizado (__tests__) (228), co-localizado (*.test) (44), outro (44)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
@@ -80,7 +80,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | features/layout | 0 | 0 | 32 | 81 | 9 | 55 |
 | features/solicitacoes | 0 | 0 | 8 | 12 | 1 | 13 |
 | hooks | 0 | 0 | 63 | 61 | 7 | 60 |
-| lib | 0 | 0 | 30 | 61 | 8 | 51 |
+| lib | 0 | 0 | 31 | 61 | 8 | 51 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
 | pages/admin | 10 | 11 | 14 | 7 | 11 | 23 |
@@ -345,19 +345,19 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/qa/05-PROGRESSO.md (212)
-- AGENTS.md (36)
+- AGENTS.md (37)
 - src/integrations/supabase/types.ts (11)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
-- docs/pendencias/_indice.md (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
+- src/hooks/useApprovalWorkflow.ts (9)
+- src/hooks/useDevolucoes.ts (9)
 - src/hooks/usePagamentos.ts (9)
 - src/pages/pedidos/Pedidos.tsx (9)
 - src/features/auth/hooks/useAuth.tsx (8)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (8)
-- src/hooks/useApprovalWorkflow.ts (8)
-- src/hooks/useDevolucoes.ts (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
 - bun.lock (7)
+- docs/pendencias/_indice.md (7)
 - package.json (7)
 
 ## Workflows
@@ -428,6 +428,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `85e4768` fix(tipos): inserts informam tenant_id e destravam o types-sync (issue #131) (#609)
+- 2026-11-26 `c82a447` docs(agentes): AGENTS.md volta a declarar o numero real de migrations (377) (#611)
 - 2026-11-26 `a54eaf5` chore(db): sincronizar types.ts com o banco [auto] (#587)
 - 2026-11-26 `a498bae` fix(edge): responses deriva o CORS da requisicao e a constante estatica sai do _shared (#605)
 - 2026-11-26 `3220347` feat(db): alcada de auto-aprovacao configuravel (etapa 114 - NEG-14) (#603)
@@ -441,8 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `bf32408` fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)
 - 2026-11-26 `4a068aa` fix(ci): regenera a matriz edge-tabela apos a #592 (#595)
 - 2026-11-26 `803a3a2` fix(aprovacoes): historico de escalonamento grava o tenant e nao se perde (#144) (#592)
-- 2026-11-26 `061c335` fix(edge): spot-api e spot-proxy passam a resolver a empresa do chamador (etapa 051) (#586)
-- 2026-11-26 `cc209d3` fix(banco): spot_pedidos ganha empresa e isolamento por grupo (etapa 050) (#585)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
