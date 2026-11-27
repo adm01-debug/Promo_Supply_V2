@@ -171,7 +171,11 @@ async function lerCatalogoSpot(termo: string): Promise<BridgeRow[]> {
   const base: Record<string, unknown> = {
     supplier_code: { operator: 'in', value: SPOT_SUPPLIER_CODES },
   };
-  if (termo) base.name = { operator: 'ilike', value: `%${termo.replace(/[%_]/g, '\\$&')}%` };
+  if (termo) {
+    // Escapa primeiro a barra invertida; sem isso o `\` digitado vira escape no like.
+    const escapado = termo.replace(/\\/g, '\\\\').replace(/[%_]/g, (c) => `\\${c}`);
+    base.name = { operator: 'ilike', value: `%${escapado}%` };
+  }
 
   const todos: BridgeRow[] = [];
   for (let offset = 0; offset < SPOT_BRIDGE_MAX_ROWS; offset += SPOT_BRIDGE_PAGE) {

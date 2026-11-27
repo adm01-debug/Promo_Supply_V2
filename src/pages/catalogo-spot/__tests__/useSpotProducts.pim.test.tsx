@@ -55,7 +55,7 @@ describe("useSpotProducts - leitura do PIM", () => {
     expect(result.current.data?.[0]?.reference).toBe("94614-103");
   });
 
-  it("busca por nome com ilike e escapa curinga digitado", async () => {
+  it("busca por nome com ilike e escapa curinga e barra digitados", async () => {
     const { result } = renderHook(
       () => useSpotProducts({ search: "caneca 50%", collection: null, typeCodes: null }),
       { wrapper },
@@ -65,6 +65,17 @@ describe("useSpotProducts - leitura do PIM", () => {
     const nome = espiao.filtros[0].name as { operator: string; value: string };
     expect(nome.operator).toBe("ilike");
     expect(nome.value).toBe("%caneca 50\\%%");
+  });
+
+  it("escapa a barra invertida antes dos curetas", async () => {
+    const { result } = renderHook(
+      () => useSpotProducts({ search: "a\\b_c", collection: null, typeCodes: null }),
+      { wrapper },
+    );
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    const nome = espiao.filtros[0].name as { value: string };
+    expect(nome.value).toBe("%a\\\\b\\_c%");
   });
 
   it("le paginas no limite aceito pelo bridge", async () => {
