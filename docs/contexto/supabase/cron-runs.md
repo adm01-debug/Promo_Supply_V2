@@ -73,9 +73,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-27 19:15:00 | succeeded | 0.02 | 1 row |
 | 2026-11-27 19:00:00 | succeeded | 0.04 | 1 row |
 | 2026-11-27 18:45:00 | succeeded | 0.01 | 1 row |
-| 2026-11-27 18:30:00 | succeeded | 0.02 | 1 row |
 
 
 ## 19 · refresh-mv-dashboard-kpis
@@ -91,9 +91,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-27 19:15:00 | succeeded | 0.04 | 1 row |
 | 2026-11-27 18:15:00 | succeeded | 0.03 | 1 row |
 | 2026-11-27 17:15:00 | succeeded | 0.04 | 1 row |
-| 2026-11-27 16:15:00 | succeeded | 0.08 | 1 row |
 
 
 ## 31 · spot-api-sync-catalog
@@ -139,18 +139,18 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-27 19:09:00 | succeeded | 0.01 | 1 row |
-| 2026-11-27 19:08:00 | succeeded | 0.02 | 1 row |
-| 2026-11-27 19:07:00 | succeeded | 0.02 | 1 row |
+| 2026-11-27 19:17:00 | succeeded | 0.01 | 1 row |
+| 2026-11-27 19:16:00 | succeeded | 0.02 | 1 row |
+| 2026-11-27 19:15:00 | succeeded | 0.02 | 1 row |
 
 
 ## 114 · approval-escalation-check
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-27 19:15:00 | succeeded | 0.02 | 1 row |
 | 2026-11-27 19:00:00 | succeeded | 0.04 | 1 row |
 | 2026-11-27 18:45:00 | succeeded | 0.02 | 1 row |
-| 2026-11-27 18:30:00 | succeeded | 0.05 | 1 row |
 
 
 ## 115 · contract-expiry-check
@@ -216,9 +216,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-27 19:15:00 | succeeded | 0.64 | 1 row |
 | 2026-11-27 19:00:00 | succeeded | 0.61 | 1 row |
 | 2026-11-27 18:45:00 | succeeded | 0.62 | 1 row |
-| 2026-11-27 18:30:00 | succeeded | 0.66 | 1 row |
 
 
 ## 124 · cleanup-spot-api-sync-log
