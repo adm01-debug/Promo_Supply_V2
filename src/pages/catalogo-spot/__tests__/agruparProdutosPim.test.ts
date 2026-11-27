@@ -5,7 +5,7 @@ vi.mock('@/integrations/supabase/client', () => ({ supabase: { functions: { invo
 import { agruparProdutosPim } from '../useSpotCatalog';
 
 // INT-01 (etapas 163-166): o catalogo de Compras deixou de ler o espelho local
-// (spot_produtos/spot_skus/spot_estoque, reabastecido pelos crons da spot-api) e
+// (que ficava nestas tabelas e era reabastecido pelos crons da spot-api) e
 // passou a ler a mesma view do PIM que Gerar Ordem e Recompra usam. A view entrega
 // UMA LINHA POR VARIANTE; a tela sempre mostrou produto, entao o agrupamento e o
 // que preserva o comportamento antigo.
