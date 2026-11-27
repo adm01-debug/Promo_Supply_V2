@@ -964,7 +964,7 @@
    "hooks_exportados": [
     "useCatalogoPim"
    ],
-   "linhas": 253,
+   "linhas": 273,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -978,8 +978,9 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_arquivos": [
+    "src/pages/catalogo-spot/useSpotCatalog.ts",
     "src/pages/gerar-ordem/GerarOrdem.tsx",
     "src/pages/recompra/RecompraInteligente.tsx"
    ],
@@ -2326,13 +2327,10 @@
     "useSpotSyncStatus",
     "useTriggerSpotSync"
    ],
-   "linhas": 189,
+   "linhas": 330,
    "dominio": "pages/catalogo-spot",
    "tabelas": [
-    "spot_api_sync_log",
-    "spot_estoque",
-    "spot_produtos",
-    "spot_skus"
+    "spot_api_sync_log"
    ],
    "rpcs": [],
    "edges": [

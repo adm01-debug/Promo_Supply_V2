@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 327,
+ "total": 325,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 309
+  "unit": 307
  },
  "onde_ficam": [
   {
@@ -18,12 +18,12 @@
    "arquivos": 229
   },
   {
-   "padrao": "co-localizado (*.test)",
+   "padrao": "outro",
    "arquivos": 44
   },
   {
-   "padrao": "outro",
-   "arquivos": 44
+   "padrao": "co-localizado (*.test)",
+   "arquivos": 42
   },
   {
    "padrao": "tests-e2e/",
@@ -1957,6 +1957,15 @@
    "casos": 19
   },
   {
+   "arquivo": "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
+   "tipo": "unit",
+   "linhas": 90,
+   "testa": [
+    "src/pages/catalogo-spot/useSpotCatalog.ts"
+   ],
+   "casos": 7
+  },
+  {
    "arquivo": "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx",
    "tipo": "unit",
    "linhas": 61,
@@ -1992,15 +2001,6 @@
     "src/pages/catalogo-spot/useSpotCatalog.ts"
    ],
    "casos": 1
-  },
-  {
-   "arquivo": "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
-   "tipo": "unit",
-   "linhas": 62,
-   "testa": [
-    "src/pages/catalogo-spot/useSpotCatalog.ts"
-   ],
-   "casos": 3
   },
   {
    "arquivo": "src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts",
@@ -2502,11 +2502,11 @@
   {
    "arquivo": "src/tests/spot/spotApi.test.ts",
    "tipo": "unit",
-   "linhas": 283,
+   "linhas": 255,
    "testa": [
     "supabase/functions/_shared/spot_api.ts"
    ],
-   "casos": 39
+   "casos": 37
   },
   {
    "arquivo": "src/types/__tests__/legacyTypes.test.ts",
@@ -2631,30 +2631,11 @@
    "casos": 2
   },
   {
-   "arquivo": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-   "tipo": "unit",
-   "linhas": 142,
-   "testa": [
-    "supabase/functions/_shared/xbz_catalog_cache.ts",
-    "supabase/functions/_shared/xbz_client.ts"
-   ],
-   "casos": 9
-  },
-  {
    "arquivo": "supabase/functions/_shared/xbz_date_tz.test.ts",
    "tipo": "unit",
    "linhas": 54,
    "testa": [
     "supabase/functions/_shared/xbz_client.ts"
-   ],
-   "casos": 5
-  },
-  {
-   "arquivo": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
-   "tipo": "unit",
-   "linhas": 95,
-   "testa": [
-    "supabase/functions/_shared/xbz_fiscal_cache.ts"
    ],
    "casos": 5
   },
@@ -3192,9 +3173,7 @@
   "supabase/functions/_shared/security.ts": 2,
   "supabase/functions/_shared/spot_api.ts": 1,
   "supabase/functions/_shared/validation.ts": 2,
-  "supabase/functions/_shared/xbz_catalog_cache.ts": 1,
-  "supabase/functions/_shared/xbz_client.ts": 2,
-  "supabase/functions/_shared/xbz_fiscal_cache.ts": 1,
+  "supabase/functions/_shared/xbz_client.ts": 1,
   "supabase/functions/_shared/xbz_pedido_map.ts": 1,
   "supabase/functions/_shared/xbz_portador.ts": 1,
   "supabase/functions/alert-dispatcher/dispatchStatus.ts": 1,

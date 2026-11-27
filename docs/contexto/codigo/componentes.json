@@ -4571,7 +4571,7 @@
     "SpotCatalogTabProps"
    ],
    "export_default": null,
-   "linhas": 288,
+   "linhas": 287,
    "dominio": "pages/catalogo-spot",
    "hooks_locais": [
     "useDebouncedValue",
@@ -4604,11 +4604,10 @@
     "SpotSyncPanel"
    ],
    "export_default": null,
-   "linhas": 138,
+   "linhas": 133,
    "dominio": "pages/catalogo-spot",
    "hooks_locais": [
-    "useSpotSyncStatus",
-    "useTriggerSpotSync"
+    "useSpotSyncStatus"
    ],
    "tabelas": [],
    "edges": [],

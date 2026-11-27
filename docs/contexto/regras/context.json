@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "ac9fdc371be07ce5664eb9bd9f0fa22b5db30035",
+  "sha": "999a087be91ebf65775ee7bacd8d7133967af4d3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 19:17 UTC",
-  "files_total": 1595,
-  "code_files": 1420,
-  "code_lines": 231523,
+  "generated_at": "2026-11-27 20:02 UTC",
+  "files_total": 1591,
+  "code_files": 1416,
+  "code_lines": 230879,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "267839b4db18a810",
+ "facts_hash": "e89fc12647e06ae2",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,9 +277,9 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 456,
+   ".ts": 453,
    ".sql": 445,
-   ".tsx": 442,
+   ".tsx": 441,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -32154,7 +32154,6 @@
     "auth": "PÚBLICA (verify_jwt=false em config.toml)",
     "tables": [
      "spot_api_sync_log",
-     "spot_estoque",
      "spot_pedidos",
      "spot_sessions",
      "telemetry_logs",
@@ -32171,7 +32170,7 @@
     ],
     "external": [],
     "invokes": [],
-    "doc": "spot-api — integração com a API oficial SPOT / Stricker. Substitui gradualmente o scraping de `spot-proxy`. Toda leitura do app vem do cache no banco (spot_produtos / spot_skus / spot_customization_options / spot_estoque); esta função é o ÚNICO ponto que fala com ws.spotgifts.com.br. Restrições resp …",
+    "doc": "",
     "errors": [
      "SPOT HTTP ${res.status}"
     ],
@@ -32439,10 +32438,7 @@
      "user_roles",
      "user_tenants",
      "xbz_carrinho_log",
-     "xbz_cores",
-     "xbz_credentials",
-     "xbz_produto_fiscal",
-     "xbz_produtos"
+     "xbz_credentials"
     ],
     "env": [],
     "external": [],
@@ -35140,7 +35136,7 @@
   {
    "module": "src/hooks",
    "files": 104,
-   "lines": 17636,
+   "lines": 17656,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35213,7 +35209,7 @@
     "useBudgetManagement.ts: PerformanceReport, useBudgetManagement",
     "useBulkOperations.ts: useBulkOperations, solicitacoesStatusOptions, pedidosStatusOptions, pagamentosStatusOptions",
     "useBuyerPerformanceData.ts: BuyerData, useBuyerPerformanceData",
-    "useCatalogoPim.ts: PimProdutoCatalogo, PimPrecoFaixa, buscarProdutoPorIdEstrito, useCatalogoPim",
+    "useCatalogoPim.ts: PimProdutoCatalogo, PimPrecoFaixa, invokeBridgeSelect, buscarProdutoPorIdEstrito, useCatalogoPim",
     "useClearFiltersFlow.tsx: useClearFiltersFlow",
     "useContactNotes.ts: ContactNote, CreateContactNoteInput, useContactNotes",
     "useCooldown.ts: useCooldown",
@@ -35550,7 +35546,7 @@
   {
    "module": "src/pages",
    "files": 161,
-   "lines": 35664,
+   "lines": 35827,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35581,9 +35577,6 @@
     "sourcing_invitations",
     "sourcing_projects",
     "spot_api_sync_log",
-    "spot_estoque",
-    "spot_produtos",
-    "spot_skus",
     "sso_configurations",
     "supplier_compliance_summary",
     "supplier_qualification_scores",
@@ -35627,7 +35620,7 @@
     "SpotFinancialTab.tsx: SpotFinancialTab",
     "SpotSyncPanel.tsx: SpotSyncPanel",
     "spotHelpers.ts: SPOT_COLLECTIONS, SpotCategoryFilter, SPOT_CATEGORY_FILTERS, STATUS_CONFIG, openExternalSpotUrl, extractSpotProductId",
-    "useSpotCatalog.ts: SpotCachedProduct, SpotCachedSku, SpotStockRow, SpotSyncStatus, SPOT_CATALOG_PAGE_SIZE, SpotCatalogFilters",
+    "useSpotCatalog.ts: SPOT_QUOTA_CATALOGO_DIA, SPOT_SUPPLIER_CODE, SpotCachedProduct, SpotCachedSku, SpotStockRow, SpotSyncStatus",
     "CatalogoXbz.tsx: CatalogoXbz",
     "XbzCarrinhoTab.tsx: XbzCarrinhoTab",
     "XbzCatalogoTab.tsx: XbzCatalogoTab",
@@ -35730,11 +35723,11 @@
     "src/pages/catalogo-spot/SpotSyncPanel.tsx",
     "src/pages/catalogo-spot/spotHelpers.ts",
     "src/pages/catalogo-spot/useSpotCatalog.ts",
+    "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
     "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx",
     "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
     "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts",
     "src/pages/catalogo-spot/__tests__/useSpotCatalog.invalidacao.test.tsx",
-    "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
     "src/pages/catalogo-xbz/CatalogoXbz.tsx",
     "src/pages/catalogo-xbz/XbzCarrinhoTab.tsx",
     "src/pages/catalogo-xbz/XbzCatalogoTab.tsx",
@@ -35891,7 +35884,7 @@
   {
    "module": "src/tests",
    "files": 7,
-   "lines": 997,
+   "lines": 969,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35946,8 +35939,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 126,
-   "lines": 20927,
+   "files": 122,
+   "lines": 20128,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35977,7 +35970,6 @@
     "query_telemetry",
     "solicitacoes",
     "spot_api_sync_log",
-    "spot_estoque",
     "spot_pedidos",
     "spot_sessions",
     "sso_configurations",
@@ -35996,12 +35988,9 @@
     "workflow_logs",
     "workflow_nodes",
     "xbz_carrinho_log",
-    "xbz_cores",
     "xbz_credentials",
     "xbz_pedido_status_history",
-    "xbz_pedidos",
-    "xbz_produto_fiscal",
-    "xbz_produtos"
+    "xbz_pedidos"
    ],
    "exports": [
     "ai_gateway.ts: AIGatewayCircuitOpenError, CallAIGatewayOptions, callAIGateway, circuitOpenResponse, callAIGatewayWithFallback",
@@ -36026,10 +36015,8 @@
     "telemetry.ts: supabaseAdmin, logTelemetry, withTelemetry",
     "validation.ts: validateBody, errorResponse, validateMethod",
     "xbz_auth.ts: Role, XbzCaller, serviceClient, authenticate, requireRole, XbzCredentialRow",
-    "xbz_catalog_cache.ts: XbzProdutoRow, mapProduto, normalizeCatalogo, mirrorCatalogo, readCatalogoCacheWithMeta, readCatalogoCache",
     "xbz_client.ts: XBZ_BASE, XBZ_TIMEOUT_MS, XBZ_NULL_DATE, XbzError, XbzCircuitOpenError, XbzPortalCredentials",
     "xbz_crypto.ts: encryptSecret, decryptSecret, maskSecret",
-    "xbz_fiscal_cache.ts: XbzFiscalRow, XbzCorRow, mapFiscal, normalizeCores, mirrorFiscal, mirrorCores",
     "xbz_pedido_map.ts: XbzPedidoRow, mapPedido, normalizePedidos",
     "xbz_portador.ts: somenteDigitos, cpfValido, normalizarPlaca, placaValida, mascararPortador, montarPortador",
     "dispatchStatus.ts: MAX_DELIVERY_ATTEMPTS, MAX_UNCONFIGURED_ATTEMPTS, DispatchStatus, DispatchInput, DispatchOutcome, classifyDispatch",
@@ -36043,7 +36030,9 @@
     "create-solicitacao.ts: createSolicitacao",
     "mapping.ts: OsPayload, OsEventBody, SolicitacaoDraft, OsPayloadError, validateOsPayload, buildSolicitacaoDraft",
     "active.ts: BAN_DURATION_DESATIVADO, estaAtivo, interpretarActive",
-    "auth.ts: ScimGateDecision, evaluateScimGate, sha256Hex"
+    "auth.ts: ScimGateDecision, evaluateScimGate, sha256Hex",
+    "webpush.ts: PushMessagePayload, PushSubscriptionKeys, VapidKeys, b64UrlEncode, b64UrlDecode, rawSignatureToDer",
+    "sessions.ts: PORTAL_SESSION_TAG, PORTAL_SESSION_TTL_MS, SpotSessionRow, PortalSessionPick, isPortalSession, pickPortalSession"
    ],
    "docs": [
     "ai_gateway.ts: INT-01 extended: chamada unificada ao OpenRouter (OpenAI-compatible) com circuit breaker + retry (5xx/429/timeout) + timeout de 30s. Sob falha sustentada (5 erros seguidos) abre o breaker por 30s, retornando 503 imediato e preservando quota/latency.",
@@ -36092,13 +36081,9 @@
     "supabase/functions/_shared/validation.log_body.test.ts",
     "supabase/functions/_shared/validation.ts",
     "supabase/functions/_shared/xbz_auth.ts",
-    "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    "supabase/functions/_shared/xbz_catalog_cache.ts",
     "supabase/functions/_shared/xbz_client.ts",
     "supabase/functions/_shared/xbz_crypto.ts",
     "supabase/functions/_shared/xbz_date_tz.test.ts",
-    "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
-    "supabase/functions/_shared/xbz_fiscal_cache.ts",
     "supabase/functions/_shared/xbz_pedido_map.test.ts",
     "supabase/functions/_shared/xbz_pedido_map.ts",
     "supabase/functions/_shared/xbz_portador.test.ts",
@@ -36137,7 +36122,11 @@
     "supabase/functions/maintain-partitions/index.ts",
     "supabase/functions/migrate-storage-paths/index.ts",
     "supabase/functions/process-invoice-idp/extraction.test.ts",
-    "supabase/functions/process-invoice-idp/extraction.ts"
+    "supabase/functions/process-invoice-idp/extraction.ts",
+    "supabase/functions/process-invoice-idp/index.ts",
+    "supabase/functions/process-outbox/index.ts",
+    "supabase/functions/process-solicitacao-neural/index.ts",
+    "supabase/functions/punchout-encrypt/index.ts"
    ]
   },
   {
@@ -37527,24 +37516,10 @@
      "supabase/functions/spot-api/index.ts"
     ]
    },
-   "spot_estoque": {
-    "select": [
-     "src/pages/catalogo-spot/useSpotCatalog.ts",
-     "supabase/functions/spot-api/index.ts"
-    ],
-    "update": [
-     "supabase/functions/spot-api/index.ts"
-    ]
-   },
    "spot_pedidos": {
     "upsert": [
      "supabase/functions/spot-api/index.ts",
      "supabase/functions/spot-proxy/index.ts"
-    ]
-   },
-   "spot_produtos": {
-    "select": [
-     "src/pages/catalogo-spot/useSpotCatalog.ts"
     ]
    },
    "spot_sessions": {
@@ -37559,11 +37534,6 @@
     "select": [
      "supabase/functions/spot-api/index.ts",
      "supabase/functions/spot-proxy/index.ts"
-    ]
-   },
-   "spot_skus": {
-    "select": [
-     "src/pages/catalogo-spot/useSpotCatalog.ts"
     ]
    },
    "sso_configurations": {
@@ -37873,11 +37843,6 @@
      "supabase/functions/xbz-proxy/index.ts"
     ]
    },
-   "xbz_cores": {
-    "upsert": [
-     "supabase/functions/_shared/xbz_fiscal_cache.ts"
-    ]
-   },
    "xbz_credentials": {
     "select": [
      "supabase/functions/_shared/xbz_auth.ts",
@@ -37902,19 +37867,6 @@
     ],
     "upsert": [
      "supabase/functions/xbz-sync-pedidos/index.ts"
-    ]
-   },
-   "xbz_produto_fiscal": {
-    "upsert": [
-     "supabase/functions/_shared/xbz_fiscal_cache.ts"
-    ]
-   },
-   "xbz_produtos": {
-    "upsert": [
-     "supabase/functions/_shared/xbz_catalog_cache.ts"
-    ],
-    "select": [
-     "supabase/functions/_shared/xbz_catalog_cache.ts"
     ]
    },
    "z_tabela": {
@@ -38461,25 +38413,6 @@
     "records_processed",
     "status"
    ],
-   "spot_estoque": [
-    "incoming_date",
-    "product_reference",
-    "quantity",
-    "sku",
-    "synced_at"
-   ],
-   "spot_produtos": [
-    "brand",
-    "catalogs",
-    "category_name",
-    "country_of_origin",
-    "main_image_url",
-    "name",
-    "reference",
-    "synced_at",
-    "type_code_legacy",
-    "type_code_new"
-   ],
    "spot_sessions": [
     "created_at",
     "id",
@@ -38487,15 +38420,6 @@
     "last_used_at",
     "metadata",
     "session_cookie"
-   ],
-   "spot_skus": [
-    "color_hex",
-    "color_name",
-    "handling_costs",
-    "no_replenishment",
-    "product_reference",
-    "sku",
-    "your_price"
    ],
    "sso_configurations": [
     "id",
@@ -38639,11 +38563,6 @@
     "pago",
     "pedido_numero",
     "status_logistico",
-    "tenant_id"
-   ],
-   "xbz_produtos": [
-    "last_synced_at",
-    "raw",
     "tenant_id"
    ]
   },
@@ -39820,6 +39739,9 @@
    "sourcing_response_items",
    "spend_forecasts",
    "spot_customization_options",
+   "spot_estoque",
+   "spot_produtos",
+   "spot_skus",
    "table_size_snapshots",
    "telemetry_logs_202605",
    "telemetry_logs_202606",
@@ -39832,7 +39754,10 @@
    "user_organizations",
    "wal_rate_snapshots",
    "workflow_audit_log",
-   "workflow_tasks"
+   "workflow_tasks",
+   "xbz_cores",
+   "xbz_produto_fiscal",
+   "xbz_produtos"
   ],
   "columns_unknown": [
    {
@@ -40231,11 +40156,6 @@
     "file": "src/pages/admin-telemetria/telemetriaHelpers.ts",
     "name": "TimeFilter",
     "values": "1h | 6h | 24h | 7d | custom"
-   },
-   {
-    "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
-    "name": "SpotSyncAction",
-    "values": "syncCatalog | syncCustomization | syncStock | getOrders"
    },
    {
     "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
@@ -43154,7 +43074,11 @@
    },
    {
     "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
-    "text": "automática: cada clique consome 1 requisição do limite."
+    "text": "Teto de leitura da tela; acima disso a busca é que deve recortar. */"
+   },
+   {
+    "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
+    "text": "Agrupa as linhas da view por produto: preço mínimo e estoque somado das variantes. */"
    },
    {
     "file": "src/pages/catalogo-xbz/xbzHelpers.ts",
@@ -43591,10 +43515,6 @@
    {
     "file": "supabase/functions/send-push-notification/index.ts",
     "text": "caso esta em `user_tenants` (mesma regra do helper getTenantId)."
-   },
-   {
-    "file": "supabase/functions/spot-api/index.ts",
-    "text": "vazio não zera nada: resposta anômala não pode apagar o cache inteiro."
    },
    {
     "file": "supabase/functions/spot-proxy/index.ts",
@@ -50623,8 +50543,33 @@
    },
    {
     "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
+    "name": "SPOT_QUOTA_CATALOGO_DIA",
+    "value": "22"
+   },
+   {
+    "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
+    "name": "SPOT_SUPPLIER_CODE",
+    "value": "'SPOT'"
+   },
+   {
+    "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
     "name": "SPOT_CATALOG_PAGE_SIZE",
     "value": "60"
+   },
+   {
+    "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
+    "name": "SPOT_COLECAO_PADRAO",
+    "value": "'SPOT'"
+   },
+   {
+    "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
+    "name": "SPOT_BRIDGE_PAGE",
+    "value": "500"
+   },
+   {
+    "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
+    "name": "SPOT_BRIDGE_MAX_ROWS",
+    "value": "2000"
    },
    {
     "file": "src/pages/catalogo-xbz/XbzNetworkPanel.tsx",
@@ -50780,11 +50725,6 @@
     "file": "supabase/functions/_shared/spot_api.ts",
     "name": "SPOT_QUOTA_RESERVE",
     "value": "2"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_catalog_cache.ts",
-    "name": "CHUNK",
-    "value": "500"
    },
    {
     "file": "supabase/functions/_shared/xbz_client.ts",
@@ -68550,6 +68490,38 @@
     "name": "boundary: 99.9 is warning, 100.0 is success"
    },
    {
+    "file": "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
+    "name": "agruparProdutosPim"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
+    "name": "junta as variantes em um produto com o menor preco e o estoque somado"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
+    "name": "produto sem estoque em nenhuma variante sai como sem estoque"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
+    "name": "uma variante com estoque basta para o produto estar em estoque"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
+    "name": "produtos diferentes nao se misturam"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
+    "name": "linha sem referencia nem sku e descartada em vez de virar produto fantasma"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
+    "name": "preco e estoque em texto (numeric do PIM) sao lidos como numero"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
+    "name": "sem colecao vinda do PIM o produto continua no recorte SPOT da tela"
+   },
+   {
     "file": "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx",
     "name": "SpotCatalogTab / espera antes de buscar (PERF-06)"
    },
@@ -68684,22 +68656,6 @@
    {
     "file": "src/pages/catalogo-spot/__tests__/useSpotCatalog.invalidacao.test.tsx",
     "name": "invalida produtos e estoque com as mesmas chaves que as queries usam"
-   },
-   {
-    "file": "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
-    "name": "useSpotProducts / filtro de busca (SEC-10)"
-   },
-   {
-    "file": "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
-    "name": "busca comum sai com o termo literal nas duas colunas"
-   },
-   {
-    "file": "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
-    "name": "nao deixa "
-   },
-   {
-    "file": "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
-    "name": "busca em branco nao acrescenta clausula"
    },
    {
     "file": "src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts",
@@ -72359,7 +72315,11 @@
    },
    {
     "file": "src/tests/spot/spotApi.test.ts",
-    "name": "permite os tres syncs no cron"
+    "name": "os syncs de catalogo sairam do cron — o catalogo agora vem do PIM (INT-01)"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "nao sobra writer do espelho local de catalogo no codigo da edge"
    },
    {
     "file": "src/tests/spot/spotApi.test.ts",
@@ -72408,22 +72368,6 @@
    {
     "file": "src/tests/spot/spotApi.test.ts",
     "name": "nao grava linha extra por chamada logica — contaria a cota duas vezes"
-   },
-   {
-    "file": "src/tests/spot/spotApi.test.ts",
-    "name": "spot-api: reconciliacao do estoque (INT-11)"
-   },
-   {
-    "file": "src/tests/spot/spotApi.test.ts",
-    "name": "syncStock zera quem ficou de fora do payload em vez de manter a quantidade antiga"
-   },
-   {
-    "file": "src/tests/spot/spotApi.test.ts",
-    "name": "payload vazio nao apaga o cache: o zeramento exige ter gravado alguma linha"
-   },
-   {
-    "file": "src/tests/spot/spotApi.test.ts",
-    "name": "falha na reconciliacao nao passa em silencio"
    },
    {
     "file": "src/types/__tests__/legacyTypes.test.ts",
@@ -72814,42 +72758,6 @@
     "name": "validateBody: JSON malformado loga a causa e mantem a mensagem"
    },
    {
-    "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    "name": "mapProduto: lê os nomes reais do consultaEstoque"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    "name": "mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    "name": "mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    "name": "mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes)"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    "name": "mapProduto: descarta itens sem produto_id válido"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    "name": "toPascalKeys: converte chaves recursivamente e preserva arrays/primitivos"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    "name": "normalizeCatalogo: deduplica por produto_id e ignora lixo"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    "name": "normalizeCatalogo: entrada não-array vira lista vazia"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    "name": "normalizeCatalogo: preserva o payload bruto para auditoria"
-   },
-   {
     "file": "supabase/functions/_shared/xbz_date_tz.test.ts",
     "name": "parseXbzDate: sem offset -> UTC, em qualquer fuso do runtime"
    },
@@ -72868,26 +72776,6 @@
    {
     "file": "supabase/functions/_shared/xbz_date_tz.test.ts",
     "name": "parseXbzDate e parsePagamentoLabel concordam para o mesmo instante"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
-    "name": "fiscal: mapeia os campos reais do getSt"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
-    "name": "fiscal: aceita camelCase e numero em string pt-BR"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
-    "name": "fiscal: nao grava linha sem conteudo fiscal nem sem produto/tenant"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
-    "name": "cores: normaliza, deduplica por id e descarta invalidas"
-   },
-   {
-    "file": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
-    "name": "cores: resposta que nao e lista vira lista vazia"
    },
    {
     "file": "supabase/functions/_shared/xbz_pedido_map.test.ts",
@@ -105648,10 +105536,11 @@
   },
   "src/hooks/useCatalogoPim.ts": {
    "path": "src/hooks/useCatalogoPim.ts",
-   "lines": 253,
+   "lines": 273,
    "exports": [
     "interface PimProdutoCatalogo",
     "interface PimPrecoFaixa",
+    "function invokeBridgeSelect",
     "function buscarProdutoPorIdEstrito",
     "function useCatalogoPim"
    ],
@@ -112186,7 +112075,7 @@
   },
   "src/pages/catalogo-spot/SpotCatalogTab.tsx": {
    "path": "src/pages/catalogo-spot/SpotCatalogTab.tsx",
-   "lines": 288,
+   "lines": 287,
    "exports": [
     "interface SpotCatalogTabProps",
     "const SpotCatalogTab"
@@ -112207,7 +112096,7 @@
   },
   "src/pages/catalogo-spot/SpotSyncPanel.tsx": {
    "path": "src/pages/catalogo-spot/SpotSyncPanel.tsx",
-   "lines": 138,
+   "lines": 133,
    "exports": [
     "const SpotSyncPanel"
    ],
@@ -112234,14 +112123,18 @@
   },
   "src/pages/catalogo-spot/useSpotCatalog.ts": {
    "path": "src/pages/catalogo-spot/useSpotCatalog.ts",
-   "lines": 189,
+   "lines": 330,
    "exports": [
+    "const SPOT_QUOTA_CATALOGO_DIA",
+    "const SPOT_SUPPLIER_CODE",
     "interface SpotCachedProduct",
     "interface SpotCachedSku",
     "interface SpotStockRow",
     "interface SpotSyncStatus",
     "const SPOT_CATALOG_PAGE_SIZE",
+    "const SPOT_COLECAO_PADRAO",
     "interface SpotCatalogFilters",
+    "function agruparProdutosPim",
     "function useSpotProducts",
     "function useSpotSkus",
     "function useSpotStock",
@@ -112254,51 +112147,11 @@
    ],
    "tables": [
     {
-     "table": "spot_produtos",
-     "op": "select"
-    },
-    {
-     "table": "spot_skus",
-     "op": "select"
-    },
-    {
-     "table": "spot_estoque",
-     "op": "select"
-    },
-    {
      "table": "spot_api_sync_log",
      "op": "select"
     }
    ],
    "table_cols": {
-    "spot_produtos": [
-     "brand",
-     "catalogs",
-     "category_name",
-     "country_of_origin",
-     "main_image_url",
-     "name",
-     "reference",
-     "synced_at",
-     "type_code_legacy",
-     "type_code_new"
-    ],
-    "spot_skus": [
-     "color_hex",
-     "color_name",
-     "handling_costs",
-     "no_replenishment",
-     "product_reference",
-     "sku",
-     "your_price"
-    ],
-    "spot_estoque": [
-     "incoming_date",
-     "product_reference",
-     "quantity",
-     "sku",
-     "synced_at"
-    ],
     "spot_api_sync_log": [
      "called_at",
      "endpoint",
@@ -112312,18 +112165,34 @@
    ],
    "enums": [
     {
-     "name": "SpotSyncAction",
-     "values": "syncCatalog | syncCustomization | syncStock | getOrders"
-    },
-    {
      "name": "CacheFreshness",
      "values": "fresh | stale | missing"
     }
    ],
    "params": [
     {
+     "name": "SPOT_QUOTA_CATALOGO_DIA",
+     "value": "22"
+    },
+    {
+     "name": "SPOT_SUPPLIER_CODE",
+     "value": "'SPOT'"
+    },
+    {
      "name": "SPOT_CATALOG_PAGE_SIZE",
      "value": "60"
+    },
+    {
+     "name": "SPOT_COLECAO_PADRAO",
+     "value": "'SPOT'"
+    },
+    {
+     "name": "SPOT_BRIDGE_PAGE",
+     "value": "500"
+    },
+    {
+     "name": "SPOT_BRIDGE_MAX_ROWS",
+     "value": "2000"
     }
    ],
    "status_values": [
@@ -112334,7 +112203,8 @@
     }
    ],
    "rule_comments": [
-    "automática: cada clique consome 1 requisição do limite."
+    "Teto de leitura da tela; acima disso a busca é que deve recortar. */",
+    "Agrupa as linhas da view por produto: preço mínimo e estoque somado das variantes. */"
    ],
    "hooks": [
     "useSpotProducts",
@@ -112351,6 +112221,21 @@
    ],
    "pagination": [
     "40"
+   ]
+  },
+  "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts": {
+   "path": "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
+   "lines": 90,
+   "is_test": true,
+   "tests": [
+    "agruparProdutosPim",
+    "junta as variantes em um produto com o menor preco e o estoque somado",
+    "produto sem estoque em nenhuma variante sai como sem estoque",
+    "uma variante com estoque basta para o produto estar em estoque",
+    "produtos diferentes nao se misturam",
+    "linha sem referencia nem sku e descartada em vez de virar produto fantasma",
+    "preco e estoque em texto (numeric do PIM) sao lidos como numero",
+    "sem colecao vinda do PIM o produto continua no recorte SPOT da tela"
    ]
   },
   "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx": {
@@ -112423,17 +112308,6 @@
    "tests": [
     "useTriggerSpotSync - invalidacao das chaves reais (HK-06)",
     "invalida produtos e estoque com as mesmas chaves que as queries usam"
-   ]
-  },
-  "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx": {
-   "path": "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
-   "lines": 62,
-   "is_test": true,
-   "tests": [
-    "useSpotProducts / filtro de busca (SEC-10)",
-    "busca comum sai com o termo literal nas duas colunas",
-    "nao deixa ",
-    "busca em branco nao acrescenta clausula"
    ]
   },
   "src/pages/catalogo-xbz/CatalogoXbz.tsx": {
@@ -117204,12 +117078,10 @@
   },
   "src/tests/spot/spotApi.test.ts": {
    "path": "src/tests/spot/spotApi.test.ts",
-   "lines": 283,
+   "lines": 255,
    "is_test": true,
    "errors": [
-    "corpo de ${nome} nao fecha",
     "nao achei ",
-    "nao achei a funcao ${nome}",
     "nao achei o fim de "
    ],
    "tests": [
@@ -117246,7 +117118,8 @@
     "divide arrays grandes em lotes",
     "spot-api: acoes do cron",
     "permite getOrders no cron — sem isso spot_pedidos fica vazio",
-    "permite os tres syncs no cron",
+    "os syncs de catalogo sairam do cron — o catalogo agora vem do PIM (INT-01)",
+    "nao sobra writer do espelho local de catalogo no codigo da edge",
     "mantem createOrder fora do cron — cria compromisso financeiro",
     "getOrders envia o parametro Status - a API SPOT responde ErrorCode 2 sem ele",
     "readOrdersDetails desembrulha OrderV1Result do OrderV1",
@@ -117258,11 +117131,7 @@
     "usedToday ignora a recusa por quota — ela nao chega ao fornecedor",
     "cada tentativa HTTP abre a propria linha de log, antes do fetch",
     "a resposta fecha a linha da tentativa com sucesso ou erro",
-    "nao grava linha extra por chamada logica — contaria a cota duas vezes",
-    "spot-api: reconciliacao do estoque (INT-11)",
-    "syncStock zera quem ficou de fora do payload em vez de manter a quantidade antiga",
-    "payload vazio nao apaga o cache: o zeramento exige ter gravado alguma linha",
-    "falha na reconciliacao nao passa em silencio"
+    "nao grava linha extra por chamada logica — contaria a cota duas vezes"
    ]
   },
   "src/types/contract.ts": {
@@ -118427,65 +118296,6 @@
    ],
    "uses_service_role": true
   },
-  "supabase/functions/_shared/xbz_catalog_cache.test.ts": {
-   "path": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-   "lines": 142,
-   "is_test": true,
-   "params": [
-    {
-     "name": "TENANT",
-     "value": "\"11111111-1111-1111-1111-111111111111\""
-    }
-   ],
-   "doc": "Testes do espelho de catálogo XBZ (normalização pura, sem rede/banco). Fixtures seguem o schema real observado em 21/11/2026 (DOCS/INTEGRACOES/XBZ.md §4.3). Rodar: deno test supabase/functions/_shared/xbz_catalog_cache.test.ts",
-   "tests": [
-    "mapProduto: lê os nomes reais do consultaEstoque",
-    "mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0",
-    "mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado",
-    "mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes)",
-    "mapProduto: descarta itens sem produto_id válido",
-    "toPascalKeys: converte chaves recursivamente e preserva arrays/primitivos",
-    "normalizeCatalogo: deduplica por produto_id e ignora lixo",
-    "normalizeCatalogo: entrada não-array vira lista vazia",
-    "normalizeCatalogo: preserva o payload bruto para auditoria"
-   ]
-  },
-  "supabase/functions/_shared/xbz_catalog_cache.ts": {
-   "path": "supabase/functions/_shared/xbz_catalog_cache.ts",
-   "lines": 199,
-   "exports": [
-    "interface XbzProdutoRow",
-    "function mapProduto",
-    "function normalizeCatalogo",
-    "function mirrorCatalogo",
-    "function readCatalogoCacheWithMeta",
-    "function readCatalogoCache"
-   ],
-   "tables": [
-    {
-     "table": "xbz_produtos",
-     "op": "upsert"
-    },
-    {
-     "table": "xbz_produtos",
-     "op": "select"
-    }
-   ],
-   "table_cols": {
-    "xbz_produtos": [
-     "last_synced_at",
-     "raw",
-     "tenant_id"
-    ]
-   },
-   "params": [
-    {
-     "name": "CHUNK",
-     "value": "500"
-    }
-   ],
-   "doc": "Cache/espelho do catálogo XBZ em `public.xbz_produtos`. Motivação: o catálogo (`mxbzConsultaEstoque`/`consultaEstoque`) depende da disponibilidade da XBZ (porta 5001, circuit breaker de 30s). Espelhar cada resposta permite: - degradar com elegância (servir o último snapshot quando a XBZ cai); - pesq …"
-  },
   "supabase/functions/_shared/xbz_client.ts": {
    "path": "supabase/functions/_shared/xbz_client.ts",
    "lines": 491,
@@ -118599,47 +118409,6 @@
     "parsePagamentoLabel: determinístico e por ano",
     "parseXbzDate e parsePagamentoLabel concordam para o mesmo instante"
    ]
-  },
-  "supabase/functions/_shared/xbz_fiscal_cache.test.ts": {
-   "path": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
-   "lines": 95,
-   "is_test": true,
-   "params": [
-    {
-     "name": "TENANT",
-     "value": "\"11111111-1111-4111-8111-111111111111\""
-    }
-   ],
-   "tests": [
-    "fiscal: mapeia os campos reais do getSt",
-    "fiscal: aceita camelCase e numero em string pt-BR",
-    "fiscal: nao grava linha sem conteudo fiscal nem sem produto/tenant",
-    "cores: normaliza, deduplica por id e descarta invalidas",
-    "cores: resposta que nao e lista vira lista vazia"
-   ]
-  },
-  "supabase/functions/_shared/xbz_fiscal_cache.ts": {
-   "path": "supabase/functions/_shared/xbz_fiscal_cache.ts",
-   "lines": 161,
-   "exports": [
-    "interface XbzFiscalRow",
-    "interface XbzCorRow",
-    "function mapFiscal",
-    "function normalizeCores",
-    "function mirrorFiscal",
-    "function mirrorCores"
-   ],
-   "tables": [
-    {
-     "table": "xbz_produto_fiscal",
-     "op": "upsert"
-    },
-    {
-     "table": "xbz_cores",
-     "op": "upsert"
-    }
-   ],
-   "doc": "Espelho da ficha fiscal (`getSt`) em `public.xbz_produto_fiscal` e da tabela de cores (`produtosCores`) em `public.xbz_cores`. Motivação: as duas tabelas existem desde a migration inicial e nenhuma rotina escrevia nelas. ST/IPI/MVA e o nome das cores só viviam na resposta da XBZ e sumiam ao sair da …"
   },
   "supabase/functions/_shared/xbz_pedido_map.test.ts": {
    "path": "supabase/functions/_shared/xbz_pedido_map.test.ts",
@@ -121625,7 +121394,7 @@
   },
   "supabase/functions/spot-api/index.ts": {
    "path": "supabase/functions/spot-api/index.ts",
-   "lines": 753,
+   "lines": 598,
    "tables": [
     {
      "table": "tenants",
@@ -121668,10 +121437,6 @@
      "op": "update"
     },
     {
-     "table": "spot_estoque",
-     "op": "select,update"
-    },
-    {
      "table": "spot_pedidos",
      "op": "upsert"
     }
@@ -121698,10 +121463,6 @@
     "spot_api_sync_log": [
      "endpoint",
      "id"
-    ],
-    "spot_estoque": [
-     "sku",
-     "synced_at"
     ]
    },
    "dyn_from": 1,
@@ -121784,10 +121545,6 @@
      "kind": "filtra"
     }
    ],
-   "rule_comments": [
-    "vazio não zera nada: resposta anômala não pode apagar o cache inteiro."
-   ],
-   "doc": "spot-api — integração com a API oficial SPOT / Stricker. Substitui gradualmente o scraping de `spot-proxy`. Toda leitura do app vem do cache no banco (spot_produtos / spot_skus / spot_customization_options / spot_estoque); esta função é o ÚNICO ponto que fala com ws.spotgifts.com.br. Restrições resp …",
    "calc_fns": [
     {
      "name": "validateSession",
@@ -122521,7 +122278,7 @@
   },
   "supabase/functions/xbz-proxy/index.ts": {
    "path": "supabase/functions/xbz-proxy/index.ts",
-   "lines": 541,
+   "lines": 494,
    "tables": [
     {
      "table": "xbz_credentials",
@@ -125126,10 +124883,33 @@
   }
  },
  "git": {
-  "sha": "ac9fdc371be07ce5664eb9bd9f0fa22b5db30035",
+  "sha": "999a087be91ebf65775ee7bacd8d7133967af4d3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "999a087",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "feat(compras): catalogo de Compras le o PIM e o espelho local deixa de ser alimentado (163-166) (#619)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "src/hooks/useCatalogoPim.ts",
+     "src/pages/catalogo-spot/SpotCatalogTab.tsx",
+     "src/pages/catalogo-spot/SpotSyncPanel.tsx",
+     "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
+     "src/pages/catalogo-spot/__tests__/useSpotCatalog.invalidacao.test.tsx",
+     "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
+     "src/pages/catalogo-spot/useSpotCatalog.ts",
+     "src/tests/spot/spotApi.test.ts",
+     "supabase/functions/_shared/xbz_catalog_cache.test.ts",
+     "supabase/functions/_shared/xbz_catalog_cache.ts",
+     "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
+     "supabase/functions/_shared/xbz_fiscal_cache.ts",
+     "supabase/functions/spot-api/index.ts",
+     "supabase/functions/xbz-proxy/index.ts"
+    ]
+   },
    {
     "sha": "ac9fdc3",
     "date": "2026-11-27",
@@ -125472,23 +125252,12 @@
      "scripts/ci/check-test-inventory.unit.mjs",
      "tests-rls/rls-isolation.test.ts"
     ]
-   },
-   {
-    "sha": "bf32408",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/alert-dispatcher/index.ts",
-     "supabase/functions/process-outbox/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    18
+    17
    ],
    [
     "AGENTS.md",
@@ -125511,59 +125280,59 @@
     2
    ],
    [
-    "supabase/functions/alert-dispatcher/index.ts",
-    2
-   ],
-   [
-    "deploy_edge_functions_promo_supply.sh",
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
     1
    ],
    [
-    "scripts/ci/scripts-operacionais.unit.mjs",
+    "src/hooks/useCatalogoPim.ts",
     1
    ],
    [
-    "supabase/config.toml",
+    "src/pages/catalogo-spot/SpotCatalogTab.tsx",
     1
    ],
    [
-    ".github/workflows/aplicar-migration-prod.yml",
+    "src/pages/catalogo-spot/SpotSyncPanel.tsx",
     1
    ],
    [
-    "docs/ci/README.md",
+    "src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts",
     1
    ],
    [
-    "src/components/ui/__tests__/calendarDayPickerV10.test.tsx",
+    "src/pages/catalogo-spot/__tests__/useSpotCatalog.invalidacao.test.tsx",
     1
    ],
    [
-    "src/components/ui/calendar.tsx",
+    "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
     1
    ],
    [
-    "src/pages/historico/HistoricoCompras.tsx",
+    "src/pages/catalogo-spot/useSpotCatalog.ts",
     1
    ],
    [
-    "docs/qa/baseline-orfaos-componentes.json",
+    "src/tests/spot/spotApi.test.ts",
     1
    ],
    [
-    "supabase/migrations/20261128231000_remove_tabelas_orfas_de_particionamento.sql",
+    "supabase/functions/_shared/xbz_catalog_cache.test.ts",
     1
    ],
    [
-    "supabase/rollbacks/20261128231000_revert_remove_tabelas_orfas_de_particionamento.sql",
+    "supabase/functions/_shared/xbz_catalog_cache.ts",
     1
    ],
    [
-    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
     1
    ],
    [
-    "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql",
+    "supabase/functions/_shared/xbz_fiscal_cache.ts",
+    1
+   ],
+   [
+    "supabase/functions/spot-api/index.ts",
     1
    ]
   ]

@@ -46,13 +46,9 @@
   "supabase/functions/_shared/validation.log_body.test.ts",
   "supabase/functions/_shared/validation.ts",
   "supabase/functions/_shared/xbz_auth.ts",
-  "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-  "supabase/functions/_shared/xbz_catalog_cache.ts",
   "supabase/functions/_shared/xbz_client.ts",
   "supabase/functions/_shared/xbz_crypto.ts",
   "supabase/functions/_shared/xbz_date_tz.test.ts",
-  "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
-  "supabase/functions/_shared/xbz_fiscal_cache.ts",
   "supabase/functions/_shared/xbz_pedido_map.test.ts",
   "supabase/functions/_shared/xbz_pedido_map.ts",
   "supabase/functions/_shared/xbz_portador.test.ts",
@@ -1186,7 +1182,7 @@
    "nome": "spot-api",
    "entrada": "supabase/functions/spot-api/index.ts",
    "arquivos": 1,
-   "linhas": 753,
+   "linhas": 598,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS",
@@ -1194,7 +1190,6 @@
    ],
    "tabelas": [
     "spot_api_sync_log",
-    "spot_estoque",
     "spot_pedidos",
     "spot_sessions",
     "tenants",
@@ -1533,7 +1528,7 @@
    "nome": "xbz-proxy",
    "entrada": "supabase/functions/xbz-proxy/index.ts",
    "arquivos": 1,
-   "linhas": 541,
+   "linhas": 494,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1554,10 +1549,8 @@
     "rate_limit.ts",
     "security.ts",
     "xbz_auth.ts",
-    "xbz_catalog_cache.ts",
     "xbz_client.ts",
     "xbz_crypto.ts",
-    "xbz_fiscal_cache.ts",
     "xbz_portador.ts"
    ],
    "chamada_pelo_front": [

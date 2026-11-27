@@ -2674,9 +2674,9 @@
    "src/lib/feedbackToast.ts"
   ],
   "src/pages/catalogo-spot/useSpotCatalog.ts": [
+   "src/hooks/useCatalogoPim.ts",
    "src/integrations/supabase/client.ts",
-   "src/lib/invokeEdge.ts",
-   "src/lib/supabaseQuery.ts"
+   "src/lib/invokeEdge.ts"
   ],
   "src/pages/catalogo-xbz/CatalogoXbz.tsx": [
    "src/components/ui/alert.tsx",
@@ -3590,15 +3590,9 @@
    "supabase/functions/_shared/xbz_client.ts",
    "supabase/functions/_shared/xbz_crypto.ts"
   ],
-  "supabase/functions/_shared/xbz_catalog_cache.ts": [
-   "supabase/functions/_shared/xbz_client.ts"
-  ],
   "supabase/functions/_shared/xbz_client.ts": [
    "supabase/functions/_shared/circuit_breaker.ts",
    "supabase/functions/_shared/http.ts"
-  ],
-  "supabase/functions/_shared/xbz_fiscal_cache.ts": [
-   "supabase/functions/_shared/xbz_client.ts"
   ],
   "supabase/functions/_shared/xbz_pedido_map.ts": [
    "supabase/functions/_shared/xbz_client.ts"
@@ -3884,10 +3878,8 @@
    "supabase/functions/_shared/rate_limit.ts",
    "supabase/functions/_shared/security.ts",
    "supabase/functions/_shared/xbz_auth.ts",
-   "supabase/functions/_shared/xbz_catalog_cache.ts",
    "supabase/functions/_shared/xbz_client.ts",
    "supabase/functions/_shared/xbz_crypto.ts",
-   "supabase/functions/_shared/xbz_fiscal_cache.ts",
    "supabase/functions/_shared/xbz_portador.ts"
   ],
   "supabase/functions/xbz-sync-pedidos/index.ts": [

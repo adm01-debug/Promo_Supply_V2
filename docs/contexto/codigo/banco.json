@@ -18151,15 +18151,13 @@
     "so_na_migration": [],
     "so_no_types": []
    },
-   "usada_no_front": 1,
-   "usada_em_edges": [
-    "spot-api"
-   ],
+   "usada_no_front": 0,
+   "usada_em_edges": [],
    "triggers": [
     "trg_spot_estoque_updated"
    ],
    "sem_rls": false,
-   "nao_usada": false
+   "nao_usada": true
   },
   "spot_pedidos": {
    "colunas": {
@@ -18530,13 +18528,13 @@
     "so_na_migration": [],
     "so_no_types": []
    },
-   "usada_no_front": 1,
+   "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [
     "trg_spot_produtos_updated"
    ],
    "sem_rls": false,
-   "nao_usada": false
+   "nao_usada": true
   },
   "spot_sessions": {
    "colunas": {
@@ -18795,13 +18793,13 @@
     "so_na_migration": [],
     "so_no_types": []
    },
-   "usada_no_front": 1,
+   "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [
     "trg_spot_skus_updated"
    ],
    "sem_rls": false,
-   "nao_usada": false
+   "nao_usada": true
   },
   "sso_configurations": {
    "colunas": {
@@ -22543,14 +22541,12 @@
     "so_no_types": []
    },
    "usada_no_front": 0,
-   "usada_em_edges": [
-    "_shared"
-   ],
+   "usada_em_edges": [],
    "triggers": [
     "trg_xbz_cores_updated"
    ],
    "sem_rls": false,
-   "nao_usada": false
+   "nao_usada": true
   },
   "xbz_credentials": {
    "colunas": {
@@ -23260,14 +23256,12 @@
     "so_no_types": []
    },
    "usada_no_front": 0,
-   "usada_em_edges": [
-    "_shared"
-   ],
+   "usada_em_edges": [],
    "triggers": [
     "trg_xbz_produto_fiscal_updated"
    ],
    "sem_rls": false,
-   "nao_usada": false
+   "nao_usada": true
   },
   "xbz_produtos": {
    "colunas": {
@@ -23467,14 +23461,12 @@
     "so_no_types": []
    },
    "usada_no_front": 0,
-   "usada_em_edges": [
-    "_shared"
-   ],
+   "usada_em_edges": [],
    "triggers": [
     "trg_xbz_produtos_updated"
    ],
    "sem_rls": false,
-   "nao_usada": false
+   "nao_usada": true
   }
  },
  "tabelas_usadas_no_codigo_sem_definicao": [],

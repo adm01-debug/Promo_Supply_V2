@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ac9fdc371b` · branch `main` · 2026-11-27 19:17 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `999a087be9` · branch `main` · 2026-11-27 20:02 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1208,7 +1208,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | SLAStatus | atrasado \| critico \| atencao \| no_prazo \| entregue | `src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
 | SeverityFilter | all \| slow \| very_slow \| error | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
 | TimeFilter | 1h \| 6h \| 24h \| 7d \| custom | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
-| SpotSyncAction | syncCatalog \| syncCustomization \| syncStock \| getOrders | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | CacheFreshness | fresh \| stale \| missing | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | PagamentoStatus | pago \| pendente \| desconhecido | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | XBZ_PERIODOS | { value: 1, label: 'Recente (~2 meses)' }, { value: 2, label: 'Médio (~3 meses)' }, { value: 3, label: 'Longo (~6 meses)' }, | `src/pages/catalogo-xbz/xbzHelpers.ts` |
@@ -1791,7 +1790,12 @@ _nenhum item encontrado_
 | `AMBAR` | `"#f59e0b"` | `src/pages/aprovacoes/aprovacoesData.ts` |
 | `ROXO` | `"#8b5cf6"` | `src/pages/aprovacoes/aprovacoesData.ts` |
 | `STOCK_STALE_MINUTES` | `45` | `src/pages/catalogo-spot/SpotCatalogTab.tsx` |
+| `SPOT_QUOTA_CATALOGO_DIA` | `22` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
+| `SPOT_SUPPLIER_CODE` | `'SPOT'` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `SPOT_CATALOG_PAGE_SIZE` | `60` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
+| `SPOT_COLECAO_PADRAO` | `'SPOT'` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
+| `SPOT_BRIDGE_PAGE` | `500` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
+| `SPOT_BRIDGE_MAX_ROWS` | `2000` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `REFRESH_MS` | `5_000` | `src/pages/catalogo-xbz/XbzNetworkPanel.tsx` |
 | `XBZ_BUSCA_MIN` | `3` | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | `MIN_SAMPLE` | `10` | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
@@ -1823,7 +1827,6 @@ _nenhum item encontrado_
 | `ENC_VERSION` | `"v1"` | `supabase/functions/_shared/punchout_crypto.ts` |
 | `KDF_ALGO` | `"aesgcm"` | `supabase/functions/_shared/punchout_crypto.ts` |
 | `SPOT_QUOTA_RESERVE` | `2` | `supabase/functions/_shared/spot_api.ts` |
-| `CHUNK` | `500` | `supabase/functions/_shared/xbz_catalog_cache.ts` |
 | `XBZ_BASE` | `"https://api.minhaxbz.com.br:5001"` | `supabase/functions/_shared/xbz_client.ts` |
 | `XBZ_TIMEOUT_MS` | `15_000` | `supabase/functions/_shared/xbz_client.ts` |
 | `XBZ_NULL_DATE` | `"2000-01-01T00:00:00"` | `supabase/functions/_shared/xbz_client.ts` |
@@ -2538,7 +2541,7 @@ _nenhum item encontrado_
 | `coordinator` | `supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql` |
 | `admin` | `supabase/migrations/20261128160000_lockout_servidor_guarda.sql` |
 
-## K. Testes como especificação (3609 testes em 275 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3596 testes em 273 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2550,9 +2553,9 @@ _nenhum item encontrado_
 | `src/lib/__tests__/clearFiltersShortcut.test.ts` | 55 | DEFAULT_CLEAR_FILTERS_SHORTCUT · uses key  · requires ctrl · requires shift … |
 | `src/stores/__tests__/kpiTargetsStore.test.ts` | 53 | kpiTargetsStore · initial state · has 8 default targets · all default targets are enabled … |
 | `src/hooks/__tests__/hookConstants.test.ts` | 52 | solicitacoesStatusOptions · has 7 status options · covers all expected status values · every option has value, label, color … |
-| `src/tests/spot/spotApi.test.ts` | 50 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/stores/__tests__/buyerAlertsStore.test.ts` | 49 | buyerAlertsStore · initial state · starts with empty targets · starts with empty alerts … |
 | `src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts` | 47 | mapDbStatusToLegacy · maps %s → %s · mapLegacyStatusToDb · maps %s → %s … |
+| `src/tests/spot/spotApi.test.ts` | 47 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts` | 45 | getTipoLabel · maps %s → %s · returns the raw value for unknown tipo · buildWhatsAppMessage … |
 | `src/lib/__tests__/exportData.test.ts` | 44 | formatCurrency · formats a positive number with R$ · formats zero · returns empty string for NaN … |
 | `src/components/animations/__tests__/motionVariants.test.ts` | 39 | fadeInVariants · has hidden state with opacity 0 and y offset · has visible state with opacity 1 and y 0 · scaleVariants … |
@@ -2665,7 +2668,6 @@ _nenhum item encontrado_
 | `src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx` | 9 | ComprasDashboard — vencimento das urgências · roda no fuso do Brasil (pré-condição do teste) · data_necessidade  · ComprasDashboard — distribuição de SLA … |
 | `src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx` | 9 | Pedidos - falha de carga nao vira lista vazia (QA 250) · mostra o erro da consulta e o botao de nova tentativa no lugar da lista · o botao de nova tentativa chama o refetch do hook · sem erro a lista renderiza normalmente … |
 | `supabase/functions/_shared/notifications.test.ts` | 9 | insertNotification resolve tenant por user_id, nao pela PK · insertNotification nao consulta profiles quando tenant_id vem na origem · insertNotification devolve sem_tenant quando o perfil nao tem tenant · insertNotificationsBatch resolve tenants por user_id … |
-| `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
 | `src/components/compras/__tests__/anexosNaoEnviados.test.ts` | 8 | resumoAnexosNaoEnviados · um anexo que falhou sai com nome, quantidade e sem plural · varios anexos somam a quantidade e listam os nomes · sem tenant de upload o motivo e o login, nao o storage … |
 | `src/components/compras/__tests__/formulariosRotulos.test.tsx` | 8 | Campos de formulario com nome acessivel (etapa 237) · o modal de cotacao manual associa cada rotulo ao seu campo · nenhum rotulo do modal sobra sem destino · a etapa 1 nomeia os campos, o combobox de produto e o grupo de prioridade … |
 | `src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx` | 8 | DynamicApprovalMatrix mostra pessoas e categorias reais · resolve aprovador, escalação e categoria pelos dados do banco · id sem perfil aparece como nao encontrado, nao como uuid cru · categoria ausente e dita removida; regra sem categoria vale para todas … |
@@ -2676,6 +2678,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx` | 8 | useExecutiveDashboardData - recorte de periodo no SQL (etapa 215) · empurra o corte de data de solicitacoes, fiscal_documents e savings_tracker para o SQL · nao filtra pedidos por created_at (o recorte local usa data_emissao com fallback) · sem periodo definido nenhuma tabela recebe corte de data … |
 | `src/lib/__tests__/invokeEdge.test.ts` | 8 | mensagemDeErroDaEdge · devolve o campo error do corpo da edge, nao a mensagem fixa em ingles · aceita corpo com a chave message quando nao ha error · cai na mensagem do proprio erro quando o corpo nao tem frase util … |
 | `src/lib/__tests__/unicidadeCadastro.test.ts` | 8 | unicidadeCadastro (VAL-09) · normaliza CNPJ mascarado para digitos · cita o fornecedor dono do CNPJ quando o nome e conhecido · explica o codigo de centro de custo com e sem o nome do dono … |
+| `src/pages/catalogo-spot/__tests__/agruparProdutosPim.test.ts` | 8 | agruparProdutosPim · junta as variantes em um produto com o menor preco e o estoque somado · produto sem estoque em nenhuma variante sai como sem estoque · uma variante com estoque basta para o produto estar em estoque … |
 | `src/pages/documentos/__tests__/conciliacaoFiscal.test.ts` | 8 | conciliacao de NF-e com pedido · nao casa a nota com pedido de outro fornecedor so porque o valor e igual · deixa sem vinculo quando o valor so existe em pedido de outro fornecedor · nao escolhe quando dois pedidos do mesmo fornecedor tem o mesmo valor … |
 | `supabase/functions/escalate-solicitacao/recipients.test.ts` | 8 | gerencia: notifica admin e coordinator do tenant, sem vazar outro tenant · gerencia: o proprio autor da acao nao recebe a notificacao · comprador: usa o comprador do pedido quando existe · comprador: sem pedido cai nos buyers do tenant, ignorando outro tenant … |
 | `supabase/functions/scim-v2/conformance.test.ts` | 8 | SCIM POST /Users — 201 with SCIM schema and Location header · SCIM GET /Users/:id — 200 with full User representation · SCIM GET /Users — ListResponse envelope conforms to RFC 7644 §3.4.2 · SCIM PATCH /Users/:id — updates displayName via Operations array … |
@@ -2743,7 +2746,6 @@ _nenhum item encontrado_
 | `src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx` | 5 | RecebimentoOffline - selecao de pedido acessivel por teclado · seleciona o pedido no clique · seleciona o pedido com Enter · seleciona o pedido com a barra de espaco … |
 | `src/tests/integration/contract-testing.test.ts` | 5 | Edge Function Contract Validation · should validate a correct negotiation payload · should reject negotiation payload without cotacoes · should reject solicitacao with a malformed UUID … |
 | `supabase/functions/_shared/xbz_date_tz.test.ts` | 5 | parseXbzDate: sem offset -> UTC, em qualquer fuso do runtime · parseXbzDate: valor COM offset e respeitado como veio · parseXbzDate: sentinela, vazio e lixo continuam null · parsePagamentoLabel: determinístico e por ano … |
-| `supabase/functions/_shared/xbz_fiscal_cache.test.ts` | 5 | fiscal: mapeia os campos reais do getSt · fiscal: aceita camelCase e numero em string pt-BR · fiscal: nao grava linha sem conteudo fiscal nem sem produto/tenant · cores: normaliza, deduplica por id e descarta invalidas … |
 | `supabase/functions/_shared/xbz_portador.test.ts` | 5 | cpfValido: dígito verificador e sequências repetidas · placaValida: antiga (ABC1234) e Mercosul (ABC1D23), normalizada · montarPortador: normaliza para o formato da XBZ · montarPortador: rejeita nome curto, CPF e placa inválidos … |
 | `supabase/functions/check-approval-escalations/index.test.ts` | 5 | nenhum status em portugues e usado como filtro ou como valor gravado · o filtro de passos vencidos usa pending · o guarda do workflow usa pending · todo status gravado pertence aos CHECK de approval_steps/approval_workflows … |
 | `tests-e2e/auth-navigation.spec.ts` | 5 | Fluxos Críticos de Autenticação e Navegação · Deve redirecionar para /auth ao tentar acessar rota protegida sem login · Fluxo de Login: formulário e submissão · Navegação entre páginas principais (Protegidas) … |
@@ -2763,7 +2765,6 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useFornecedores.exclusao.test.tsx` | 4 | guarda de exclusao de fornecedor · recusa excluir fornecedor que tem credito de fornecedor · recusa excluir fornecedor com pagamento ou pedido e lista tudo o que bloqueia · exclui quando nao ha nenhum dependente |
 | `src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx` | 4 | usePasswordResetRequests: link nativo no lugar do token morto (etapa 036 / SEC-04) · envia o link do Supabase e marca o pedido como atendido, sem gravar reset_token · quando o GoTrue recusa, o pedido nao e marcado como atendido · o hook nao volta a gerar credencial propria (reset_token / randomUUID) |
 | `src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx` | 4 | SpotCatalogTab / idade do estoque (INT-11) · estoque recem-sincronizado mostra a data e nao avisa de defasagem · estoque parado ha mais de 45 min avisa que as quantidades podem estar velhas · sem estoque em cache nao inventa data nem aviso |
-| `src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx` | 4 | useSpotProducts / filtro de busca (SEC-10) · busca comum sai com o termo literal nas duas colunas · nao deixa  · busca em branco nao acrescenta clausula |
 | `src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts` | 4 | normalizeBusca / isBuscaValida · não substitui termo vazio pelo antigo hack  · apara espaços e limita a 100 caracteres · exige ao menos ${XBZ_BUSCA_MIN} caracteres após aparar |
 | `src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx` | 4 | ConfiguracoesCentroCusto · codigo unico (VAL-09) · barra o codigo ja usado e diz qual centro de custo o usa · traduz o 23505 quando o codigo existe em outra empresa · cria o centro de custo quando o codigo esta livre |
 | `src/pages/pedidos/__tests__/exclusaoBloqueada.test.tsx` | 4 | acao de excluir na lista de pedidos · some quando o pedido selecionado ja entrou no ciclo de recebimento · continua disponivel para pedido pendente · some na selecao mista de pendente com entregue |
@@ -2951,7 +2952,8 @@ _nenhum item encontrado_
 | Dialog Adicionar/Editar Regra SoD */} | `src/pages/admin/WorkflowAdmin.tsx` |
 | Registra a visualização apenas para quem realmente enxerga a trilha (admin), | `src/pages/auditoria/Auditoria.tsx` |
 | Validation schemas | `src/pages/auth/Auth.tsx` |
-| automática: cada clique consome 1 requisição do limite. | `src/pages/catalogo-spot/useSpotCatalog.ts` |
+| Teto de leitura da tela; acima disso a busca é que deve recortar. */ | `src/pages/catalogo-spot/useSpotCatalog.ts` |
+| Agrupa as linhas da view por produto: preço mínimo e estoque somado das variantes. */ | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | Tamanho mínimo de `busca` aceito pela XBZ (abaixo disso `consultaEstoque` devolve []). */ | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | partir de um volume mínimo de chamadas; abaixo disso o painel exibe estado | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | Volume mínimo de chamadas antes de classificar a eficiência. */ | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
@@ -3061,7 +3063,6 @@ _nenhum item encontrado_
 | RFC 7644 §3.3: 201 response MUST include a Location header | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.12: all errors must use the SCIM Error schema | `supabase/functions/scim-v2/index.ts` |
 | caso esta em `user_tenants` (mesma regra do helper getTenantId). | `supabase/functions/send-push-notification/index.ts` |
-| vazio não zera nada: resposta anômala não pode apagar o cache inteiro. | `supabase/functions/spot-api/index.ts` |
 | SECURITY: Explicit token validation required when verify_jwt=false | `supabase/functions/spot-proxy/index.ts` |
 | M-05: rate limit uniforme por usuário (60 req/min). | `supabase/functions/spot-proxy/index.ts` |
 | Linha que deve ter `last_used_at` renovado. */ | `supabase/functions/spot-proxy/sessions.ts` |

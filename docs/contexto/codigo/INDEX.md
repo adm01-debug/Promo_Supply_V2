@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ac9fdc371be07ce5664eb9bd9f0fa22b5db30035` (2026-11-27T16:14:58-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `999a087be91ebf65775ee7bacd8d7133967af4d3` (2026-11-27T17:02:02-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (898), SQL (445), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (894), SQL (445), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1594 |
-| arquivos_codigo | 973 |
-| linhas_codigo | 193215 |
+| arquivos_total | 1590 |
+| arquivos_codigo | 969 |
+| linhas_codigo | 192571 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 154 |
 | migrations | 386 |
 | cron_jobs | 80 |
-| testes | 327 |
+| testes | 325 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 101 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (214), src/pages (79), src/features (33)
 - hooks: src/hooks (62), src/features (14), src/components (11)
 - servicos_logica: src/lib (31), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (229), co-localizado (*.test) (44), outro (44)
+- testes: co-localizado (__tests__) (229), outro (44), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -90,7 +90,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/auth | 0 | 2 | 2 | 5 | 3 | 5 |
 | pages/buyer | 1 | 1 | 3 | 5 | 1 | 9 |
 | pages/catalogo-produtos | 1 | 1 | 1 | 5 | 1 | 8 |
-| pages/catalogo-spot | 1 | 1 | 6 | 88 | 11 | 59 |
+| pages/catalogo-spot | 1 | 1 | 6 | 88 | 11 | 56 |
 | pages/catalogo-xbz | 1 | 1 | 10 | 83 | 10 | 55 |
 | pages/compliance | 1 | 1 | 2 | 3 | 1 | 8 |
 | pages/configuracoes | 1 | 1 | 1 | 81 | 9 | 55 |
@@ -216,7 +216,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `run-audit` — tabelas: -; chamada por 1 arquivo(s) do front
 - `scim-v2` (verify_jwt=false) — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
 - `send-push-notification` — tabelas: profiles, push_subscriptions, user_roles, user_tenants; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `spot-api` (verify_jwt=false) — tabelas: spot_api_sync_log, spot_estoque, spot_pedidos, spot_sessions, tenants, user_roles, user_tenants; chamada por 1 arquivo(s) do front, por SQL/cron
+- `spot-api` (verify_jwt=false) — tabelas: spot_api_sync_log, spot_pedidos, spot_sessions, tenants, user_roles, user_tenants; chamada por 1 arquivo(s) do front, por SQL/cron
 - `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles, user_tenants; chamada por 1 arquivo(s) do front
 - `system-simulation` — tabelas: -; chamada por 1 arquivo(s) do front
 - `telemetry` — tabelas: telemetry_logs; chamada por 1 arquivo(s) do front
@@ -347,8 +347,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/qa/05-PROGRESSO.md (220)
 - AGENTS.md (42)
 - src/integrations/supabase/types.ts (14)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - bun.lock (9)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (9)
 - package.json (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (9)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-27 `999a087` feat(compras): catalogo de Compras le o PIM e o espelho local deixa de ser alimentado (163-166) (#619)
 - 2026-11-27 `ac9fdc3` fix(infra): fronteira publica das edges declarada e isencoes de JWT sem deriva (etapa 184) (#604)
 - 2026-11-27 `c54e49f` ci(deploy): apply de producao exige migration na main e aprovacao de environment (#600)
 - 2026-11-27 `6e6213a` chore(deps): bump react-day-picker from 8.10.2 to 10.0.2 (#479)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `e623754` fix(db): neg10 volta a ser idempotente e aplicavel (policy ja existia em prod) (#610)
 - 2026-11-26 `5068a49` fix(orcamento): trava le department_budgets e gatilhos param de perder/duplicar o gasto (090/092/137/138) (#599)
 - 2026-11-26 `14f107a` fix(rls): arquivo de auditoria/telemetria e leitura de organizacao passam a filtrar empresa (etapas 066, 067 e 068) (#59
-- 2026-11-26 `675838c` fix(orcamento): trava de orcamento le department_budgets (#606)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

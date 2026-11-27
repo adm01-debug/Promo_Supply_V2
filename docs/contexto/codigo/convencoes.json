@@ -22,8 +22,8 @@
   ],
   "testes": [
    "co-localizado (__tests__) (229)",
-   "co-localizado (*.test) (44)",
-   "outro (44)"
+   "outro (44)",
+   "co-localizado (*.test) (42)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(compras): catalogo de Compras le o PIM e o espelho local deixa de ser alimentado (163-166) (#619)",
    "fix(infra): fronteira publica das edges declarada e isencoes de JWT sem deriva (etapa 184) (#604)",
    "ci(deploy): apply de producao exige migration na main e aprovacao de environment (#600)",
    "chore(deps): bump react-day-picker from 8.10.2 to 10.0.2 (#479)",
-   "chore(deps): bump i18next from 26.7.2 to 27.2.4 (#481)",
-   "chore(ci): baseline de orfaos encolhe - FornecedorMobileCard agora e importado (#618)"
+   "chore(deps): bump i18next from 26.7.2 to 27.2.4 (#481)"
   ]
  },
  "pr_template": null,
