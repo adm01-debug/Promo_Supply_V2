@@ -8,7 +8,7 @@ URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metada
 | ai-negotiation | ai-negotiation | ACTIVE | 37 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-negotiation/index.ts |
 | ai-supplier-risk | ai-supplier-risk | ACTIVE | 33 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-supplier-risk/index.ts |
 | ai-supplier-suggestion | ai-supplier-suggestion | ACTIVE | 37 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-supplier-suggestion/index.ts |
-| alert-dispatcher | alert-dispatcher | ACTIVE | 31 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/alert-dispatcher/index.ts |
+| alert-dispatcher | alert-dispatcher | ACTIVE | 32 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/alert-dispatcher/index.ts |
 | check-approval-escalations | check-approval-escalations | ACTIVE | 35 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-approval-escalations/index.ts |
 | check-cotacao-followup | check-cotacao-followup | ACTIVE | 35 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-cotacao-followup/index.ts |
 | check-expiry-alerts | check-expiry-alerts | ACTIVE | 33 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-expiry-alerts/index.ts |

@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-27 01:14 UTC
+
+- **edge functions** alterado (1): `alert-dispatcher`
+- **functions** alterado (8): `public.calculate_supplier_qualification_score(p_fornecedor_id uuid)`, `public.check_budget_availability(p_cost_center_id uuid, p_valor numeric)`, `public.claim_alerts_batch(p_batch_size integer)`, `public.fill_tenant_id_from_profile()`, `public.fill_tenant_id_from_supplier()`, `public.get_user_grupo_id()`, `public.has_role(_user_id uuid, _role app_role)`, `public.tenant_in_my_group(_tenant_id uuid)`
+
 ## 2026-11-27 00:33 UTC
 
 - **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_30`

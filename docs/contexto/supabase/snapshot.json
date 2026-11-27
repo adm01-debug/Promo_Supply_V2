@@ -347,9 +347,9 @@
         "name": "alert-dispatcher",
         "slug": "alert-dispatcher",
         "status": "ACTIVE",
-        "updated_at": 1795733053563,
+        "updated_at": 1795740646460,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935869432,
@@ -39121,9 +39121,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [
             "public.trigger_recalculate_qualification_score"
@@ -39191,7 +39195,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "85f3d44f5d562c13",
+        "definition_sha": "903391234019e525",
         "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -39204,7 +39208,7 @@
         "schema": "public",
         "security_definer": true,
         "strict": false,
-        "volatility": "volatile"
+        "volatility": "stable"
       },
       {
         "args": "",
@@ -39419,8 +39423,17 @@
       {
         "args": "p_batch_size integer",
         "callers": {
-          "code": [],
-          "code_total_files": 0,
+          "code": [
+            {
+              "file": "supabase/functions/alert-dispatcher/index.ts",
+              "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128198000_claim_alerts_batch.sql",
+              "hits": 3
+            }
+          ],
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -40639,9 +40652,13 @@
             {
               "file": "supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [
@@ -40770,8 +40787,13 @@
       {
         "args": "",
         "callers": {
-          "code": [],
-          "code_total_files": 0,
+          "code": [
+            {
+              "file": "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql",
+              "hits": 2
+            }
+          ],
+          "code_total_files": 1,
           "cron": [],
           "db": [],
           "triggers": [
@@ -41655,9 +41677,17 @@
             {
               "file": "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql",
+              "hits": 26
+            },
+            {
+              "file": "supabase/migrations/20261128181000_rls_organizations_spend_forecasts_tenant.sql",
+              "hits": 5
             }
           ],
-          "code_total_files": 11,
+          "code_total_files": 13,
           "cron": [],
           "db": [
             "public.get_compras_dashboard_metrics",
@@ -42148,7 +42178,7 @@
               "hits": 37
             }
           ],
-          "code_total_files": 84,
+          "code_total_files": 85,
           "cron": [],
           "db": [
             "public.aprovador_pode_decidir_etapa",
@@ -44953,9 +44983,17 @@
             {
               "file": "supabase/migrations/20261128140000_spot_pedidos_tenant.sql",
               "hits": 3
+            },
+            {
+              "file": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql",
+              "hits": 26
+            },
+            {
+              "file": "supabase/migrations/20261128181000_rls_organizations_spend_forecasts_tenant.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 19,
+          "code_total_files": 21,
           "cron": [],
           "db": [
             "public.find_approval_rule",
