@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "6e6213a9d945ce2be26fa0ba4d6e46d4727bae17",
+  "sha": "c54e49f5eaa831a99de797f981a23cd5d3ce8071",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 17:23 UTC",
+  "generated_at": "2026-11-27 19:15 UTC",
   "files_total": 1595,
   "code_files": 1420,
   "code_lines": 231523,
@@ -125124,10 +125124,20 @@
   }
  },
  "git": {
-  "sha": "6e6213a9d945ce2be26fa0ba4d6e46d4727bae17",
+  "sha": "c54e49f5eaa831a99de797f981a23cd5d3ce8071",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "c54e49f",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "ci(deploy): apply de producao exige migration na main e aprovacao de environment (#600)",
+    "files": [
+     ".github/workflows/aplicar-migration-prod.yml",
+     "docs/ci/README.md"
+    ]
+   },
    {
     "sha": "6e6213a",
     "date": "2026-11-27",
@@ -125469,22 +125479,12 @@
     "files": [
      "docs/mapa/MATRIZ_EDGE_TABELA.md"
     ]
-   },
-   {
-    "sha": "803a3a2",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(aprovacoes): historico de escalonamento grava o tenant e nao se perde (#144) (#592)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/check-approval-escalations/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    19
+    18
    ],
    [
     "AGENTS.md",
@@ -125509,6 +125509,14 @@
    [
     "supabase/functions/alert-dispatcher/index.ts",
     2
+   ],
+   [
+    ".github/workflows/aplicar-migration-prod.yml",
+    1
+   ],
+   [
+    "docs/ci/README.md",
+    1
    ],
    [
     "src/components/ui/__tests__/calendarDayPickerV10.test.tsx",
@@ -125552,14 +125560,6 @@
    ],
    [
     "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql",
-    1
-   ],
-   [
-    "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql",
     1
    ]
   ]

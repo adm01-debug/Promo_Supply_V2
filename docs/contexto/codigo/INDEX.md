@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6e6213a9d945ce2be26fa0ba4d6e46d4727bae17` (2026-11-27T14:22:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c54e49f5eaa831a99de797f981a23cd5d3ce8071` (2026-11-27T16:14:41-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -358,7 +358,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/features/auth/hooks/useAuth.tsx (8)
 - src/hooks/useApprovalWorkflow.ts (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
-- src/hooks/useFornecedores.ts (7)
+- docs/ci/README.md (7)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-27 `c54e49f` ci(deploy): apply de producao exige migration na main e aprovacao de environment (#600)
 - 2026-11-27 `6e6213a` chore(deps): bump react-day-picker from 8.10.2 to 10.0.2 (#479)
 - 2026-11-27 `130224e` chore(deps): bump i18next from 26.7.2 to 27.2.4 (#481)
 - 2026-11-26 `dd1ca83` chore(ci): baseline de orfaos encolhe - FornecedorMobileCard agora e importado (#618)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `14f107a` fix(rls): arquivo de auditoria/telemetria e leitura de organizacao passam a filtrar empresa (etapas 066, 067 e 068) (#59
 - 2026-11-26 `675838c` fix(orcamento): trava de orcamento le department_budgets (#606)
 - 2026-11-26 `416e381` fix(alertas): claim atomico da fila do alert-dispatcher (#596)
-- 2026-11-26 `3ec8bec` Merge remote-tracking branch 'origin/main' into claude/fix-tenant-id-default-invalido-261126-1650 (#593)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
