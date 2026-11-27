@@ -67,15 +67,15 @@ describe("useSpotProducts - leitura do PIM", () => {
     expect(nome.value).toBe("%caneca 50\\%%");
   });
 
-  it("escapa a barra invertida antes dos curetas", async () => {
+  it("escapa meta-caracteres do like via escapeIlike (barra, cureta e parenteses)", async () => {
     const { result } = renderHook(
-      () => useSpotProducts({ search: "a\\b_c", collection: null, typeCodes: null }),
+      () => useSpotProducts({ search: "a\\b_c (2)", collection: null, typeCodes: null }),
       { wrapper },
     );
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     const nome = espiao.filtros[0].name as { value: string };
-    expect(nome.value).toBe("%a\\\\b\\_c%");
+    expect(nome.value).toBe("%a\\\\b\\_c \\(2\\)%");
   });
 
   it("le paginas no limite aceito pelo bridge", async () => {

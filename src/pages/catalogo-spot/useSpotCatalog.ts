@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { mensagemDeErroDaEdge } from '@/lib/invokeEdge';
+import { escapeIlike } from '@/lib/supabaseQuery';
 import { invokeBridgeSelect } from '@/hooks/useCatalogoPim';
 
 /**
@@ -172,9 +173,8 @@ async function lerCatalogoSpot(termo: string): Promise<BridgeRow[]> {
     supplier_code: { operator: 'in', value: SPOT_SUPPLIER_CODES },
   };
   if (termo) {
-    // Escapa primeiro a barra invertida; sem isso o `\` digitado vira escape no like.
-    const escapado = termo.replace(/\\/g, '\\\\').replace(/[%_]/g, (c) => `\\${c}`);
-    base.name = { operator: 'ilike', value: `%${escapado}%` };
+    // O helper do projeto escapa \ % _ , ( ) * — mesmo padrao dos outros filtros ilike.
+    base.name = { operator: 'ilike', value: `%${escapeIlike(termo)}%` };
   }
 
   const todos: BridgeRow[] = [];
