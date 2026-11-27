@@ -4,7 +4,7 @@
 |---|---|
 | nome | migrate-storage-paths |
 | status | ACTIVE |
-| versão | 27 |
+| versão | 28 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/migrate-storage-paths/index.ts |
 | import_map |  |

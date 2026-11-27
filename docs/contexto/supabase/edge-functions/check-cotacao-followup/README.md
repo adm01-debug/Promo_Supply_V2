@@ -4,7 +4,7 @@
 |---|---|
 | nome | check-cotacao-followup |
 | status | ACTIVE |
-| versão | 35 |
+| versão | 36 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-cotacao-followup/index.ts |
 | import_map |  |

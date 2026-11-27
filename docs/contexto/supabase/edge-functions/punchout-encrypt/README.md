@@ -4,7 +4,7 @@
 |---|---|
 | nome | punchout-encrypt |
 | status | ACTIVE |
-| versão | 22 |
+| versão | 23 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-encrypt/index.ts |
 | import_map |  |

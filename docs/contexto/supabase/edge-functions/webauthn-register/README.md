@@ -4,7 +4,7 @@
 |---|---|
 | nome | webauthn-register |
 | status | ACTIVE |
-| versão | 26 |
+| versão | 27 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/webauthn-register/index.ts |
 | import_map |  |

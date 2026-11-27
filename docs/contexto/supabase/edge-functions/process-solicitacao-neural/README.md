@@ -4,7 +4,7 @@
 |---|---|
 | nome | process-solicitacao-neural |
 | status | ACTIVE |
-| versão | 25 |
+| versão | 26 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-solicitacao-neural/index.ts |
 | import_map |  |

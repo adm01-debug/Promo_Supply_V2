@@ -4,7 +4,7 @@
 |---|---|
 | nome | punchout-receive |
 | status | ACTIVE |
-| versão | 38 |
+| versão | 39 |
 | verify_jwt | não |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-receive/index.ts |
 | import_map |  |

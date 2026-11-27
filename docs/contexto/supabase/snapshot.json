@@ -299,9 +299,9 @@
         "name": "ai-demand-prediction",
         "slug": "ai-demand-prediction",
         "status": "ACTIVE",
-        "updated_at": 1795733043462,
+        "updated_at": 1795809770347,
         "verify_jwt": true,
-        "version": 37
+        "version": 38
       },
       {
         "created_at": 1785935824160,
@@ -311,9 +311,9 @@
         "name": "ai-negotiation",
         "slug": "ai-negotiation",
         "status": "ACTIVE",
-        "updated_at": 1795733045990,
+        "updated_at": 1795809773105,
         "verify_jwt": true,
-        "version": 37
+        "version": 38
       },
       {
         "created_at": 1785935827299,
@@ -323,9 +323,9 @@
         "name": "ai-supplier-risk",
         "slug": "ai-supplier-risk",
         "status": "ACTIVE",
-        "updated_at": 1795733047971,
+        "updated_at": 1795809775506,
         "verify_jwt": true,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1785935830982,
@@ -335,9 +335,9 @@
         "name": "ai-supplier-suggestion",
         "slug": "ai-supplier-suggestion",
         "status": "ACTIVE",
-        "updated_at": 1795733049967,
+        "updated_at": 1795809778065,
         "verify_jwt": true,
-        "version": 37
+        "version": 38
       },
       {
         "created_at": 1785935866015,
@@ -347,9 +347,9 @@
         "name": "alert-dispatcher",
         "slug": "alert-dispatcher",
         "status": "ACTIVE",
-        "updated_at": 1795740646460,
+        "updated_at": 1795809780433,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935869432,
@@ -359,9 +359,9 @@
         "name": "check-approval-escalations",
         "slug": "check-approval-escalations",
         "status": "ACTIVE",
-        "updated_at": 1795733055608,
+        "updated_at": 1795809782790,
         "verify_jwt": true,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1785935872814,
@@ -371,9 +371,9 @@
         "name": "check-cotacao-followup",
         "slug": "check-cotacao-followup",
         "status": "ACTIVE",
-        "updated_at": 1795733057609,
+        "updated_at": 1795809785079,
         "verify_jwt": true,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1785935876556,
@@ -383,9 +383,9 @@
         "name": "check-expiry-alerts",
         "slug": "check-expiry-alerts",
         "status": "ACTIVE",
-        "updated_at": 1795733059557,
+        "updated_at": 1795809787534,
         "verify_jwt": true,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1785935879464,
@@ -395,9 +395,9 @@
         "name": "check-sla-alerts",
         "slug": "check-sla-alerts",
         "status": "ACTIVE",
-        "updated_at": 1795733061606,
+        "updated_at": 1795809790030,
         "verify_jwt": true,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1785935910356,
@@ -407,9 +407,9 @@
         "name": "dependency-health",
         "slug": "dependency-health",
         "status": "ACTIVE",
-        "updated_at": 1795733063679,
+        "updated_at": 1795809792320,
         "verify_jwt": false,
-        "version": 41
+        "version": 42
       },
       {
         "created_at": 1795210713630,
@@ -419,9 +419,9 @@
         "name": "erp-credential-encrypt",
         "slug": "erp-credential-encrypt",
         "status": "ACTIVE",
-        "updated_at": 1795733065766,
+        "updated_at": 1795809794755,
         "verify_jwt": true,
-        "version": 14
+        "version": 15
       },
       {
         "created_at": 1785935841869,
@@ -431,9 +431,9 @@
         "name": "erp-sync",
         "slug": "erp-sync",
         "status": "ACTIVE",
-        "updated_at": 1795733067882,
+        "updated_at": 1795809797345,
         "verify_jwt": true,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1795374141517,
@@ -443,9 +443,9 @@
         "name": "escalate-solicitacao",
         "slug": "escalate-solicitacao",
         "status": "ACTIVE",
-        "updated_at": 1795733070045,
+        "updated_at": 1795809799765,
         "verify_jwt": true,
-        "version": 14
+        "version": 15
       },
       {
         "created_at": 1785935927495,
@@ -455,9 +455,9 @@
         "name": "external-db-bridge",
         "slug": "external-db-bridge",
         "status": "ACTIVE",
-        "updated_at": 1795733072157,
+        "updated_at": 1795809802047,
         "verify_jwt": true,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1785935838150,
@@ -467,9 +467,9 @@
         "name": "fiscal-orchestrator",
         "slug": "fiscal-orchestrator",
         "status": "ACTIVE",
-        "updated_at": 1795733074914,
+        "updated_at": 1795809804353,
         "verify_jwt": true,
-        "version": 36
+        "version": 37
       },
       {
         "created_at": 1785935858385,
@@ -479,9 +479,9 @@
         "name": "generate-contract-pdf",
         "slug": "generate-contract-pdf",
         "status": "ACTIVE",
-        "updated_at": 1795733076924,
+        "updated_at": 1795809806662,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935862710,
@@ -491,9 +491,9 @@
         "name": "guided-buying-ai",
         "slug": "guided-buying-ai",
         "status": "ACTIVE",
-        "updated_at": 1795733078968,
+        "updated_at": 1795809809189,
         "verify_jwt": true,
-        "version": 37
+        "version": 38
       },
       {
         "created_at": 1794580652434,
@@ -503,9 +503,9 @@
         "name": "health-dashboard",
         "slug": "health-dashboard",
         "status": "ACTIVE",
-        "updated_at": 1795733081003,
+        "updated_at": 1795809811593,
         "verify_jwt": true,
-        "version": 21
+        "version": 22
       },
       {
         "created_at": 1794580655103,
@@ -515,9 +515,9 @@
         "name": "maintain-partitions",
         "slug": "maintain-partitions",
         "status": "ACTIVE",
-        "updated_at": 1795733083034,
+        "updated_at": 1795809813919,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935923731,
@@ -527,9 +527,9 @@
         "name": "migrate-storage-paths",
         "slug": "migrate-storage-paths",
         "status": "ACTIVE",
-        "updated_at": 1795733085136,
+        "updated_at": 1795809816258,
         "verify_jwt": true,
-        "version": 27
+        "version": 28
       },
       {
         "created_at": 1785935855305,
@@ -539,9 +539,9 @@
         "name": "process-invoice-idp",
         "slug": "process-invoice-idp",
         "status": "ACTIVE",
-        "updated_at": 1795733087150,
+        "updated_at": 1795809818681,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935883056,
@@ -551,9 +551,9 @@
         "name": "process-outbox",
         "slug": "process-outbox",
         "status": "ACTIVE",
-        "updated_at": 1795733089170,
+        "updated_at": 1795809821083,
         "verify_jwt": false,
-        "version": 25
+        "version": 26
       },
       {
         "created_at": 1795183975258,
@@ -563,9 +563,9 @@
         "name": "process-solicitacao-neural",
         "slug": "process-solicitacao-neural",
         "status": "ACTIVE",
-        "updated_at": 1795733091295,
+        "updated_at": 1795809823456,
         "verify_jwt": true,
-        "version": 25
+        "version": 26
       },
       {
         "created_at": 1795005314879,
@@ -575,9 +575,9 @@
         "name": "punchout-encrypt",
         "slug": "punchout-encrypt",
         "status": "ACTIVE",
-        "updated_at": 1795733093321,
+        "updated_at": 1795809825963,
         "verify_jwt": true,
-        "version": 22
+        "version": 23
       },
       {
         "created_at": 1785935851193,
@@ -587,9 +587,9 @@
         "name": "punchout-receive",
         "slug": "punchout-receive",
         "status": "ACTIVE",
-        "updated_at": 1795733095443,
+        "updated_at": 1795809828399,
         "verify_jwt": false,
-        "version": 38
+        "version": 39
       },
       {
         "created_at": 1785935848102,
@@ -599,9 +599,9 @@
         "name": "punchout-setup",
         "slug": "punchout-setup",
         "status": "ACTIVE",
-        "updated_at": 1795733097461,
+        "updated_at": 1795809830795,
         "verify_jwt": true,
-        "version": 27
+        "version": 28
       },
       {
         "created_at": 1795462093958,
@@ -611,9 +611,9 @@
         "name": "receive-os-sync",
         "slug": "receive-os-sync",
         "status": "ACTIVE",
-        "updated_at": 1795733099437,
+        "updated_at": 1795809833159,
         "verify_jwt": false,
-        "version": 21
+        "version": 22
       },
       {
         "created_at": 1785935914012,
@@ -623,9 +623,9 @@
         "name": "run-audit",
         "slug": "run-audit",
         "status": "ACTIVE",
-        "updated_at": 1795733101951,
+        "updated_at": 1795809836197,
         "verify_jwt": false,
-        "version": 29
+        "version": 30
       },
       {
         "created_at": 1785935900512,
@@ -635,9 +635,9 @@
         "name": "scim-v2",
         "slug": "scim-v2",
         "status": "ACTIVE",
-        "updated_at": 1795733103968,
+        "updated_at": 1795809838554,
         "verify_jwt": false,
-        "version": 41
+        "version": 42
       },
       {
         "created_at": 1785935903898,
@@ -647,9 +647,9 @@
         "name": "send-push-notification",
         "slug": "send-push-notification",
         "status": "ACTIVE",
-        "updated_at": 1795733106105,
+        "updated_at": 1795809840933,
         "verify_jwt": true,
-        "version": 36
+        "version": 37
       },
       {
         "created_at": 1794580657952,
@@ -659,9 +659,9 @@
         "name": "spot-api",
         "slug": "spot-api",
         "status": "ACTIVE",
-        "updated_at": 1795733108181,
+        "updated_at": 1795809843231,
         "verify_jwt": false,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1785935930982,
@@ -671,9 +671,9 @@
         "name": "spot-proxy",
         "slug": "spot-proxy",
         "status": "ACTIVE",
-        "updated_at": 1795733110287,
+        "updated_at": 1795809845580,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935919139,
@@ -683,9 +683,9 @@
         "name": "system-simulation",
         "slug": "system-simulation",
         "status": "ACTIVE",
-        "updated_at": 1795733112383,
+        "updated_at": 1795809847993,
         "verify_jwt": false,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1785935906684,
@@ -695,9 +695,9 @@
         "name": "telemetry",
         "slug": "telemetry",
         "status": "ACTIVE",
-        "updated_at": 1795733114562,
+        "updated_at": 1795809850433,
         "verify_jwt": false,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1785935896372,
@@ -707,9 +707,9 @@
         "name": "webauthn-authenticate",
         "slug": "webauthn-authenticate",
         "status": "ACTIVE",
-        "updated_at": 1795733116601,
+        "updated_at": 1795809852766,
         "verify_jwt": false,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1785935893295,
@@ -719,9 +719,9 @@
         "name": "webauthn-register",
         "slug": "webauthn-register",
         "status": "ACTIVE",
-        "updated_at": 1795733118572,
+        "updated_at": 1795809855303,
         "verify_jwt": true,
-        "version": 26
+        "version": 27
       },
       {
         "created_at": 1785935886703,
@@ -731,9 +731,9 @@
         "name": "weekly-report",
         "slug": "weekly-report",
         "status": "ACTIVE",
-        "updated_at": 1795733120605,
+        "updated_at": 1795809857616,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935890032,
@@ -743,9 +743,9 @@
         "name": "weekly-summary-report",
         "slug": "weekly-summary-report",
         "status": "ACTIVE",
-        "updated_at": 1795733122670,
+        "updated_at": 1795809860096,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935834498,
@@ -755,9 +755,9 @@
         "name": "workflow-engine",
         "slug": "workflow-engine",
         "status": "ACTIVE",
-        "updated_at": 1795733124823,
+        "updated_at": 1795809862457,
         "verify_jwt": true,
-        "version": 37
+        "version": 38
       },
       {
         "created_at": 1794580660511,
@@ -767,9 +767,9 @@
         "name": "xbz-proxy",
         "slug": "xbz-proxy",
         "status": "ACTIVE",
-        "updated_at": 1795733126794,
+        "updated_at": 1795809864839,
         "verify_jwt": true,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1794580663042,
@@ -779,9 +779,9 @@
         "name": "xbz-sync-pedidos",
         "slug": "xbz-sync-pedidos",
         "status": "ACTIVE",
-        "updated_at": 1795733128800,
+        "updated_at": 1795809867183,
         "verify_jwt": true,
-        "version": 33
+        "version": 34
       }
     ],
     "enabled": true,

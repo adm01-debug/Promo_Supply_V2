@@ -4,7 +4,7 @@
 |---|---|
 | nome | webauthn-authenticate |
 | status | ACTIVE |
-| versão | 33 |
+| versão | 34 |
 | verify_jwt | não |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/webauthn-authenticate/index.ts |
 | import_map |  |
