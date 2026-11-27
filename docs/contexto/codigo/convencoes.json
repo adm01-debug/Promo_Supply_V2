@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(deps): bump i18next from 26.7.2 to 27.2.4 (#481)",
    "chore(ci): baseline de orfaos encolhe - FornecedorMobileCard agora e importado (#618)",
    "docs(ledger): etapa 207 passa a [x] e 163-166 passam a [!] (bloqueio por decisao de negocio em INT-01) (#617)",
    "chore(db): sincronizar types.ts com o banco [auto] (#616)",
-   "chore(db): remove as 12 tabelas orfas do particionamento abandonado (#615)",
-   "docs(ledger): etapas 090/092/137/138 passam a [x] (PR #599 mergeada e migrations aplicadas em producao) (#614)"
+   "chore(db): remove as 12 tabelas orfas do particionamento abandonado (#615)"
   ]
  },
  "pr_template": null,

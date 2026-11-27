@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `dd1ca83a1d5733e6e4064b1d54bd724402effc45` (2026-11-26T23:18:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `130224ee5dd431d291951c7d2731b4e5668d913e` (2026-11-27T13:08:10-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -353,11 +353,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/hooks/useDevolucoes.ts (9)
 - src/hooks/usePagamentos.ts (9)
 - src/pages/pedidos/Pedidos.tsx (9)
+- bun.lock (8)
+- package.json (8)
 - src/features/auth/hooks/useAuth.tsx (8)
 - src/hooks/useApprovalWorkflow.ts (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
-- bun.lock (7)
-- package.json (7)
 - src/hooks/useFornecedores.ts (7)
 
 ## Workflows
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-27 `130224e` chore(deps): bump i18next from 26.7.2 to 27.2.4 (#481)
 - 2026-11-26 `dd1ca83` chore(ci): baseline de orfaos encolhe - FornecedorMobileCard agora e importado (#618)
 - 2026-11-26 `a39fb00` docs(ledger): etapa 207 passa a [x] e 163-166 passam a [!] (bloqueio por decisao de negocio em INT-01) (#617)
 - 2026-11-26 `0ae3c1d` chore(db): sincronizar types.ts com o banco [auto] (#616)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `416e381` fix(alertas): claim atomico da fila do alert-dispatcher (#596)
 - 2026-11-26 `3ec8bec` Merge remote-tracking branch 'origin/main' into claude/fix-tenant-id-default-invalido-261126-1650 (#593)
 - 2026-11-26 `85e4768` fix(tipos): inserts informam tenant_id e destravam o types-sync (issue #131) (#609)
-- 2026-11-26 `c82a447` docs(agentes): AGENTS.md volta a declarar o numero real de migrations (377) (#611)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

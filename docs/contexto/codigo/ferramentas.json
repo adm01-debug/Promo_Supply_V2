@@ -93,7 +93,7 @@
    "@tanstack/react-query-persist-client": "^5.108.2",
    "date-fns": "3.6.0",
    "framer-motion": "^14.14.0",
-   "i18next": "^26.7.2",
+   "i18next": "^27.2.4",
    "i18next-browser-languagedetector": "^8.3.0",
    "next-themes": "^0.4.6",
    "react": "^18.3.1",
@@ -805,7 +805,7 @@
    {
     "pacote": "i18next",
     "servico": "i18next",
-    "versao": "^26.7.2"
+    "versao": "^27.2.4"
    },
    {
     "pacote": "react-i18next",

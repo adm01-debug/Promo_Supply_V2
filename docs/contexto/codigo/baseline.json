@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "dd1ca83a1d5733e6e4064b1d54bd724402effc45",
+  "commit": "130224ee5dd431d291951c7d2731b4e5668d913e",
   "branch": "main",
-  "data_commit": "2026-11-26T23:18:53-03:00",
+  "data_commit": "2026-11-27T13:08:10-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "130224e",
+    "data": "2026-11-27",
+    "assunto": "chore(deps): bump i18next from 26.7.2 to 27.2.4 (#481)"
+   },
    {
     "sha": "dd1ca83",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "9185b53",
     "data": "2026-11-26",
     "assunto": "fix(seguranca): lockout de conta passa a valer no servidor e o front segue o novo contrato (etapas 057, 058 e 141) (#588"
-   },
-   {
-    "sha": "0943a88",
-    "data": "2026-11-26",
-    "assunto": "fix(ci): inventario cobre tests-rls e tests-e2e e a suite de RLS reprova em vez de pular (etapas 040 e 041) (#598)"
    }
   ],
   "arquivos_mudados_7d": 1612,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/compras",
-    "mudancas": 210
+    "mudancas": 209
    },
    {
     "pasta": "src/components/ui",
@@ -234,6 +234,14 @@
     "mudancas": 9
    },
    {
+    "arquivo": "bun.lock",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "package.json",
+    "mudancas": 8
+   },
+   {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
     "mudancas": 8
    },
@@ -244,14 +252,6 @@
    {
     "arquivo": "src/pages/solicitacoes/Solicitacoes.tsx",
     "mudancas": 8
-   },
-   {
-    "arquivo": "bun.lock",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "package.json",
-    "mudancas": 7
    },
    {
     "arquivo": "src/hooks/useFornecedores.ts",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 285
+    "commits": 284
    },
    {
     "autor": "github-actions[bot]",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 4
+    "commits": 5
    }
   ]
  },

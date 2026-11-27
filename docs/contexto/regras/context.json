@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "dd1ca83a1d5733e6e4064b1d54bd724402effc45",
+  "sha": "130224ee5dd431d291951c7d2731b4e5668d913e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 03:14 UTC",
+  "generated_at": "2026-11-27 16:08 UTC",
   "files_total": 1594,
   "code_files": 1419,
   "code_lines": 231461,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "884691691186f1e9",
+ "facts_hash": "3699927be4d681cb",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -38,7 +38,7 @@
     "in": "package.json"
    },
    "i18next": {
-    "version": "^26.7.2",
+    "version": "^27.2.4",
     "role": "i18n",
     "in": "package.json"
    },
@@ -125092,10 +125092,20 @@
   }
  },
  "git": {
-  "sha": "dd1ca83a1d5733e6e4064b1d54bd724402effc45",
+  "sha": "130224ee5dd431d291951c7d2731b4e5668d913e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "130224e",
+    "date": "2026-11-27",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps): bump i18next from 26.7.2 to 27.2.4 (#481)",
+    "files": [
+     "bun.lock",
+     "package.json"
+    ]
+   },
    {
     "sha": "dd1ca83",
     "date": "2026-11-26",
@@ -125438,28 +125448,16 @@
      "supabase/functions/spot-api/index.ts",
      "supabase/functions/spot-proxy/index.ts"
     ]
-   },
-   {
-    "sha": "cc209d3",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(banco): spot_pedidos ganha empresa e isolamento por grupo (etapa 050) (#585)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261128140000_spot_pedidos_tenant.sql",
-     "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    21
+    20
    ],
    [
     "AGENTS.md",
-    8
+    7
    ],
    [
     "src/integrations/supabase/types.ts",
@@ -125476,6 +125474,14 @@
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
+   ],
+   [
+    "bun.lock",
+    1
+   ],
+   [
+    "package.json",
+    1
    ],
    [
     "docs/qa/baseline-orfaos-componentes.json",
@@ -125523,14 +125529,6 @@
    ],
    [
     "supabase/rollbacks/20261128180000_revert_rls_logs_arquivo_tenant.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261128181000_revert_rls_organizations_spend_forecasts_tenant.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261126195500_check_budget_availability_le_department_budgets.sql",
     1
    ]
   ]
