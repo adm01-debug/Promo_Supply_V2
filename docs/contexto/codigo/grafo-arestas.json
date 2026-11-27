@@ -2676,7 +2676,8 @@
   "src/pages/catalogo-spot/useSpotCatalog.ts": [
    "src/hooks/useCatalogoPim.ts",
    "src/integrations/supabase/client.ts",
-   "src/lib/invokeEdge.ts"
+   "src/lib/invokeEdge.ts",
+   "src/lib/supabaseQuery.ts"
   ],
   "src/pages/catalogo-xbz/CatalogoXbz.tsx": [
    "src/components/ui/alert.tsx",

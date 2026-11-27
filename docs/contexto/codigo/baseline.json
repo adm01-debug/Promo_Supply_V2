@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "936959e47f257f5743982fe860b82006b25a90fa",
+  "commit": "2e6555b779e400cb1b24a87e7c3300c09d058a49",
   "branch": "main",
-  "data_commit": "2026-11-27T17:35:13-03:00",
+  "data_commit": "2026-11-27T17:51:47-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "2e6555b",
+    "data": "2026-11-27",
+    "assunto": "fix(compras): busca do catalogo SPOT usa o escapeIlike do projeto (#622)"
+   },
    {
     "sha": "936959e",
     "data": "2026-11-27",
@@ -126,11 +131,6 @@
     "sha": "3220347",
     "data": "2026-11-26",
     "assunto": "feat(db): alcada de auto-aprovacao configuravel (etapa 114 - NEG-14) (#603)"
-   },
-   {
-    "sha": "2515513",
-    "data": "2026-11-26",
-    "assunto": "fix(db): contratos ligam no fornecedor por uuid com FK e backfill (etapa 127 - DB-02) (#602)"
    }
   ],
   "arquivos_mudados_7d": 1615,
@@ -168,16 +168,16 @@
     "mudancas": 37
    },
    {
+    "pasta": "src/pages/catalogo-spot",
+    "mudancas": 28
+   },
+   {
     "pasta": "src/features/solicitacoes",
     "mudancas": 27
    },
    {
     "pasta": "src/features/auth",
-    "mudancas": 26
-   },
-   {
-    "pasta": "src/pages/catalogo-spot",
-    "mudancas": 26
+    "mudancas": 25
    },
    {
     "pasta": "src/pages/admin",
@@ -242,11 +242,11 @@
     "mudancas": 9
    },
    {
-    "arquivo": "src/features/auth/hooks/useAuth.tsx",
+    "arquivo": "src/hooks/useApprovalWorkflow.ts",
     "mudancas": 8
    },
    {
-    "arquivo": "src/hooks/useApprovalWorkflow.ts",
+    "arquivo": "src/pages/catalogo-spot/useSpotCatalog.ts",
     "mudancas": 8
    },
    {
@@ -258,15 +258,15 @@
     "mudancas": 7
    },
    {
+    "arquivo": "src/features/auth/hooks/useAuth.tsx",
+    "mudancas": 7
+   },
+   {
     "arquivo": "src/hooks/useFornecedores.ts",
     "mudancas": 7
    },
    {
     "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/pages/catalogo-spot/useSpotCatalog.ts",
     "mudancas": 7
    },
    {

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `936959e47f` · branch `main` · 2026-11-27 20:35 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2e6555b779` · branch `main` · 2026-11-27 20:52 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2739,7 +2739,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
 | `src/pages/acompanhamento/__tests__/statusKanban.test.ts` | 5 | avaliarAlteracaoStatusKanban · bloqueia a entrega feita pelo Kanban · traduz as colunas válidas para o status do banco · recusa transição que o banco rejeitaria, com mensagem de negócio … |
 | `src/pages/auth/__tests__/Auth.destino.test.tsx` | 5 | Auth: destino pos-login (etapa 043 / AUT-08) · volta para a rota que o ProtectedRoute registrou, com a query string · sem origem registrada cai na raiz, que o AppRoutes manda para /compras · recusa origem protocol-relative (//evil.com) e cai na raiz … |
-| `src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx` | 5 | useSpotProducts - leitura do PIM · filtra o fornecedor pelas grafias que o PIM usa, nao so por  · busca por nome com ilike e escapa curinga e barra digitados · escapa a barra invertida antes dos curetas … |
+| `src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx` | 5 | useSpotProducts - leitura do PIM · filtra o fornecedor pelas grafias que o PIM usa, nao so por  · busca por nome com ilike e escapa curinga e barra digitados · escapa meta-caracteres do like via escapeIlike (barra, cureta e parenteses) … |
 | `src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx` | 5 | DocumentosFiscais - falha e carga nao viram  · mostra o erro da consulta e um botao de nova tentativa · o botao de nova tentativa refaz a busca da lista · com a consulta em curso, mostra carregando e nao zera os contadores … |
 | `src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx` | 5 | Pagamentos - detalhe do pagamento acessivel pelo teclado (etapa 235) · a linha ganha um controle nomeado, focavel e nativo (Enter/espaco sao do navegador) · o acionamento do controle abre o detalhe do pagamento · o clique no controle abre o detalhe uma unica vez … |
 | `src/pages/pagamentos/__tests__/pagamentosStatusBanco.test.tsx` | 5 | Pagamentos - os 7 status do CHECK aparecem na tela (J7-16 e J7-17) · pagamento  · pagamento  · a aba CANCELADOS lista o pagamento cancelado com o badge CANCELADO … |

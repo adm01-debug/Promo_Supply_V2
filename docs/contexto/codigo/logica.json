@@ -1168,11 +1168,12 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 6,
+   "usado_por": 7,
    "usado_por_modulos": [
     "features/pedidos",
     "features/solicitacoes",
     "hooks",
+    "pages/catalogo-spot",
     "services"
    ],
    "coberto_por_testes": 1,

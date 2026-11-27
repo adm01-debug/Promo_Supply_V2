@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "936959e47f257f5743982fe860b82006b25a90fa",
+  "sha": "2e6555b779e400cb1b24a87e7c3300c09d058a49",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 20:35 UTC",
+  "generated_at": "2026-11-27 20:52 UTC",
   "files_total": 1592,
   "code_files": 1417,
   "code_lines": 230982,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "23c7168177dceeab",
+ "facts_hash": "1c04cffda7c0b414",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -68671,7 +68671,7 @@
    },
    {
     "file": "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
-    "name": "escapa a barra invertida antes dos curetas"
+    "name": "escapa meta-caracteres do like via escapeIlike (barra, cureta e parenteses)"
    },
    {
     "file": "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
@@ -112339,7 +112339,7 @@
     "useSpotProducts - leitura do PIM",
     "filtra o fornecedor pelas grafias que o PIM usa, nao so por ",
     "busca por nome com ilike e escapa curinga e barra digitados",
-    "escapa a barra invertida antes dos curetas",
+    "escapa meta-caracteres do like via escapeIlike (barra, cureta e parenteses)",
     "le paginas no limite aceito pelo bridge"
    ]
   },
@@ -124916,10 +124916,20 @@
   }
  },
  "git": {
-  "sha": "936959e47f257f5743982fe860b82006b25a90fa",
+  "sha": "2e6555b779e400cb1b24a87e7c3300c09d058a49",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "2e6555b",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "fix(compras): busca do catalogo SPOT usa o escapeIlike do projeto (#622)",
+    "files": [
+     "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
+     "src/pages/catalogo-spot/useSpotCatalog.ts"
+    ]
+   },
    {
     "sha": "936959e",
     "date": "2026-11-27",
@@ -125269,30 +125279,16 @@
      "supabase/migrations/20261128170000_bucket_product_images_config.sql",
      "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql"
     ]
-   },
-   {
-    "sha": "9185b53",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(seguranca): lockout de conta passa a valer no servidor e o front segue o novo contrato (etapas 057, 058 e 141) (#588)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useAccountLockout.test.tsx",
-     "src/hooks/useAccountLockout.ts",
-     "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
-     "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    16
+    15
    ],
    [
     "AGENTS.md",
-    7
+    6
    ],
    [
     "src/integrations/supabase/types.ts",
@@ -125300,6 +125296,10 @@
    ],
    [
     "src/pages/catalogo-spot/useSpotCatalog.ts",
+    3
+   ],
+   [
+    "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
     2
    ],
    [
@@ -125313,10 +125313,6 @@
    [
     "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
     2
-   ],
-   [
-    "src/pages/catalogo-spot/__tests__/useSpotProducts.pim.test.tsx",
-    1
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",

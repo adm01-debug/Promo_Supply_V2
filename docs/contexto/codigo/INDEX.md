@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `936959e47f257f5743982fe860b82006b25a90fa` (2026-11-27T17:35:13-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2e6555b779e400cb1b24a87e7c3300c09d058a49` (2026-11-27T17:51:47-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -355,8 +355,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/hooks/useDevolucoes.ts (9)
 - src/hooks/usePagamentos.ts (9)
 - src/pages/pedidos/Pedidos.tsx (9)
-- src/features/auth/hooks/useAuth.tsx (8)
 - src/hooks/useApprovalWorkflow.ts (8)
+- src/pages/catalogo-spot/useSpotCatalog.ts (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
 - docs/ci/README.md (7)
 
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-27 `2e6555b` fix(compras): busca do catalogo SPOT usa o escapeIlike do projeto (#622)
 - 2026-11-27 `936959e` fix(compras): catalogo SPOT acha o fornecedor real e busca por nome no PIM (#621)
 - 2026-11-27 `999a087` feat(compras): catalogo de Compras le o PIM e o espelho local deixa de ser alimentado (163-166) (#619)
 - 2026-11-27 `ac9fdc3` fix(infra): fronteira publica das edges declarada e isencoes de JWT sem deriva (etapa 184) (#604)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `adc4ff7` chore(db): sincronizar types.ts com o banco [auto] (#612)
 - 2026-11-26 `dbfed79` chore(progresso): 21 etapas com PR aberta passam a [A] e citam a PR (#607)
 - 2026-11-26 `e623754` fix(db): neg10 volta a ser idempotente e aplicavel (policy ja existia em prod) (#610)
-- 2026-11-26 `5068a49` fix(orcamento): trava le department_budgets e gatilhos param de perder/duplicar o gasto (090/092/137/138) (#599)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

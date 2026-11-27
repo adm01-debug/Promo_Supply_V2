@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(compras): busca do catalogo SPOT usa o escapeIlike do projeto (#622)",
    "fix(compras): catalogo SPOT acha o fornecedor real e busca por nome no PIM (#621)",
    "feat(compras): catalogo de Compras le o PIM e o espelho local deixa de ser alimentado (163-166) (#619)",
    "fix(infra): fronteira publica das edges declarada e isencoes de JWT sem deriva (etapa 184) (#604)",
-   "ci(deploy): apply de producao exige migration na main e aprovacao de environment (#600)",
-   "chore(deps): bump react-day-picker from 8.10.2 to 10.0.2 (#479)"
+   "ci(deploy): apply de producao exige migration na main e aprovacao de environment (#600)"
   ]
  },
  "pr_template": null,
