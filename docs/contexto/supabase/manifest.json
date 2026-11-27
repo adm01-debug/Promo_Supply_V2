@@ -7,7 +7,7 @@
       "section": "api.custom_hostname"
     }
   ],
-  "gerado_em": "2026-11-27T12:19:19Z",
+  "gerado_em": "2026-11-27T13:12:31Z",
   "gerador": "scripts/supabase_snapshot/snapshot.py",
   "produtor": "supabase-snapshot"
 }
