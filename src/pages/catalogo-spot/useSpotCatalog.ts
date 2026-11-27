@@ -24,6 +24,13 @@ export const SPOT_QUOTA_CATALOGO_DIA = 22;
 /** A API oficial do SPOT é o fornecedor; as linhas do PIM para ele carregam este código. */
 export const SPOT_SUPPLIER_CODE = 'SPOT';
 
+/**
+ * Grafias do fornecedor SPOT presentes no PIM. Hoje as linhas do Spot chegam com
+ * `supplier_code = 'STRICKER'` (razão social "Spot | Stricker"); `'SPOT'` fica na
+ * lista para quando o PIM padronizar o código. Ordem: o mais específico primeiro.
+ */
+export const SPOT_SUPPLIER_CODES: readonly string[] = [SPOT_SUPPLIER_CODE, 'STRICKER'];
+
 export interface SpotCachedProduct {
   reference: string;
   name: string;
@@ -84,8 +91,12 @@ export interface SpotCatalogFilters {
 /** O bridge recusa `select` acima disso (`MAX_SELECT_LIMIT` em `external-bridge-allowlist.ts`). */
 const SPOT_BRIDGE_PAGE = 500;
 
-/** Teto de leitura da tela; acima disso a busca é que deve recortar. */
-const SPOT_BRIDGE_MAX_ROWS = 2000;
+/**
+ * Teto de leitura da tela; acima disso a busca é que deve recortar.
+ * Medido no PIM em 28/11/2026: 3.663 variantes do fornecedor SPOT, então o teto
+ * precisa ficar acima disso para não sumir com produto da tela.
+ */
+const SPOT_BRIDGE_MAX_ROWS = 6000;
 
 const numeroOuNulo = (v: unknown): number | null => {
   if (typeof v === 'number' && Number.isFinite(v)) return v;
@@ -157,8 +168,10 @@ export function agruparProdutosPim(rows: BridgeRow[]): SpotCachedProduct[] {
 
 /** Lê o catálogo do SPOT no PIM, paginando até esgotar (ou bater o teto da tela). */
 async function lerCatalogoSpot(termo: string): Promise<BridgeRow[]> {
-  const base: Record<string, unknown> = { supplier_code: SPOT_SUPPLIER_CODE };
-  if (termo) base.name = termo;
+  const base: Record<string, unknown> = {
+    supplier_code: { operator: 'in', value: SPOT_SUPPLIER_CODES },
+  };
+  if (termo) base.name = { operator: 'ilike', value: `%${termo.replace(/[%_]/g, '\\$&')}%` };
 
   const todos: BridgeRow[] = [];
   for (let offset = 0; offset < SPOT_BRIDGE_MAX_ROWS; offset += SPOT_BRIDGE_PAGE) {
