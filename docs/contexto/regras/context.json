@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "416e381a27623312c5d1157d2b6c30b12429d243",
+  "sha": "675838c159b64ac91acdf7e77859b3c996f11205",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 00:53 UTC",
-  "files_total": 1582,
-  "code_files": 1407,
-  "code_lines": 230930,
+  "generated_at": "2026-11-27 00:54 UTC",
+  "files_total": 1584,
+  "code_files": 1409,
+  "code_lines": 231091,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "85c2528205ffe8a8",
+ "facts_hash": "298fc2864b152b6e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 456,
    ".tsx": 441,
-   ".sql": 433,
+   ".sql": 435,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -20622,7 +20622,7 @@
     "args": "p_cost_center_id UUID, p_valor DECIMAL",
     "returns": "JSON",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql",
+    "src": "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql",
     "security_definer": true,
     "search_path": false,
     "body": "DECLARE v_total DECIMAL; v_committed DECIMAL; v_used DECIMAL; v_available DECIMAL; v_cc_name TEXT; BEGIN SELECT name, COALESCE(total_budget, 0), COALESCE(committed_amount, 0), COALESCE(used_amount, 0) INTO v_cc_name, v_total, v_committed, v_used FROM public.cost_centers WHERE id = p_cost_center_id; v_available := v_total - (v_committed + v_used); IF v_available >= p_valor THEN RETURN json_build_object( 'available', true, 'has_budget', v_total > 0, 'budget_total', v_total, 'budget_available', v_available, 'message', 'Saldo disponível no centro de custo ' || v_cc_name ); ELSE RETURN json_build_object( 'available', false, 'has_budget', v_total > 0, 'budget_total', v_total, 'budget_available', v …",
@@ -27478,6 +27478,7 @@
    "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
    "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql",
    "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql",
+   "supabase/migrations/20261126195500_check_budget_availability_le_department_budgets.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
@@ -27518,6 +27519,7 @@
    "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
    "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql",
    "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql",
+   "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -37307,8 +37309,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 380,
-   "lines": 33137,
+   "files": 381,
+   "lines": 33252,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37399,8 +37401,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 33,
-   "lines": 2080,
+   "files": 34,
+   "lines": 2126,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37422,6 +37424,7 @@
     "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
     "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql",
     "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql",
+    "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql",
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -80055,7 +80058,7 @@
     "args": "p_cost_center_id UUID, p_valor DECIMAL",
     "returns": "JSON",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql",
+    "src": "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql",
     "security_definer": true,
     "search_path": false,
     "body": "DECLARE v_total DECIMAL; v_committed DECIMAL; v_used DECIMAL; v_available DECIMAL; v_cc_name TEXT; BEGIN SELECT name, COALESCE(total_budget, 0), COALESCE(committed_amount, 0), COALESCE(used_amount, 0) INTO v_cc_name, v_total, v_committed, v_used FROM public.cost_centers WHERE id = p_cost_center_id; v_available := v_total - (v_committed + v_used); IF v_available >= p_valor THEN RETURN json_build_object( 'available', true, 'has_budget', v_total > 0, 'budget_total', v_total, 'budget_available', v_available, 'message', 'Saldo disponível no centro de custo ' || v_cc_name ); ELSE RETURN json_build_object( 'available', false, 'has_budget', v_total > 0, 'budget_total', v_total, 'budget_available', v …",
@@ -94705,9 +94708,9 @@
    },
    {
     "kind": "segurança",
-    "msg": "função `check_budget_availability` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função",
+    "msg": "função `check_budget_availability` é SECURITY DEFINER sem `set search_path` (risco de escalação)",
     "where": [
-     "supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql"
+     "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql"
     ]
    },
    {
@@ -126105,6 +126108,10 @@
    "path": "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql",
    "lines": 58
   },
+  "supabase/migrations/20261126195500_check_budget_availability_le_department_budgets.sql": {
+   "path": "supabase/migrations/20261126195500_check_budget_availability_le_department_budgets.sql",
+   "lines": 115
+  },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "lines": 418
@@ -126324,6 +126331,10 @@
   "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql": {
    "path": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql",
    "lines": 50
+  },
+  "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql": {
+   "path": "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql",
+   "lines": 46
   },
   "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql": {
    "path": "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
@@ -126647,10 +126658,21 @@
   }
  },
  "git": {
-  "sha": "416e381a27623312c5d1157d2b6c30b12429d243",
+  "sha": "675838c159b64ac91acdf7e77859b3c996f11205",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "675838c",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(orcamento): trava de orcamento le department_budgets (#606)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261126195500_check_budget_availability_le_department_budgets.sql",
+     "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql"
+    ]
+   },
    {
     "sha": "416e381",
     "date": "2026-11-26",
@@ -127008,18 +127030,6 @@
      "supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql",
      "supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql"
     ]
-   },
-   {
-    "sha": "021a29a",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(banco): colunas de aprovador, delegacao e inspecao ganham FK para auth.users (#574)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql",
-     "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -127029,7 +127039,7 @@
    ],
    [
     "AGENTS.md",
-    13
+    12
    ],
    [
     "src/integrations/supabase/types.ts",
@@ -127042,6 +127052,14 @@
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
+   ],
+   [
+    "supabase/migrations/20261126195500_check_budget_availability_le_department_budgets.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql",
+    1
    ],
    [
     "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
@@ -127093,14 +127111,6 @@
    ],
    [
     "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
-    1
-   ],
-   [
-    "src/components/compras/contract/__tests__/replaceContractItems.test.ts",
-    1
-   ],
-   [
-    "src/components/compras/contract/replaceContractItems.ts",
     1
    ]
   ]
