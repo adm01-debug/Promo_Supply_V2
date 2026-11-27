@@ -295,7 +295,7 @@ const HistoricoCompras = () => {
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="end">
-                <CalendarComponent initialFocus mode="range" selected={dateRange} onSelect={setDateRange} numberOfMonths={2} locale={ptBR} />
+                <CalendarComponent autoFocus mode="range" selected={dateRange} onSelect={setDateRange} numberOfMonths={2} locale={ptBR} />
               </PopoverContent>
             </Popover>
 
