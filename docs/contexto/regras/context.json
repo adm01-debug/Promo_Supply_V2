@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "c54e49f5eaa831a99de797f981a23cd5d3ce8071",
+  "sha": "ac9fdc371be07ce5664eb9bd9f0fa22b5db30035",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 19:15 UTC",
+  "generated_at": "2026-11-27 19:16 UTC",
   "files_total": 1595,
   "code_files": 1420,
   "code_lines": 231523,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "f1c2c4428aabb6af",
+ "facts_hash": "267839b4db18a810",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -291,7 +291,8 @@
     "punchout-receive",
     "webauthn-authenticate",
     "dependency-health",
-    "receive-os-sync"
+    "receive-os-sync",
+    "spot-api"
    ],
    "auth": {}
   },
@@ -32150,7 +32151,7 @@
     "methods": [
      "OPTIONS"
     ],
-    "auth": "service_role (ignora RLS) + valida JWT do usuário",
+    "auth": "PÚBLICA (verify_jwt=false em config.toml)",
     "tables": [
      "spot_api_sync_log",
      "spot_estoque",
@@ -86038,7 +86039,8 @@
    "punchout-receive",
    "webauthn-authenticate",
    "dependency-health",
-   "receive-os-sync"
+   "receive-os-sync",
+   "spot-api"
   ],
   "auth_config": {},
   "grants": [
@@ -125124,10 +125126,21 @@
   }
  },
  "git": {
-  "sha": "c54e49f5eaa831a99de797f981a23cd5d3ce8071",
+  "sha": "ac9fdc371be07ce5664eb9bd9f0fa22b5db30035",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "ac9fdc3",
+    "date": "2026-11-27",
+    "author": "adm01-debug",
+    "subject": "fix(infra): fronteira publica das edges declarada e isencoes de JWT sem deriva (etapa 184) (#604)",
+    "files": [
+     "deploy_edge_functions_promo_supply.sh",
+     "scripts/ci/scripts-operacionais.unit.mjs",
+     "supabase/config.toml"
+    ]
+   },
    {
     "sha": "c54e49f",
     "date": "2026-11-27",
@@ -125470,15 +125483,6 @@
      "supabase/functions/alert-dispatcher/index.ts",
      "supabase/functions/process-outbox/index.ts"
     ]
-   },
-   {
-    "sha": "4a068aa",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(ci): regenera a matriz edge-tabela apos a #592 (#595)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md"
-    ]
    }
   ],
   "hot_files": [
@@ -125509,6 +125513,18 @@
    [
     "supabase/functions/alert-dispatcher/index.ts",
     2
+   ],
+   [
+    "deploy_edge_functions_promo_supply.sh",
+    1
+   ],
+   [
+    "scripts/ci/scripts-operacionais.unit.mjs",
+    1
+   ],
+   [
+    "supabase/config.toml",
+    1
    ],
    [
     ".github/workflows/aplicar-migration-prod.yml",
@@ -125548,18 +125564,6 @@
    ],
    [
     "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261128230100_check_budget_availability_le_department_budgets.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql",
     1
    ]
   ]

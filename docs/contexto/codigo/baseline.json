@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c54e49f5eaa831a99de797f981a23cd5d3ce8071",
+  "commit": "ac9fdc371be07ce5664eb9bd9f0fa22b5db30035",
   "branch": "main",
-  "data_commit": "2026-11-27T16:14:41-03:00",
+  "data_commit": "2026-11-27T16:14:58-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "ac9fdc3",
+    "data": "2026-11-27",
+    "assunto": "fix(infra): fronteira publica das edges declarada e isencoes de JWT sem deriva (etapa 184) (#604)"
+   },
    {
     "sha": "c54e49f",
     "data": "2026-11-27",
@@ -126,11 +131,6 @@
     "sha": "8383ee7",
     "data": "2026-11-26",
     "assunto": "fix(banco): lockout normaliza e-mail e deriva o IP do request (etapa 140) (#597)"
-   },
-   {
-    "sha": "2b1e27a",
-    "data": "2026-11-26",
-    "assunto": "fix(seguranca): multa e bloqueio de fornecedor notificam so a empresa do evento (#139) (#591)"
    }
   ],
   "arquivos_mudados_7d": 1613,

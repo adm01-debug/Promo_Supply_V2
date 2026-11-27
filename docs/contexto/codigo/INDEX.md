@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c54e49f5eaa831a99de797f981a23cd5d3ce8071` (2026-11-27T16:14:41-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ac9fdc371be07ce5664eb9bd9f0fa22b5db30035` (2026-11-27T16:14:58-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -216,7 +216,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `run-audit` — tabelas: -; chamada por 1 arquivo(s) do front
 - `scim-v2` (verify_jwt=false) — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
 - `send-push-notification` — tabelas: profiles, push_subscriptions, user_roles, user_tenants; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `spot-api` — tabelas: spot_api_sync_log, spot_estoque, spot_pedidos, spot_sessions, tenants, user_roles, user_tenants; chamada por 1 arquivo(s) do front, por SQL/cron
+- `spot-api` (verify_jwt=false) — tabelas: spot_api_sync_log, spot_estoque, spot_pedidos, spot_sessions, tenants, user_roles, user_tenants; chamada por 1 arquivo(s) do front, por SQL/cron
 - `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles, user_tenants; chamada por 1 arquivo(s) do front
 - `system-simulation` — tabelas: -; chamada por 1 arquivo(s) do front
 - `telemetry` — tabelas: telemetry_logs; chamada por 1 arquivo(s) do front
@@ -313,7 +313,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
 - hosts mais citados: wa.me, api.resend.com, ws.spotgifts.com.br, www.spotgifts.com.br, api.pwnedpasswords.com, erp.empresa.com, example.okta.com, fornecedor.com.br, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, openrouter.ai, raw.githubusercontent.com, xml.cxml.org
-- webhooks recebidos: dependency-health, punchout-receive, receive-os-sync, scim-v2, webauthn-authenticate
+- webhooks recebidos: dependency-health, punchout-receive, receive-os-sync, scim-v2, spot-api, webauthn-authenticate
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, PROMO_CHAMPIONS_WEBHOOK_SECRET, PROMO_DESIGN_WEBHOOK_SECRET, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-27 `ac9fdc3` fix(infra): fronteira publica das edges declarada e isencoes de JWT sem deriva (etapa 184) (#604)
 - 2026-11-27 `c54e49f` ci(deploy): apply de producao exige migration na main e aprovacao de environment (#600)
 - 2026-11-27 `6e6213a` chore(deps): bump react-day-picker from 8.10.2 to 10.0.2 (#479)
 - 2026-11-27 `130224e` chore(deps): bump i18next from 26.7.2 to 27.2.4 (#481)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `5068a49` fix(orcamento): trava le department_budgets e gatilhos param de perder/duplicar o gasto (090/092/137/138) (#599)
 - 2026-11-26 `14f107a` fix(rls): arquivo de auditoria/telemetria e leitura de organizacao passam a filtrar empresa (etapas 066, 067 e 068) (#59
 - 2026-11-26 `675838c` fix(orcamento): trava de orcamento le department_budgets (#606)
-- 2026-11-26 `416e381` fix(alertas): claim atomico da fila do alert-dispatcher (#596)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

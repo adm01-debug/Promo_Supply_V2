@@ -8,6 +8,7 @@
   "punchout-receive",
   "receive-os-sync",
   "scim-v2",
+  "spot-api",
   "webauthn-authenticate"
  ],
  "shared": [
@@ -1186,7 +1187,7 @@
    "entrada": "supabase/functions/spot-api/index.ts",
    "arquivos": 1,
    "linhas": 753,
-   "verify_jwt": true,
+   "verify_jwt": false,
    "metodos": [
     "OPTIONS",
     "POST"

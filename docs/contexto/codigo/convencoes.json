@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(infra): fronteira publica das edges declarada e isencoes de JWT sem deriva (etapa 184) (#604)",
    "ci(deploy): apply de producao exige migration na main e aprovacao de environment (#600)",
    "chore(deps): bump react-day-picker from 8.10.2 to 10.0.2 (#479)",
    "chore(deps): bump i18next from 26.7.2 to 27.2.4 (#481)",
-   "chore(ci): baseline de orfaos encolhe - FornecedorMobileCard agora e importado (#618)",
-   "docs(ledger): etapa 207 passa a [x] e 163-166 passam a [!] (bloqueio por decisao de negocio em INT-01) (#617)"
+   "chore(ci): baseline de orfaos encolhe - FornecedorMobileCard agora e importado (#618)"
   ]
  },
  "pr_template": null,

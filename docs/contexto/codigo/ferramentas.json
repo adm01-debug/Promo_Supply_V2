@@ -904,6 +904,7 @@
    "punchout-receive",
    "receive-os-sync",
    "scim-v2",
+   "spot-api",
    "webauthn-authenticate"
   ],
   "realtime": []
