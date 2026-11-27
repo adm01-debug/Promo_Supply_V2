@@ -204,7 +204,7 @@
    "nome": "alert-dispatcher",
    "entrada": "supabase/functions/alert-dispatcher/index.ts",
    "arquivos": 2,
-   "linhas": 634,
+   "linhas": 636,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -213,7 +213,8 @@
     "system_alerts"
    ],
    "rpcs": [
-    "alert_subscribers_for"
+    "alert_subscribers_for",
+    "claim_alerts_batch"
    ],
    "env": [
     "ALERT_EMAIL_FROM",

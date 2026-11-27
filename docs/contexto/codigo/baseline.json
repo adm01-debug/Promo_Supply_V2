@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3ec8becb1025d221e63b62da0ddca0e43f62cbda",
+  "commit": "416e381a27623312c5d1157d2b6c30b12429d243",
   "branch": "main",
-  "data_commit": "2026-11-26T21:33:22-03:00",
+  "data_commit": "2026-11-26T21:49:57-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "416e381",
+    "data": "2026-11-26",
+    "assunto": "fix(alertas): claim atomico da fila do alert-dispatcher (#596)"
+   },
    {
     "sha": "3ec8bec",
     "data": "2026-11-26",
@@ -126,18 +131,13 @@
     "sha": "1de9078",
     "data": "2026-11-26",
     "assunto": "fix(banco): nota fiscal ganha unicidade por chave de acesso e por fornecedor/serie/numero (#580)"
-   },
-   {
-    "sha": "eeff86e",
-    "data": "2026-11-26",
-    "assunto": "fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)"
    }
   ],
-  "arquivos_mudados_7d": 1597,
+  "arquivos_mudados_7d": 1600,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 213
+    "mudancas": 214
    },
    {
     "pasta": "src/components/compras",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "AGENTS.md",
-    "mudancas": 38
+    "mudancas": 39
    },
    {
     "pasta": "src/lib/__tests__",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 213
+    "mudancas": 214
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 38
+    "mudancas": 39
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -266,6 +266,10 @@
     "mudancas": 7
    },
    {
+    "arquivo": "supabase/functions/alert-dispatcher/index.ts",
+    "mudancas": 7
+   },
+   {
     "arquivo": "supabase/functions/send-push-notification/index.ts",
     "mudancas": 7
    },
@@ -286,15 +290,11 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/pages/catalogo-spot/useSpotCatalog.ts",
-    "mudancas": 6
-   },
-   {
     "arquivo": "src/pages/pagamentos/Pagamentos.tsx",
     "mudancas": 6
    },
    {
-    "arquivo": "supabase/functions/alert-dispatcher/index.ts",
+    "arquivo": "supabase/functions/check-approval-escalations/index.ts",
     "mudancas": 6
    }
   ],
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1578,
+  "arquivos_total": 1581,
   "arquivos_codigo": 972,
-  "linhas_codigo": 193735,
+  "linhas_codigo": 193767,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 166,
-  "migrations": 379,
+  "migrations": 380,
   "cron_jobs": 80,
   "testes": 326,
   "workflows": 15,
@@ -444,7 +444,7 @@
   },
   "src/integrations": {
    "arquivos": 3,
-   "linhas": 10532
+   "linhas": 10562
   },
   "src/lib": {
    "arquivos": 64,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 126,
-   "linhas": 20925
+   "linhas": 20927
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -550,7 +550,7 @@
  "maiores_arquivos": [
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "linhas": 10473
+   "linhas": 10503
   },
   {
    "arquivo": "scripts/regras_negocio/generate.py",

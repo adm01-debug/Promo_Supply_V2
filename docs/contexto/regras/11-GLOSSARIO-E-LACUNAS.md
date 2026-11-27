@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3ec8becb10` · branch `main` · 2026-11-27 00:44 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `416e381a27` · branch `main` · 2026-11-27 00:53 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -132,7 +132,7 @@
 | `supplier_bonifications` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
 | `supplier_documents` | _(sem COMMENT ON TABLE — significado não documentado)_ | 17 colunas | types.ts |
 | `supplier_qualification_scores` | _(sem COMMENT ON TABLE — significado não documentado)_ | 19 colunas | types.ts |
-| `system_alerts` | _(sem COMMENT ON TABLE — significado não documentado)_ | 15 colunas | migration |
+| `system_alerts` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
 | `table_size_snapshots` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
 | `telemetry_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `telemetry_logs_202605` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | types.ts |

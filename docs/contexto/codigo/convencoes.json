@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(alertas): claim atomico da fila do alert-dispatcher (#596)",
    "Merge remote-tracking branch 'origin/main' into claude/fix-tenant-id-default-invalido-261126-1650 (#593)",
    "fix(tipos): inserts informam tenant_id e destravam o types-sync (issue #131) (#609)",
    "docs(agentes): AGENTS.md volta a declarar o numero real de migrations (377) (#611)",
-   "chore(db): sincronizar types.ts com o banco [auto] (#587)",
-   "fix(edge): responses deriva o CORS da requisicao e a constante estatica sai do _shared (#605)"
+   "chore(db): sincronizar types.ts com o banco [auto] (#587)"
   ]
  },
  "pr_template": null,

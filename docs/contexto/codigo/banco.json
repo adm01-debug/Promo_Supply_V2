@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 379,
+ "migrations": 380,
  "seeds": [],
  "avisos": [
   "55 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -198,6 +198,7 @@
   "check_secret_rotation_due",
   "check_telemetry_alerts",
   "check_workflow_sod",
+  "claim_alerts_batch",
   "claim_outbox_batch",
   "cleanup_deadlock_snapshots",
   "cleanup_expired_challenges",
@@ -19538,6 +19539,13 @@
      "default": null,
      "ref": null
     },
+    "dispatch_lease_until": {
+     "tipo": "timestamptz",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "dispatch_status": {
      "tipo": "text",
      "nn": false,
@@ -19632,6 +19640,11 @@
      "unico": false
     },
     {
+     "nome": "idx_system_alerts_fila_dispatch",
+     "colunas": "created_at",
+     "unico": false
+    },
+    {
      "nome": "idx_system_alerts_pending_dispatch",
      "colunas": "created_at",
      "unico": false
@@ -19654,6 +19667,7 @@
     "created_at": "string | null",
     "description": "string | null",
     "dispatch_error": "string | null",
+    "dispatch_lease_until": "string | null",
     "dispatch_status": "string | null",
     "dispatched_at": "string | null",
     "id": "string",
@@ -23972,6 +23986,11 @@
   },
   {
    "nome": "check_workflow_sod",
+   "definida": true,
+   "usada_em": 1
+  },
+  {
+   "nome": "claim_alerts_batch",
    "definida": true,
    "usada_em": 1
   },

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "3ec8becb1025d221e63b62da0ddca0e43f62cbda",
+  "sha": "416e381a27623312c5d1157d2b6c30b12429d243",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 00:44 UTC",
-  "files_total": 1579,
-  "code_files": 1404,
-  "code_lines": 230588,
+  "generated_at": "2026-11-27 00:53 UTC",
+  "files_total": 1582,
+  "code_files": 1407,
+  "code_lines": 230930,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "a8de92e70760ca04",
+ "facts_hash": "85c2528205ffe8a8",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 456,
    ".tsx": 441,
-   ".sql": 430,
+   ".sql": 433,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -10990,6 +10990,13 @@
       "fk": "",
       "generated": "",
       "src": "supabase/migrations/20261117170000_corrige_alertas_sistema_e_agenda_scan_particoes.sql"
+     },
+     {
+      "name": "dispatch_lease_until",
+      "type": "string | null",
+      "fk": "",
+      "generated": "",
+      "src": "src/integrations/supabase/types.ts"
      }
     ],
     "constraints": [
@@ -22763,7 +22770,7 @@
     "raises": [],
     "tables": []
    },
-   "claim_outbox_batch": {
+   "claim_alerts_batch": {
     "args": "",
     "returns": "?",
     "lang": "",
@@ -22775,6 +22782,17 @@
     "tables": []
    },
    "SetofOptions": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
+   "claim_outbox_batch": {
     "args": "",
     "returns": "?",
     "lang": "",
@@ -26716,6 +26734,14 @@
     "unique": false,
     "where": "",
     "src": "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql"
+   },
+   {
+    "name": "idx_system_alerts_fila_dispatch",
+    "table": "system_alerts",
+    "columns": "created_at",
+    "unique": false,
+    "where": "WHERE dispatched_at IS NULL",
+    "src": "supabase/migrations/20261128198000_claim_alerts_batch.sql"
    }
   ],
   "cron_jobs": [
@@ -27474,6 +27500,7 @@
    "supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql",
    "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql",
    "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql",
+   "supabase/migrations/20261128198000_claim_alerts_batch.sql",
    "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql",
    "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
@@ -27506,6 +27533,7 @@
    "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
    "supabase/rollbacks/20261128194000_revert_supplier_qualification_scores_tenant.sql",
    "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql",
+   "supabase/rollbacks/20261128198000_revert_claim_alerts_batch.sql",
    "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
    "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
    "src/integrations/supabase/types.ts"
@@ -31737,6 +31765,30 @@
    },
    {
     "kind": "revoke",
+    "privs": "all",
+    "object": "claim_alerts_batch",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261128198000_claim_alerts_batch.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "claim_alerts_batch",
+    "objkind": "function",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261128198000_claim_alerts_batch.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "claim_alerts_batch",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261128198000_claim_alerts_batch.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "execute",
     "object": "record_failed_login",
     "objkind": "function",
@@ -32128,7 +32180,8 @@
    "table:audit_logs_ancora": "Ancora da cadeia de hash de audit_logs: ultimo registro apagado pela retencao legal de 5 anos. ISO 27001 A.8.15.",
    "column:audit_logs_ancora.registro_hash": "registro_hash do ultimo registro expurgado; e o hash_anterior esperado do primeiro registro remanescente.",
    "column:pagamentos.data_agendamento": "Data escolhida pelo financeiro ao agendar o pagamento (status agendado). data_pagamento continua sendo a data efetiva do pagamento.",
-   "column:contracts.supplier_id": "FK para fornecedores(id). Era text sem FK ate a etapa 127 (DB-02)."
+   "column:contracts.supplier_id": "FK para fornecedores(id). Era text sem FK ate a etapa 127 (DB-02).",
+   "column:system_alerts.dispatch_lease_until": "Posse temporaria do alert-dispatcher (claim_alerts_batch). NULL = livre. rollback:dispatch_lease:20261128198000"
   },
   "types_file": "src/integrations/supabase/types.ts",
   "dynamic_ddl": [
@@ -35355,8 +35408,8 @@
   },
   {
    "module": "DOCS",
-   "files": 4,
-   "lines": 736,
+   "files": 5,
+   "lines": 882,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -35366,6 +35419,7 @@
     "DOCS/qa/reversao/20261127190000_perf08_dropa_indices_redundantes_revert.sql",
     "DOCS/qa/reversao/20261127193000_perf08_mv_dashboard_kpis_refresh_diario_revert.sql",
     "DOCS/qa/reverts/20261127000000_reconcilia_ledger_migrations_revert.sql",
+    "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
     "DOCS/qa/verificacoes/20261128201000_lockout_rpc_publica_validacao.sql"
    ]
   },
@@ -36500,7 +36554,7 @@
   {
    "module": "src/integrations",
    "files": 3,
-   "lines": 10532,
+   "lines": 10562,
    "tables": [],
    "exports": [
     "index.ts: lovable",
@@ -37058,7 +37112,7 @@
   {
    "module": "supabase/functions",
    "files": 126,
-   "lines": 20925,
+   "lines": 20927,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -37253,8 +37307,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 379,
-   "lines": 32991,
+   "files": 380,
+   "lines": 33137,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37345,8 +37399,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 32,
-   "lines": 2062,
+   "files": 33,
+   "lines": 2080,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37383,6 +37437,7 @@
     "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
     "supabase/rollbacks/20261128194000_revert_supplier_qualification_scores_tenant.sql",
     "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql",
+    "supabase/rollbacks/20261128198000_revert_claim_alerts_batch.sql",
     "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
     "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql"
    ]
@@ -39622,14 +39677,12 @@
     "alert_type",
     "created_at",
     "dispatch_status",
-    "dispatched_at",
     "id",
     "message",
     "metadata",
     "resolved_at",
     "resolved_by",
-    "severity",
-    "tenant_id"
+    "severity"
    ],
    "tabela_de_fixture": [
     "x"
@@ -40298,6 +40351,9 @@
    ],
    "check_workflow_sod": [
     "supabase/functions/workflow-engine/index.ts"
+   ],
+   "claim_alerts_batch": [
+    "supabase/functions/alert-dispatcher/index.ts"
    ],
    "claim_outbox_batch": [
     "supabase/functions/process-outbox/index.ts"
@@ -59079,6 +59135,50 @@
     "line": "timeout: 120_000,"
    },
    {
+    "file": "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+    "line": "('alto-2','HIGH', now() - interval '30 min', gen_random_uuid()),"
+   },
+   {
+    "file": "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+    "line": "('baixo','LOW', now() - interval '50 min', NULL),"
+   },
+   {
+    "file": "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+    "line": "('critico-minusculo','critical', now() - interval '20 min', gen_random_uuid()),"
+   },
+   {
+    "file": "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+    "line": "('ja-entregue','HIGH', now() - interval '55 min', NULL);"
+   },
+   {
+    "file": "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+    "line": "('lease-expirado','EMERGENCY', now() - interval '35 min', now() - interval '1 min');"
+   },
+   {
+    "file": "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+    "line": "(SELECT bool_and(dispatch_lease_until > now() + interval '9 min'"
+   },
+   {
+    "file": "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+    "line": "AND dispatch_lease_until < now() + interval '11 min') FROM public.t_lote), NULL;"
+   },
+   {
+    "file": "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+    "line": "SELECT 'enxurrada-' || g, 'CRITICAL', now() - interval '10 min' FROM generate_series(1,250) g;"
+   },
+   {
+    "file": "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+    "line": "SELECT 'novo-' || g, 'HIGH', now() - interval '5 min' FROM generate_series(1,3) g;"
+   },
+   {
+    "file": "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+    "line": "VALUES ('alto-1','HIGH', now() - interval '40 min', gen_random_uuid()),"
+   },
+   {
+    "file": "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+    "line": "VALUES ('lease-em-uso','EMERGENCY', now() - interval '45 min', now() + interval '5 min'),"
+   },
+   {
     "file": "src/App.tsx",
     "line": "maxAge: 1000 * 60 * 60 * 24, // 24 hours"
    },
@@ -60009,6 +60109,10 @@
    {
     "file": "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql",
     "line": "AND v_hb.last_run > v_hb.last_run_at + interval '1 hour' THEN"
+   },
+   {
+    "file": "supabase/migrations/20261128198000_claim_alerts_batch.sql",
+    "line": "v_lease interval := interval '10 minutes';"
    },
    {
     "file": "supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql",
@@ -82099,7 +82203,7 @@
     "raises": [],
     "tables": []
    },
-   "claim_outbox_batch": {
+   "claim_alerts_batch": {
     "args": "",
     "returns": "?",
     "lang": "",
@@ -82111,6 +82215,17 @@
     "tables": []
    },
    "SetofOptions": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
+   "claim_outbox_batch": {
     "args": "",
     "returns": "?",
     "lang": "",
@@ -82672,10 +82787,6 @@
     "limit": "1"
    },
    {
-    "file": "supabase/functions/alert-dispatcher/index.ts",
-    "limit": "50"
-   },
-   {
     "file": "supabase/functions/check-cotacao-followup/index.ts",
     "limit": "1"
    },
@@ -82757,6 +82868,10 @@
    },
    {
     "file": "supabase/migrations/20261127180000_perf05_indices_system_alerts_e_spot_sync_log.sql",
+    "limit": "50"
+   },
+   {
+    "file": "supabase/migrations/20261128198000_claim_alerts_batch.sql",
     "limit": "50"
    }
   ],
@@ -91345,6 +91460,30 @@
    },
    {
     "kind": "revoke",
+    "privs": "all",
+    "object": "claim_alerts_batch",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261128198000_claim_alerts_batch.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "claim_alerts_batch",
+    "objkind": "function",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261128198000_claim_alerts_batch.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "claim_alerts_batch",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261128198000_claim_alerts_batch.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "execute",
     "object": "record_failed_login",
     "objkind": "function",
@@ -94692,6 +94831,23 @@
   "DOCS/qa/reverts/20261127000000_reconcilia_ledger_migrations_revert.sql": {
    "path": "DOCS/qa/reverts/20261127000000_reconcilia_ledger_migrations_revert.sql",
    "lines": 333
+  },
+  "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql": {
+   "path": "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+   "lines": 146,
+   "temporal": [
+    "('alto-2','HIGH', now() - interval '30 min', gen_random_uuid()),",
+    "('baixo','LOW', now() - interval '50 min', NULL),",
+    "('critico-minusculo','critical', now() - interval '20 min', gen_random_uuid()),",
+    "('ja-entregue','HIGH', now() - interval '55 min', NULL);",
+    "('lease-expirado','EMERGENCY', now() - interval '35 min', now() - interval '1 min');",
+    "(SELECT bool_and(dispatch_lease_until > now() + interval '9 min'",
+    "AND dispatch_lease_until < now() + interval '11 min') FROM public.t_lote), NULL;",
+    "SELECT 'enxurrada-' || g, 'CRITICAL', now() - interval '10 min' FROM generate_series(1,250) g;",
+    "SELECT 'novo-' || g, 'HIGH', now() - interval '5 min' FROM generate_series(1,3) g;",
+    "VALUES ('alto-1','HIGH', now() - interval '40 min', gen_random_uuid()),",
+    "VALUES ('lease-em-uso','EMERGENCY', now() - interval '45 min', now() + interval '5 min'),"
+   ]
   },
   "DOCS/qa/verificacoes/20261128201000_lockout_rpc_publica_validacao.sql": {
    "path": "DOCS/qa/verificacoes/20261128201000_lockout_rpc_publica_validacao.sql",
@@ -110319,7 +110475,7 @@
   },
   "src/integrations/supabase/types.ts": {
    "path": "src/integrations/supabase/types.ts",
-   "lines": 10473,
+   "lines": 10503,
    "exports": [
     "type Json",
     "type Database",
@@ -120509,7 +120665,7 @@
   },
   "supabase/functions/alert-dispatcher/index.ts": {
    "path": "supabase/functions/alert-dispatcher/index.ts",
-   "lines": 525,
+   "lines": 527,
    "tables": [
     {
      "table": "system_alerts",
@@ -120518,10 +120674,6 @@
     {
      "table": "system_alerts",
      "op": "insert"
-    },
-    {
-     "table": "system_alerts",
-     "op": "select"
     },
     {
      "table": "system_alerts",
@@ -120535,18 +120687,13 @@
    "table_cols": {
     "system_alerts": [
      "alert_type",
-     "created_at",
-     "dispatched_at",
      "id",
-     "message",
-     "metadata",
-     "resolved_at",
-     "severity",
-     "tenant_id"
+     "resolved_at"
     ]
    },
    "rpc": [
-    "alert_subscribers_for"
+    "alert_subscribers_for",
+    "claim_alerts_batch"
    ],
    "env": [
     "ALERT_EMAIL_FROM",
@@ -120603,8 +120750,7 @@
     "sendEmail"
    ],
    "pagination": [
-    "1",
-    "50"
+    "1"
    ],
    "uses_service_role": true
   },
@@ -126087,6 +126233,16 @@
    "path": "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql",
    "lines": 155
   },
+  "supabase/migrations/20261128198000_claim_alerts_batch.sql": {
+   "path": "supabase/migrations/20261128198000_claim_alerts_batch.sql",
+   "lines": 146,
+   "temporal": [
+    "v_lease interval := interval '10 minutes';"
+   ],
+   "pagination": [
+    "50"
+   ]
+  },
   "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql": {
    "path": "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql",
    "lines": 91
@@ -126242,6 +126398,10 @@
   "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql": {
    "path": "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql",
    "lines": 37
+  },
+  "supabase/rollbacks/20261128198000_revert_claim_alerts_batch.sql": {
+   "path": "supabase/rollbacks/20261128198000_revert_claim_alerts_batch.sql",
+   "lines": 18
   },
   "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql": {
    "path": "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
@@ -126487,10 +126647,25 @@
   }
  },
  "git": {
-  "sha": "3ec8becb1025d221e63b62da0ddca0e43f62cbda",
+  "sha": "416e381a27623312c5d1157d2b6c30b12429d243",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "416e381",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(alertas): claim atomico da fila do alert-dispatcher (#596)",
+    "files": [
+     "AGENTS.md",
+     "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+     "docs/qa/05-PROGRESSO.md",
+     "src/integrations/supabase/types.ts",
+     "supabase/functions/alert-dispatcher/index.ts",
+     "supabase/migrations/20261128198000_claim_alerts_batch.sql",
+     "supabase/rollbacks/20261128198000_revert_claim_alerts_batch.sql"
+    ]
+   },
    {
     "sha": "3ec8bec",
     "date": "2026-11-26",
@@ -126845,18 +127020,6 @@
      "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql",
      "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql"
     ]
-   },
-   {
-    "sha": "087f827",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(seguranca): manutencao de particoes e heartbeat de cron deixam de aceitar usuario comum (#573)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
-     "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -126870,11 +127033,27 @@
    ],
    [
     "src/integrations/supabase/types.ts",
-    4
+    5
+   ],
+   [
+    "supabase/functions/alert-dispatcher/index.ts",
+    2
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
+   ],
+   [
+    "DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261128198000_claim_alerts_batch.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261128198000_revert_claim_alerts_batch.sql",
+    1
    ],
    [
     "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql",
@@ -126922,22 +127101,6 @@
    ],
    [
     "src/components/compras/contract/replaceContractItems.ts",
-    1
-   ],
-   [
-    "src/components/pagamentos/PagamentoDetailModal.tsx",
-    1
-   ],
-   [
-    "src/hooks/useApprovalRules.ts",
-    1
-   ],
-   [
-    "src/hooks/useApprovalWorkflow.ts",
-    1
-   ],
-   [
-    "src/hooks/useBudgetManagement.ts",
     1
    ]
   ]

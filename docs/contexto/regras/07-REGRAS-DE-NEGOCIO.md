@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3ec8becb10` · branch `main` · 2026-11-27 00:44 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `416e381a27` · branch `main` · 2026-11-27 00:53 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1884,6 +1884,17 @@ _nenhum item encontrado_
 | Trecho | Arquivo |
 |---|---|
 | `timeout: 120_000,` | `playwright.config.ts` |
+| `('alto-2','HIGH', now() - interval '30 min', gen_random_uuid()),` | `DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql` |
+| `('baixo','LOW', now() - interval '50 min', NULL),` | `DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql` |
+| `('critico-minusculo','critical', now() - interval '20 min', gen_random_uuid()),` | `DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql` |
+| `('ja-entregue','HIGH', now() - interval '55 min', NULL);` | `DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql` |
+| `('lease-expirado','EMERGENCY', now() - interval '35 min', now() - interval '1 min');` | `DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql` |
+| `(SELECT bool_and(dispatch_lease_until > now() + interval '9 min'` | `DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql` |
+| `AND dispatch_lease_until < now() + interval '11 min') FROM public.t_lote), NULL;` | `DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql` |
+| `SELECT 'enxurrada-' \|\| g, 'CRITICAL', now() - interval '10 min' FROM generate_series(1,250) g;` | `DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql` |
+| `SELECT 'novo-' \|\| g, 'HIGH', now() - interval '5 min' FROM generate_series(1,3) g;` | `DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql` |
+| `VALUES ('alto-1','HIGH', now() - interval '40 min', gen_random_uuid()),` | `DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql` |
+| `VALUES ('lease-em-uso','EMERGENCY', now() - interval '45 min', now() + interval '5 min'),` | `DOCS/qa/verificacoes/20261128198000_claim_alerts_batch_validacao.sql` |
 | `maxAge: 1000 * 60 * 60 * 24, // 24 hours` | `src/App.tsx` |
 | `const STALE_MS = 7 * 24 * 60 * 60 * 1000;` | `src/components/admin/DependencyHealthBadge.tsx` |
 | `6 * 60 * 60 * 1000; // 6 hours (7d)` | `src/components/admin/telemetry/TelemetryCharts.tsx` |
@@ -2117,6 +2128,7 @@ _nenhum item encontrado_
 | `-- id 14 cleanup-checkpoint-snapshots 30 3 * * 0 DELETE ... interval '30 days'` | `supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql` |
 | `AND created_at < now() - interval '2 hours';` | `supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql` |
 | `AND v_hb.last_run > v_hb.last_run_at + interval '1 hour' THEN` | `supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql` |
+| `v_lease interval := interval '10 minutes';` | `supabase/migrations/20261128198000_claim_alerts_batch.sql` |
 | `DELETE FROM public.audit_logs WHERE created_at < now() - interval '5 years';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
 | `DELETE FROM public.deadlock_snapshots WHERE captured_at < now() - interval '90 days';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
 | `DELETE FROM public.financial_audit_logs WHERE created_at < now() - interval '5 years';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
@@ -2186,7 +2198,6 @@ _nenhum item encontrado_
 | 1 | `supabase/functions/_shared/notifications.ts` |
 | 1 | `supabase/functions/_shared/xbz_auth.ts` |
 | 1 | `supabase/functions/alert-dispatcher/index.ts` |
-| 50 | `supabase/functions/alert-dispatcher/index.ts` |
 | 1 | `supabase/functions/check-cotacao-followup/index.ts` |
 | 20 | `supabase/functions/check-sla-alerts/index.ts` |
 | 200 | `supabase/functions/check-sla-alerts/index.ts` |
@@ -2208,6 +2219,7 @@ _nenhum item encontrado_
 | 1 | `supabase/functions/xbz-proxy/index.ts` |
 | 200 | `supabase/migrations/20261127180000_perf05_indices_system_alerts_e_spot_sync_log.sql` |
 | 50 | `supabase/migrations/20261127180000_perf05_indices_system_alerts_e_spot_sync_log.sql` |
+| 50 | `supabase/migrations/20261128198000_claim_alerts_batch.sql` |
 
 ## I. Regras implícitas em mensagens de erro/validação
 
