@@ -912,7 +912,7 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
 
   - Evidencia (142): mesma causa raiz da 172/186 (JOB-01/EDG-06) e resolvida pela mesma migration `supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql` (commit 72c54084, PR #559, mergeada): `cron_watchdog()` passou a varrer `public.cron_heartbeats` cruzando com `cron.job` ativo e abre `cron_heartbeat.error.<job>` / `cron_heartbeat.stale.<job>` (HIGH), fechando sozinho quando o heartbeat volta ao normal e ignorando os seeds `run_count = 0` (sem alerta fantasma). Nao criou job novo: e chamada de dentro do job 123 (`cron-watchdog-15min`), que ja faz `resolve_stale_system_error_alerts()` no inicio. Reversao em `supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql` (nao aplicada). NAO VERIFICADO nesta sessao: aplicacao da migration no banco de producao (o PR foi mergeado sem registro de run do `aplicar-migration-prod.yml` no corpo).
 
-- [A] 143 — Migration: 43 tabelas têm tenant_id com DEFAULT de um tenant que não existe, e o trigger que deveria preencher o campo não funciona em contexto de cro — onda 3 — Média — DB-06 · PR #593
+- [x] 143 — Migration: 43 tabelas têm tenant_id com DEFAULT de um tenant que não existe, e o trigger que deveria preencher o campo não funciona em contexto de cro — onda 3 — Média — DB-06 · PR #593
 
 - [x] 144 — Aplicação: 43 tabelas têm tenant_id com DEFAULT de um tenant que não existe, e o trigger que deveria preencher o campo não funciona em contexto de cro — onda 3 — Média — DB-06
 
@@ -972,11 +972,11 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
 
 - Evidencia (158): PR #549 — call sites `src/pages/admin/PunchOutCatalogs.tsx:87` e `:155`; mesma causa raiz corrigida nos pontos em que a mensagem em inglês chegava ao usuário: `src/pages/admin/AlertDetail.tsx:74` (exibido em `:96`), `src/pages/admin/StorageMigration.tsx:55` (toast) e `src/services/rlsAuditService.ts:29` (exibido em `src/components/auditoria/RlsCompliancePanel.tsx:64`). Varredura `git grep -n "mensagemDeErroDaEdge(" -- src` = 17 ocorrências (1 definição, 7 no teste, 9 call sites de produção).
 
-- [A] 159 — Migration: `process-outbox` e `alert-dispatcher` rodam a cada minuto sem travar as linhas em processamento: execuções sobrepostas reenviam o mesmo ped — onda 4 — Alta — EDG-03 · PR #596
+- [x] 159 — Migration: `process-outbox` e `alert-dispatcher` rodam a cada minuto sem travar as linhas em processamento: execuções sobrepostas reenviam o mesmo ped — onda 4 — Alta — EDG-03 · PR #596
 
   - Estado parcial (auditado em 2026-11-26): a metade da `integration_outbox` **ja foi feita** por outro agente na etapa 203/JOB-06 — `supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql` cria `public.claim_outbox_batch(p_batch_size)` com `FOR UPDATE SKIP LOCKED` + lease de 10 min (sem status novo, o CHECK continua `pending|retrying|delivered|dead`) e `process-outbox/index.ts:49` ja chama a RPC. **Falta a metade do `alert-dispatcher`**: `alert-dispatcher/index.ts:312-318` ainda faz `.is("dispatched_at", null).order(created_at).limit(50)` sem claim e so carimba `dispatched_at` no fim do fan-out (`:459-482`), entao duas rodadas sobrepostas entregam o mesmo alerta.
 
-- [A] 160 — Aplicação: `process-outbox` e `alert-dispatcher` rodam a cada minuto sem travar as linhas em processamento: execuções sobrepostas reenviam o mesmo ped — onda 4 — Alta — EDG-03 · PR #596
+- [x] 160 — Aplicação: `process-outbox` e `alert-dispatcher` rodam a cada minuto sem travar as linhas em processamento: execuções sobrepostas reenviam o mesmo ped — onda 4 — Alta — EDG-03 · PR #596
 
   - Estado parcial (auditado em 2026-11-26): `process-outbox` ja usa o claim atomico (`admin.rpc("claim_outbox_batch")`, `index.ts:49`). O que falta e o `alert-dispatcher`: reservar a posse antes do fan-out (o fan-out pode levar minutos com Slack 3x5s + e-mail 3x8s + webhook 3x6s por alerta) e so entao entregar; hoje o unico dedupe e `dispatched_at IS NULL`, carimbado no fim.
 
