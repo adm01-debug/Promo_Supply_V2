@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `85e47689bf9d3ad9ef309a67651bcc2ed3f8a186` (2026-11-26T21:01:08-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3ec8becb1025d221e63b62da0ddca0e43f62cbda` (2026-11-26T21:33:22-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (897), SQL (426), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (897), SQL (430), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1574 |
+| arquivos_total | 1578 |
 | arquivos_codigo | 972 |
 | linhas_codigo | 193735 |
 | rotas | 56 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 95 |
 | edge_functions | 41 |
 | tabelas | 166 |
-| migrations | 377 |
+| migrations | 379 |
 | cron_jobs | 80 |
 | testes | 326 |
 | workflows | 15 |
@@ -344,8 +344,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (212)
-- AGENTS.md (37)
+- docs/qa/05-PROGRESSO.md (213)
+- AGENTS.md (38)
 - src/integrations/supabase/types.ts (11)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
@@ -357,8 +357,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
 - bun.lock (7)
-- docs/pendencias/_indice.md (7)
 - package.json (7)
+- src/hooks/useFornecedores.ts (7)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `3ec8bec` Merge remote-tracking branch 'origin/main' into claude/fix-tenant-id-default-invalido-261126-1650 (#593)
 - 2026-11-26 `85e4768` fix(tipos): inserts informam tenant_id e destravam o types-sync (issue #131) (#609)
 - 2026-11-26 `c82a447` docs(agentes): AGENTS.md volta a declarar o numero real de migrations (377) (#611)
 - 2026-11-26 `a54eaf5` chore(db): sincronizar types.ts com o banco [auto] (#587)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `0943a88` fix(ci): inventario cobre tests-rls e tests-e2e e a suite de RLS reprova em vez de pular (etapas 040 e 041) (#598)
 - 2026-11-26 `bf32408` fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)
 - 2026-11-26 `4a068aa` fix(ci): regenera a matriz edge-tabela apos a #592 (#595)
-- 2026-11-26 `803a3a2` fix(aprovacoes): historico de escalonamento grava o tenant e nao se perde (#144) (#592)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `85e47689bf` · branch `main` · 2026-11-27 00:06 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3ec8becb10` · branch `main` · 2026-11-27 00:44 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -496,7 +496,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | PUBLIC | execute | `check_rate_limit`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `grant_tenant_access_on_insert`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group`, `cleanup_old_security_logs`, `cleanup_old_audit_logs`, `_invoke_edge_function`, `cleanup_old_webhook_events`, `cleanup_old_integration_outbox` … +35 |
 | revoke | PUBLIC, anon | all | `cron_job_staleness`, `verificar_integridade_audit_logs`, `assign_numero_solicitacao`, `aprovador_pode_decidir_etapa` |
 | revoke | PUBLIC, anon | execute | `generate_sequential_number`, `normalize_email_lowercase`, `is_valid_cnpj`, `normalize_cnpj_digits`, `get_cron_job_staleness`, `get_dashboard_kpis`, `get_compras_dashboard_metrics`, `get_compras_dashboard_metrics`, `user_belongs_to_tenant`, `get_compras_dashboard_metrics`, `auto_transition_solicitacao_on_workflow_approved`, `get_cost_center_performance_report`, `get_cost_center_performance_report`, `clear_login_lockout` |
-| revoke | PUBLIC, anon, authenticated | all | `exec_sql`, `scan_stale_statistics`, `scan_cache_hit_ratio`, `xbz_cron_key_get`, `verify_xbz_cron_key`, `_invoke_xbz_sync`, `xbz_sync_watchdog`, `exec_sql`, `xbz_cron_key_get`, `verify_xbz_cron_key`, `_invoke_edge_function`, `_invoke_xbz_sync`, `_invoke_spot_sync`, `xbz_sync_watchdog`, `cron_watchdog` … +8 |
+| revoke | PUBLIC, anon, authenticated | all | `exec_sql`, `scan_stale_statistics`, `scan_cache_hit_ratio`, `xbz_cron_key_get`, `verify_xbz_cron_key`, `_invoke_xbz_sync`, `xbz_sync_watchdog`, `exec_sql`, `xbz_cron_key_get`, `verify_xbz_cron_key`, `_invoke_edge_function`, `_invoke_xbz_sync`, `_invoke_spot_sync`, `xbz_sync_watchdog`, `cron_watchdog` … +9 |
 | revoke | PUBLIC, anon, authenticated | execute | `apply_penalty_escalation`, `calc_checklist_overall_score`, `check_telemetry_alerts`, `cleanup_old_telemetry`, `mask_sensitive_data`, `cleanup_expired_challenges`, `cleanup_old_query_telemetry`, `audit_user_roles_changes`, `scan_dangerous_statements`, `pg_activity_watchdog`, `scan_unused_indexes`, `scan_table_bloat`, `scan_sequence_exhaustion`, `scan_fk_without_cascade`, `scan_duplicate_indexes` … +27 |
 | revoke | anon | all | `exec_sql`, `audit_logs`, `produto_fornecedores`, `repurchase_suggestions`, `supplier_compliance_summary`, `v_system_health_overview` |
 | revoke | anon | execute | `log_security_event`, `log_audit_event`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `grant_tenant_access_on_insert`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group` |

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "85e47689bf9d3ad9ef309a67651bcc2ed3f8a186",
+  "commit": "3ec8becb1025d221e63b62da0ddca0e43f62cbda",
   "branch": "main",
-  "data_commit": "2026-11-26T21:01:08-03:00",
+  "data_commit": "2026-11-26T21:33:22-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "3ec8bec",
+    "data": "2026-11-26",
+    "assunto": "Merge remote-tracking branch 'origin/main' into claude/fix-tenant-id-default-invalido-261126-1650 (#593)"
+   },
    {
     "sha": "85e4768",
     "data": "2026-11-26",
@@ -126,18 +131,13 @@
     "sha": "eeff86e",
     "data": "2026-11-26",
     "assunto": "fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)"
-   },
-   {
-    "sha": "53abd53",
-    "data": "2026-11-26",
-    "assunto": "fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)"
    }
   ],
-  "arquivos_mudados_7d": 1593,
+  "arquivos_mudados_7d": 1597,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 212
+    "mudancas": 213
    },
    {
     "pasta": "src/components/compras",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "AGENTS.md",
-    "mudancas": 37
+    "mudancas": 38
    },
    {
     "pasta": "src/lib/__tests__",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 212
+    "mudancas": 213
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 37
+    "mudancas": 38
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
@@ -250,10 +250,6 @@
     "mudancas": 7
    },
    {
-    "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 7
-   },
-   {
     "arquivo": "package.json",
     "mudancas": 7
    },
@@ -282,6 +278,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "docs/pendencias/_indice.md",
+    "mudancas": 6
+   },
+   {
     "arquivo": "scripts/ci/paridade-migrations-banco.allowlist.json",
     "mudancas": 6
    },
@@ -290,11 +290,11 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/pages/cotacao/Cotacao.tsx",
+    "arquivo": "src/pages/pagamentos/Pagamentos.tsx",
     "mudancas": 6
    },
    {
-    "arquivo": "src/pages/pagamentos/Pagamentos.tsx",
+    "arquivo": "supabase/functions/alert-dispatcher/index.ts",
     "mudancas": 6
    }
   ],
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1574,
+  "arquivos_total": 1578,
   "arquivos_codigo": 972,
   "linhas_codigo": 193735,
   "rotas": 56,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 166,
-  "migrations": 377,
+  "migrations": 379,
   "cron_jobs": 80,
   "testes": 326,
   "workflows": 15,

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "85e47689bf9d3ad9ef309a67651bcc2ed3f8a186",
+  "sha": "3ec8becb1025d221e63b62da0ddca0e43f62cbda",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 00:06 UTC",
-  "files_total": 1575,
-  "code_files": 1400,
-  "code_lines": 230309,
+  "generated_at": "2026-11-27 00:44 UTC",
+  "files_total": 1579,
+  "code_files": 1404,
+  "code_lines": 230588,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "247aa0ab1e46ccc7",
+ "facts_hash": "a8de92e70760ca04",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 456,
    ".tsx": 441,
-   ".sql": 426,
+   ".sql": 430,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -27472,6 +27472,8 @@
    "supabase/migrations/20261128170000_bucket_product_images_config.sql",
    "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql",
    "supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql",
+   "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql",
+   "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql",
    "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql",
    "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
@@ -27502,6 +27504,8 @@
    "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql",
    "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
    "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
+   "supabase/rollbacks/20261128194000_revert_supplier_qualification_scores_tenant.sql",
+   "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql",
    "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
    "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
    "src/integrations/supabase/types.ts"
@@ -31725,6 +31729,14 @@
    },
    {
     "kind": "revoke",
+    "privs": "all",
+    "object": "fill_tenant_id_from_supplier",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "execute",
     "object": "record_failed_login",
     "objkind": "function",
@@ -32317,6 +32329,14 @@
     "stmt": "IF v_fora = 0 THEN CREATE POLICY \"storage_produtos_leitura_publica\" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'product-images' AND name LIKE 'products/%');"
    },
    {
+    "src": "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql",
+    "stmt": "EXECUTE format('alter table public.%I alter column tenant_id drop default', r.table_name);"
+   },
+   {
+    "src": "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql",
+    "stmt": "EXECUTE format( 'create trigger %I before insert on public.%I for each row execute function public.fill_tenant_id_from_profile()', v_nome, r.table_name );"
+   },
+   {
     "src": "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
     "stmt": "EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT %I', r.tabela, v_nome);"
    },
@@ -32335,6 +32355,10 @@
    {
     "src": "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql",
     "stmt": "EXECUTE format('ALTER TABLE public.spot_pedidos DROP CONSTRAINT %I', v_constraint);"
+   },
+   {
+    "src": "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql",
+    "stmt": "EXECUTE format( 'alter table public.%I alter column tenant_id set default ''00000000-0000-0000-0000-000000000000''::uuid', r.table_name );"
    }
   ]
  },
@@ -37229,8 +37253,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 377,
-   "lines": 32756,
+   "files": 379,
+   "lines": 32991,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37321,8 +37345,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 30,
-   "lines": 2018,
+   "files": 32,
+   "lines": 2062,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37357,6 +37381,8 @@
     "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql",
     "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
     "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
+    "supabase/rollbacks/20261128194000_revert_supplier_qualification_scores_tenant.sql",
+    "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql",
     "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
     "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql"
    ]
@@ -91311,6 +91337,14 @@
    },
    {
     "kind": "revoke",
+    "privs": "all",
+    "object": "fill_tenant_id_from_supplier",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "execute",
     "object": "record_failed_login",
     "objkind": "function",
@@ -94462,6 +94496,13 @@
    },
    {
     "kind": "ddl dinâmico",
+    "msg": "2 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('alter table public.%I alter column tenant_id drop default', r.table_name);` · `EXECUTE format( 'create trigger %I before insert on public.%I for each row execute function public.fill_tenant_id_from_profile()', v_nome, r.table_name );`",
+    "where": [
+     "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql"
+    ]
+   },
+   {
+    "kind": "ddl dinâmico",
     "msg": "1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT %I', r.tabela, v_nome);`",
     "where": [
      "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql"
@@ -94486,6 +94527,13 @@
     "msg": "1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER TABLE public.spot_pedidos DROP CONSTRAINT %I', v_constraint);`",
     "where": [
      "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql"
+    ]
+   },
+   {
+    "kind": "ddl dinâmico",
+    "msg": "1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format( 'alter table public.%I alter column tenant_id set default ''00000000-0000-0000-0000-000000000000''::uuid', r.table_name );`",
+    "where": [
+     "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql"
     ]
    },
    {
@@ -126031,6 +126079,14 @@
     }
    ]
   },
+  "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql": {
+   "path": "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql",
+   "lines": 80
+  },
+  "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql": {
+   "path": "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql",
+   "lines": 155
+  },
   "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql": {
    "path": "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql",
    "lines": 91
@@ -126178,6 +126234,14 @@
      "kind": "compara"
     }
    ]
+  },
+  "supabase/rollbacks/20261128194000_revert_supplier_qualification_scores_tenant.sql": {
+   "path": "supabase/rollbacks/20261128194000_revert_supplier_qualification_scores_tenant.sql",
+   "lines": 7
+  },
+  "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql": {
+   "path": "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql",
+   "lines": 37
   },
   "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql": {
    "path": "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
@@ -126423,10 +126487,24 @@
   }
  },
  "git": {
-  "sha": "85e47689bf9d3ad9ef309a67651bcc2ed3f8a186",
+  "sha": "3ec8becb1025d221e63b62da0ddca0e43f62cbda",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "3ec8bec",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "Merge remote-tracking branch 'origin/main' into claude/fix-tenant-id-default-invalido-261126-1650 (#593)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql",
+     "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql",
+     "supabase/rollbacks/20261128194000_revert_supplier_qualification_scores_tenant.sql",
+     "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql"
+    ]
+   },
    {
     "sha": "85e4768",
     "date": "2026-11-26",
@@ -126779,18 +126857,6 @@
      "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
      "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql"
     ]
-   },
-   {
-    "sha": "fc2bfbb",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(rls): current_tenant_id resolve o tenant pelo cadastro quando o token nao traz (#572)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
-     "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -126809,6 +126875,22 @@
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
+   ],
+   [
+    "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261128194000_revert_supplier_qualification_scores_tenant.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql",
+    1
    ],
    [
     "src/components/compras/ContractDetailsModal.tsx",
@@ -126856,22 +126938,6 @@
    ],
    [
     "src/hooks/useBudgetManagement.ts",
-    1
-   ],
-   [
-    "src/hooks/useContactNotes.ts",
-    1
-   ],
-   [
-    "src/hooks/useDevolucoes.ts",
-    1
-   ],
-   [
-    "src/hooks/useLicitacoes.ts",
-    1
-   ],
-   [
-    "src/lib/tenant.ts",
     1
    ]
   ]

@@ -6,10 +6,10 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 377,
+ "migrations": 379,
  "seeds": [],
  "avisos": [
-  "53 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
+  "55 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
  ],
  "extensoes": [
   "btree_gist",
@@ -225,6 +225,7 @@
   "ensure_single_default_filter",
   "ensure_telemetry_logs_partition",
   "fill_tenant_id_from_profile",
+  "fill_tenant_id_from_supplier",
   "find_approval_rule",
   "fx_convert",
   "generate_sequential_number",
@@ -1009,6 +1010,13 @@
    "evento": "insert or update",
    "tabela": "supplier_documents",
    "funcao": "trigger_recalculate_qualification_score"
+  },
+  {
+   "nome": "a_fill_tenant_id_supplier",
+   "quando": "before",
+   "evento": "insert",
+   "tabela": "supplier_qualification_scores",
+   "funcao": "fill_tenant_id_from_supplier"
   },
   {
    "nome": "trg_system_alerts_severity_canonica",
@@ -19494,7 +19502,9 @@
    },
    "usada_no_front": 3,
    "usada_em_edges": [],
-   "triggers": [],
+   "triggers": [
+    "a_fill_tenant_id_supplier"
+   ],
    "sem_rls": false,
    "nao_usada": false
   },
