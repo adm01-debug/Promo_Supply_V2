@@ -10,16 +10,11 @@ import {
   evaluateFreshness,
   latestSuccessByEndpoint,
   useSpotSyncStatus,
-  useTriggerSpotSync,
   type CacheFreshness,
-  type SpotSyncAction,
 } from './useSpotCatalog';
 
 const MONITORED: ReadonlyArray<{ endpoint: string; label: string; maxAgeMinutes: number; dailyLimit: number }> = [
-  { endpoint: 'products', label: 'Catálogo', maxAgeMinutes: 36 * 60, dailyLimit: 22 },
-  { endpoint: 'optionals', label: 'SKUs e preços', maxAgeMinutes: 36 * 60, dailyLimit: 22 },
-  { endpoint: 'customizationOptions', label: 'Personalização', maxAgeMinutes: 8 * 24 * 60, dailyLimit: 22 },
-  { endpoint: 'Stocks', label: 'Estoque', maxAgeMinutes: 45, dailyLimit: 96 },
+  { endpoint: 'getOrders', label: 'Pedidos', maxAgeMinutes: 60, dailyLimit: 48 },
 ];
 
 const FRESHNESS_LABEL: Record<CacheFreshness, string> = {
@@ -45,12 +40,12 @@ function formatAge(iso: string | undefined): string {
 }
 
 /**
- * Painel de frescor do cache SPOT + consumo da quota diária da API oficial.
- * Segue o mesmo padrão visual do XbzNetworkPanel.
+ * Painel de frescor da integração com a API oficial SPOT + consumo da quota diária.
+ * Catálogo, preço e estoque não passam mais por aqui (INT-01: vêm do PIM pela
+ * view `v_compras_catalogo`); só a sincronização de pedidos consome a cota.
  */
 export const SpotSyncPanel = () => {
   const { data: rows = [], isLoading, refetch, isFetching } = useSpotSyncStatus();
-  const syncMutation = useTriggerSpotSync();
 
   const summary = useMemo(() => {
     const latest = latestSuccessByEndpoint(rows);
@@ -80,10 +75,10 @@ export const SpotSyncPanel = () => {
         <div>
           <CardTitle className="flex items-center gap-2 text-base">
             <Database className="w-4 h-4" aria-hidden="true" />
-            Cache da API oficial SPOT
+            Integração com a API oficial SPOT
           </CardTitle>
           <CardDescription>
-            Dados vêm do cache local. A API tem limite diário: catálogo 22 req/dia, estoque 96 req/dia.
+            Catálogo, preço e estoque vêm do PIM. Da API oficial só restou a leitura de pedidos (limite diário de 48 req/dia).
           </CardDescription>
         </div>
         <Button
@@ -100,10 +95,10 @@ export const SpotSyncPanel = () => {
         {hasProblem && !isLoading && (
           <Alert variant="destructive" data-testid="spot-sync-alert">
             <AlertTriangle className="h-4 w-4" aria-hidden="true" />
-            <AlertTitle>Cache desatualizado</AlertTitle>
+            <AlertTitle>Integração sem sincronização recente</AlertTitle>
             <AlertDescription>
-              Um ou mais conjuntos de dados estão fora da janela esperada de sincronização.
-              Verifique os agendamentos antes de emitir pedidos.
+              A última leitura de pedidos está fora da janela esperada.
+              Verifique o agendamento antes de emitir pedidos.
             </AlertDescription>
           </Alert>
         )}

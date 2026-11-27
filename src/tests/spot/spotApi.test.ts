@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+﻿import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import {
@@ -169,9 +169,18 @@ describe('spot-api: acoes do cron', () => {
     expect(extraiSet('CRON_ACTIONS')).toContain('getOrders');
   });
 
-  it('permite os tres syncs no cron', () => {
+  it('os syncs de catalogo sairam do cron — o catalogo agora vem do PIM (INT-01)', () => {
     const cron = extraiSet('CRON_ACTIONS');
-    for (const a of ['syncCatalog', 'syncCustomization', 'syncStock']) expect(cron).toContain(a);
+    for (const a of ['syncCatalog', 'syncCustomization', 'syncStock']) {
+      expect(cron).not.toContain(a);
+      expect(extraiSet('VALID_ACTIONS')).not.toContain(a);
+    }
+  });
+
+  it('nao sobra writer do espelho local de catalogo no codigo da edge', () => {
+    for (const tabela of ['spot_produtos', 'spot_skus', 'spot_estoque', 'spot_customization_options']) {
+      expect(fonte).not.toContain(`"${tabela}"`);
+    }
   });
 
   it('mantem createOrder fora do cron — cria compromisso financeiro', () => {
@@ -241,43 +250,5 @@ describe('spot-api: cota contada por requisicao HTTP', () => {
     const chamada = bloco('async function callSpot<');
     expect(chamada.match(/logCall\(/g) ?? []).toHaveLength(1);
     expect(chamada).toContain('status: "quota_blocked"');
-  });
-});
-
-describe('spot-api: reconciliacao do estoque (INT-11)', () => {
-  const fonte = readFileSync(resolve(process.cwd(), 'supabase/functions/spot-api/index.ts'), 'utf8');
-
-  /** Corpo de uma funcao de topo, do `function nome` ate a chave que a fecha. */
-  const corpoDaFuncao = (nome: string): string => {
-    const inicio = fonte.indexOf(`async function ${nome}(`);
-    if (inicio === -1) throw new Error(`nao achei a funcao ${nome}`);
-    let profundidade = 0;
-    for (let i = fonte.indexOf('{', inicio); i < fonte.length; i += 1) {
-      if (fonte[i] === '{') profundidade += 1;
-      else if (fonte[i] === '}') {
-        profundidade -= 1;
-        if (profundidade === 0) return fonte.slice(inicio, i + 1);
-      }
-    }
-    throw new Error(`corpo de ${nome} nao fecha`);
-  };
-
-  it('syncStock zera quem ficou de fora do payload em vez de manter a quantidade antiga', () => {
-    // O upsert so grava o que veio; sem reconciliar, o SKU que o fornecedor parou de
-    // enviar continuava "em estoque" para sempre.
-    const corpo = corpoDaFuncao('syncStock');
-    expect(corpo).toMatch(/\.from\("spot_estoque"\)/);
-    expect(corpo).toMatch(/\.update\(\{[^}]*quantity: 0/);
-    expect(corpo).toMatch(/\.lt\("synced_at", now\)/);
-  });
-
-  it('payload vazio nao apaga o cache: o zeramento exige ter gravado alguma linha', () => {
-    const corpo = corpoDaFuncao('syncStock');
-    expect(corpo).toMatch(/if \(saved > 0\) \{[\s\S]*?\.lt\("synced_at", now\)/);
-  });
-
-  it('falha na reconciliacao nao passa em silencio', () => {
-    const corpo = corpoDaFuncao('syncStock');
-    expect(corpo).toMatch(/if \(clearError\) \{[\s\S]*?throw new HttpError\(500/);
   });
 });

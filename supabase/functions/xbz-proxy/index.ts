@@ -1,4 +1,4 @@
-/**
+﻿/**
  * xbz-proxy — proxy seguro para a API XBZ Brindes.
  *
  * Regras:
@@ -24,8 +24,6 @@ import {
   type XbzCaller,
 } from "../_shared/xbz_auth.ts";
 import { encryptSecret } from "../_shared/xbz_crypto.ts";
-import { mirrorCatalogo, readCatalogoCacheWithMeta } from "../_shared/xbz_catalog_cache.ts";
-import { mirrorCores, mirrorFiscal } from "../_shared/xbz_fiscal_cache.ts";
 import { mascararPortador, montarPortador } from "../_shared/xbz_portador.ts";
 
 import {
@@ -204,14 +202,7 @@ async function handleAction(
 
   if (action === "cores") {
     requireRole(caller, READ_ROLES);
-    const result = await xbzCores();
-    const cores = await mirrorCores(
-      admin,
-      result.data,
-      (message) => logger.warn("falha ao espelhar cores XBZ", { message }),
-    );
-    logger.info("cores XBZ espelhadas", { cores });
-    return ok(result, requestId, cors);
+    return ok(await xbzCores(), requestId, cors);
   }
 
   // --- A partir daqui, todas as ações exigem credenciais do tenant ---
@@ -294,49 +285,19 @@ async function handleAction(
       const n = num(v, 0);
       return n > 0 ? [n] : undefined;
     };
-    try {
-      // Endpoint atual do portal (nov/2026); resposta normalizada para PascalCase.
-      const result = await xbzMxbzConsultaEstoque(portal, {
-        busca,
-        filtro_id: num(body.filtroId, 0),
-        quantidade: num(body.quantidade, 0),
-        preco_minimo: num(body.precoMinimo, 0),
-        preco_maximo: num(body.precoMaximo, 0),
-        lista_cores_id: lista(body.corId),
-        lista_tipos_id: lista(body.tipoId),
-        lista_temas_id: lista(body.temaId),
-      });
-
-      // Espelho best-effort: nunca compromete a resposta ao usuário.
-      const mirrored = await mirrorCatalogo(
-        admin,
-        caller.tenantId,
-        result.data,
-        (message) => logger.warn("falha ao espelhar catálogo XBZ", { message }),
-      );
-      logger.info("catálogo XBZ espelhado", { mirrored });
-
-      return ok(result, requestId, cors);
-    } catch (err) {
-      // Degradação elegante: XBZ fora do ar (rede/5xx/circuit breaker aberto)
-      // → devolve o último snapshot conhecido em vez de falhar a tela.
-      const status = err instanceof XbzError ? err.status : 500;
-      if (status < 500) throw err;
-
-      const cached = await readCatalogoCacheWithMeta(admin, caller.tenantId, busca);
-      if (cached.items.length === 0) throw err;
-
-      logger.warn("catálogo servido do cache local", { status, items: cached.items.length });
-      return json({
-        success: true,
-        data: cached.items,
-        stale: true,
-        source: "cache",
-        syncedAt: cached.syncedAt,
-        requestId,
-      }, cors);
-
-    }
+    // Endpoint atual do portal (nov/2026); resposta normalizada para PascalCase.
+    // INT-01: sem espelho local — o catálogo de compras vem do PIM (`v_compras_catalogo`).
+    const result = await xbzMxbzConsultaEstoque(portal, {
+      busca,
+      filtro_id: num(body.filtroId, 0),
+      quantidade: num(body.quantidade, 0),
+      preco_minimo: num(body.precoMinimo, 0),
+      preco_maximo: num(body.precoMaximo, 0),
+      lista_cores_id: lista(body.corId),
+      lista_tipos_id: lista(body.tipoId),
+      lista_temas_id: lista(body.temaId),
+    });
+    return ok(result, requestId, cors);
   }
 
 
@@ -347,14 +308,6 @@ async function handleAction(
     const pessoaId = creds.row.pessoa_id ?? 0;
     if (pessoaId <= 0) throw new XbzError(412, "pessoaId da XBZ desconhecido — execute o teste de conexão");
     const result = await xbzGetSt(produtoId, pessoaId);
-    const espelhado = await mirrorFiscal(
-      admin,
-      caller.tenantId,
-      produtoId,
-      result.data,
-      (message) => logger.warn("falha ao espelhar ficha fiscal XBZ", { message }),
-    );
-    logger.info("ficha fiscal XBZ espelhada", { produtoId, espelhado });
     return ok(result, requestId, cors);
   }
 

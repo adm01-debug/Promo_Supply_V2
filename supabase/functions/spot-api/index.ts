@@ -1,13 +1,18 @@
-/**
+﻿/**
  * spot-api — integração com a API oficial SPOT / Stricker.
  *
- * Substitui gradualmente o scraping de `spot-proxy`. Toda leitura do app vem do
- * cache no banco (spot_produtos / spot_skus / spot_customization_options /
- * spot_estoque); esta função é o ÚNICO ponto que fala com ws.spotgifts.com.br.
+ * Ações: `createOrder`, `getOrders` e `status`. É o ÚNICO ponto que fala com
+ * ws.spotgifts.com.br; toda chamada abre linha em `spot_api_sync_log` porque a
+ * API tem cota diária.
+ *
+ * INT-01 (etapas 163-166): o catálogo NÃO é mais sincronizado aqui. Catálogo,
+ * preço e estoque do fornecedor vêm do PIM (Promo Gifts V4), lidos pela view
+ * `v_compras_catalogo` através do `external-db-bridge`. As ações `syncCatalog`,
+ * `syncCustomization` e `syncStock` e o espelho local (`spot_produtos`,
+ * `spot_skus`, `spot_customization_options`, `spot_estoque`) deixaram de existir.
  *
  * Restrições respeitadas:
- *  - /Stocks: 96 req/dia  → cron a cada 15 min
- *  - catálogo/personalização: 22 req/dia → 1 sync/dia
+ *  - /Orders: cron a cada 30 min (`getOrders`)
  *  - token válido 24h, reaproveitado via spot_sessions
  */
 import { buildCorsHeaders, timingSafeEqualStr } from "../_shared/security.ts";
@@ -19,16 +24,10 @@ import { retry } from "../_shared/retry.ts";
 import {
   buildInternalReference,
   chunk,
-  decodeServiceCode,
   describeSpotError,
   evaluateQuota,
-  extractPriceTiers,
-  parseCatalogs,
   parseSpotDecimal,
   readOrdersDetails,
-  resolveCategoryName,
-  splitTypeCodes,
-  spotProductImageUrl,
 } from "../_shared/spot_api.ts";
 
 const BASE_URL = (Deno.env.get("SPOT_API_BASE_URL") ?? "https://ws.spotgifts.com.br/api/v1SSL").replace(/\/+$/, "");
@@ -39,27 +38,27 @@ const UPSERT_BATCH = 500;
 const SESSION_TTL_MS = 23 * 60 * 60 * 1000; // 24h com margem
 const ALLOWED_ROLES = ["admin", "coordinator", "buyer"] as const;
 
-type Action = "syncCatalog" | "syncCustomization" | "syncStock" | "createOrder" | "getOrders" | "status";
+type Action = "createOrder" | "getOrders" | "status";
 
 const VALID_ACTIONS: ReadonlySet<string> = new Set<Action>([
-  "syncCatalog",
-  "syncCustomization",
-  "syncStock",
   "createOrder",
   "getOrders",
   "status",
 ]);
 
 /** Ações que o cron pode disparar com a service role key (sem usuário). */
-// `getOrders` entra na lista porque e a unica acao que popula `spot_pedidos`:
-// ate 2026-11-21 nenhum cron a chamava e a tabela ficou permanentemente vazia
-// (0 linhas com 1279 produtos sincronizados). E leitura idempotente (upsert por
-// `spot_order_id`), sem efeito financeiro — diferente de `createOrder`, que
-// segue fora da lista por criar compromisso de compra.
+// `getOrders` é a única ação de leitura de pedidos: é ela que popula
+// `spot_pedidos` — até 2026-11-21 nenhum cron a chamava e a tabela ficou
+// permanentemente vazia (0 linhas com 1279 produtos sincronizados). É leitura
+// idempotente (upsert por `spot_order_id`), sem efeito financeiro — diferente de
+// `createOrder`, que segue fora da lista por criar compromisso de compra.
+//
+// INT-01 (etapas 163-166): `syncCatalog`, `syncCustomization` e `syncStock`
+// saíram daqui. O catálogo de compras passou a ser lido do PIM
+// (`v_compras_catalogo`, via external-db-bridge) e o espelho local
+// (`spot_produtos`/`spot_skus`/`spot_estoque`/`spot_customization_options`)
+// deixou de ser alimentado.
 const CRON_ACTIONS: ReadonlySet<string> = new Set<Action>([
-  "syncCatalog",
-  "syncCustomization",
-  "syncStock",
   "getOrders",
 ]);
 
@@ -422,151 +421,6 @@ async function upsertBatched(
  * Ações
  * ------------------------------------------------------------------ */
 
-async function syncCatalog(db: SupabaseClient, logger: EdgeLogger) {
-  const productsPayload = await callSpot<{ Products?: Record<string, unknown>[] }>(db, logger, "products", "syncCatalog");
-  const products = productsPayload.Products ?? [];
-  const now = new Date().toISOString();
-
-  const productRows: Record<string, unknown>[] = [];
-  for (const p of products) {
-    const { legacy, modern } = splitTypeCodes(p.TypeCode, p.TypeCodeNew, p.SubTypeCode);
-    const reference = String(p.Reference ?? p.ProdReference ?? "").trim();
-    if (!reference) continue;
-    productRows.push({
-      reference,
-      name: String(p.Name ?? p.Description ?? reference),
-      description: p.LongDescription ? String(p.LongDescription) : null,
-      type_code_legacy: legacy,
-      type_code_new: modern,
-      category_name: resolveCategoryName(legacy, modern),
-      catalogs: parseCatalogs(p.Catalogs),
-      brand: p.Brand ? String(p.Brand) : null,
-      country_of_origin: p.CountryOfOrigin ? String(p.CountryOfOrigin) : null,
-      main_image_url: spotProductImageUrl(reference),
-      currency: String(p.Currency ?? "BRL"),
-      raw: p,
-      synced_at: now,
-    });
-  }
-  const savedProducts = await upsertBatched(db, "spot_produtos", productRows, "reference", logger);
-
-  const optionalsPayload = await callSpot<{ Optionals?: Record<string, unknown>[] }>(db, logger, "optionals", "syncCatalog");
-  const optionals = optionalsPayload.Optionals ?? [];
-
-  const skuRows: Record<string, unknown>[] = [];
-  for (const o of optionals) {
-    const sku = String(o.Sku ?? "").trim();
-    if (!sku) continue;
-    skuRows.push({
-      sku,
-      product_reference: String(o.ProdReference ?? sku.split("-")[0]),
-      color_code: o.ColorCode ? String(o.ColorCode) : null,
-      color_name: o.ColorDescription1 ? String(o.ColorDescription1) : (o.ColorName ? String(o.ColorName) : null),
-      color_hex: o.ColorHex1 ? String(o.ColorHex1) : null,
-      size: o.Size ? String(o.Size) : null,
-      capacity: o.Capacity ? String(o.Capacity) : null,
-      your_price: parseSpotDecimal(o.YourPrice),
-      handling_costs: parseSpotDecimal(o.HandlingCosts1),
-      price_tiers: extractPriceTiers(o),
-      table_codes_options: o.TableCodesOptions1 ? String(o.TableCodesOptions1) : null,
-      print_area: o.Area1 ? String(o.Area1) : null,
-      no_replenishment: Boolean(o.NoReplenishment),
-      image_url: spotProductImageUrl(sku),
-      raw: o,
-      synced_at: now,
-    });
-  }
-  const savedSkus = await upsertBatched(db, "spot_skus", skuRows, "sku", logger);
-
-  return { products: savedProducts, skus: savedSkus };
-}
-
-async function syncCustomization(db: SupabaseClient, logger: EdgeLogger) {
-  const payload = await callSpot<{ CustomizationOptions?: Record<string, unknown>[] }>(
-    db,
-    logger,
-    "customizationOptions",
-    "syncCustomization",
-  );
-  const options = payload.CustomizationOptions ?? [];
-  const now = new Date().toISOString();
-
-  const rows: Record<string, unknown>[] = [];
-  for (const c of options) {
-    const serviceCode = String(c.ServiceCode ?? "").trim();
-    if (!serviceCode) continue;
-    const decoded = decodeServiceCode(serviceCode);
-    rows.push({
-      service_code: serviceCode,
-      product_reference: decoded?.productReference ?? String(c.ProdReference ?? ""),
-      component_id: decoded?.componentId ?? null,
-      location_id: decoded?.locationId ?? null,
-      table_code_option: decoded?.tableCodeOption ?? null,
-      technique_code: c.TechniqueCode ? String(c.TechniqueCode) : null,
-      technique_name: c.TechniqueName ? String(c.TechniqueName) : null,
-      area: c.Area ? String(c.Area) : null,
-      max_colors: Number.isFinite(Number(c.MaxColors)) ? Number(c.MaxColors) : null,
-      allow_full_color: Boolean(c.AllowFullColor),
-      is_default: Boolean(c.IsDefault),
-      hotspot: {
-        left: parseSpotDecimal(c.HotSpot1Left),
-        top: parseSpotDecimal(c.HotSpot1Top),
-        width: parseSpotDecimal(c.HotSpot1Width),
-        height: parseSpotDecimal(c.HotSpot1Height),
-      },
-      prices: extractPriceTiers(c),
-      raw: c,
-      synced_at: now,
-    });
-  }
-
-  const saved = await upsertBatched(db, "spot_customization_options", rows, "service_code", logger);
-  return { customizationOptions: saved };
-}
-
-async function syncStock(db: SupabaseClient, logger: EdgeLogger) {
-  const payload = await callSpot<{ Stocks?: Record<string, unknown>[] }>(db, logger, "Stocks", "syncStock");
-  const stocks = payload.Stocks ?? [];
-  const now = new Date().toISOString();
-
-  const rows: Record<string, unknown>[] = [];
-  for (const s of stocks) {
-    const sku = String(s.Sku ?? "").trim();
-    if (!sku) continue;
-    const incomingQty = parseSpotDecimal(s.NextQuantity1);
-    rows.push({
-      sku,
-      product_reference: sku.split("-")[0],
-      quantity: Math.trunc(parseSpotDecimal(s.Quantity) ?? 0),
-      incoming_quantity: incomingQty === null ? null : Math.trunc(incomingQty),
-      incoming_date: s.NextDate1 ? String(s.NextDate1) : null,
-      synced_at: now,
-    });
-  }
-
-  const saved = await upsertBatched(db, "spot_estoque", rows, "sku", logger);
-
-    // INT-11 (etapa 183): o upsert só grava o que veio, então o SKU que o fornecedor
-    // parou de enviar ficava com a última quantidade para sempre. Quem não foi tocado
-    // nesta rodada (synced_at anterior ao carimbo dela) teve o estoque zerado. Payload
-    // vazio não zera nada: resposta anômala não pode apagar o cache inteiro.
-    let cleared = 0;
-    if (saved > 0) {
-      const { data: zerados, error: clearError } = await db
-        .from("spot_estoque")
-        .update({ quantity: 0, incoming_quantity: null, incoming_date: null })
-        .lt("synced_at", now)
-        .select("sku");
-      if (clearError) {
-        logger.error("Falha ao reconciliar spot_estoque", { error: clearError.message });
-        throw new HttpError(500, `Falha ao reconciliar spot_estoque: ${clearError.message}`);
-      }
-      cleared = zerados?.length ?? 0;
-    }
-
-    return { stocks: saved, cleared };
-}
-
 interface CreateOrderInput {
   order: Array<Record<string, unknown>>;
   destination: Record<string, unknown>;
@@ -711,15 +565,6 @@ Deno.serve(async (req: Request) => {
 
     let result: unknown;
     switch (action as Action) {
-      case "syncCatalog":
-        result = await syncCatalog(db, logger);
-        break;
-      case "syncCustomization":
-        result = await syncCustomization(db, logger);
-        break;
-      case "syncStock":
-        result = await syncStock(db, logger);
-        break;
       case "createOrder": {
         const input = (body as { payload?: CreateOrderInput }).payload;
         if (!input || !Array.isArray(input.order) || input.order.length === 0 || !input.destination) {

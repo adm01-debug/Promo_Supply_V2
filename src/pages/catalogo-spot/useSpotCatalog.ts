@@ -1,13 +1,28 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { escapeIlike } from '@/lib/supabaseQuery';
 import { mensagemDeErroDaEdge } from '@/lib/invokeEdge';
+import { invokeBridgeSelect } from '@/hooks/useCatalogoPim';
 
 /**
- * Leitura do cache local da API oficial SPOT.
- * Nenhuma dessas queries fala com a SPOT: o preenchimento é feito pela edge
- * function `spot-api` em sincronizações agendadas (quota diária limitada).
+ * Leitura do catálogo de compras (INT-01).
+ *
+ * Até a etapa 163/164 o catálogo vinha do espelho local que os crons da edge
+ * `spot-api` enchem: `spot_produtos`/`spot_skus`/`spot_estoque` e as ações
+ * `syncCatalog`/`syncCustomization`/`syncStock`. O catálogo daqui pra frente é
+ * o do PIM (Promo Gifts V4), lido pela view `v_compras_catalogo` via
+ * `external-db-bridge` — o mesmo caminho que `useCatalogoPim` já usa em Gerar
+ * Ordem e Recompra. Nada de catálogo é gravado neste banco.
+ *
+ * O que continua local: `spot_api_sync_log`, porque é a contabilidade da cota
+ * da API oficial para as ações transacionais (pedidos, carrinho). A fonte
+ * dessas linhas é o `pg_cron`, não a tela.
  */
+
+/** Cota dos endpoints de catálogo da SPOT — se um dia voltarem a ser chamados. */
+export const SPOT_QUOTA_CATALOGO_DIA = 22;
+
+/** A API oficial do SPOT é o fornecedor; as linhas do PIM para ele carregam este código. */
+export const SPOT_SUPPLIER_CODE = 'SPOT';
 
 export interface SpotCachedProduct {
   reference: string;
@@ -20,6 +35,12 @@ export interface SpotCachedProduct {
   country_of_origin: string | null;
   main_image_url: string | null;
   synced_at: string;
+  /** Menor preço de compra entre as variantes do produto (vem de `agruparProdutosPim`). */
+  your_price?: number | null;
+  color_name?: string | null;
+  color_hex?: string | null;
+  no_replenishment?: boolean;
+  em_estoque?: boolean;
 }
 
 export interface SpotCachedSku {
@@ -50,6 +71,9 @@ export interface SpotSyncStatus {
 
 export const SPOT_CATALOG_PAGE_SIZE = 60;
 
+/** Rótulo da coleção quando o produto não traz coleção (o filtro da tela usa este rótulo). */
+export const SPOT_COLECAO_PADRAO = 'SPOT';
+
 export interface SpotCatalogFilters {
   search: string;
   collection: string | null;
@@ -57,39 +81,134 @@ export interface SpotCatalogFilters {
   typeCodes: { legacy: string | null; modern: string[] } | null;
 }
 
+/** O bridge recusa `select` acima disso (`MAX_SELECT_LIMIT` em `external-bridge-allowlist.ts`). */
+const SPOT_BRIDGE_PAGE = 500;
+
+/** Teto de leitura da tela; acima disso a busca é que deve recortar. */
+const SPOT_BRIDGE_MAX_ROWS = 2000;
+
+const numeroOuNulo = (v: unknown): number | null => {
+  if (typeof v === 'number' && Number.isFinite(v)) return v;
+  if (typeof v === 'string' && v.trim() !== '' && Number.isFinite(Number(v))) return Number(v);
+  return null;
+};
+
+type BridgeRow = Record<string, unknown>;
+
+const textoOuNulo = (v: unknown): string | null =>
+  typeof v === 'string' && v.trim() !== '' ? v : null;
+
+/** Agrupa as linhas da view por produto: preço mínimo e estoque somado das variantes. */
+export function agruparProdutosPim(rows: BridgeRow[]): SpotCachedProduct[] {
+  const porProduto = new Map<string, SpotCachedProduct & { _estoque: number }>();
+
+  for (const row of rows) {
+    const reference = textoOuNulo(row.supplier_reference) ?? textoOuNulo(row.sku);
+    if (!reference) continue;
+
+    const estoque = numeroOuNulo(row.stock_quantity) ?? 0;
+    const preco = numeroOuNulo(row.cost_price);
+    const atual = porProduto.get(reference);
+
+    if (!atual) {
+      porProduto.set(reference, {
+        reference,
+        name: textoOuNulo(row.name) ?? reference,
+        category_name: textoOuNulo(row.category_name),
+        type_code_legacy: textoOuNulo(row.type_code_legacy),
+        type_code_new: textoOuNulo(row.type_code_new),
+        catalogs: [SPOT_COLECAO_PADRAO],
+        main_image_url: textoOuNulo(row.image_url),
+        brand: textoOuNulo(row.supplier_name),
+        country_of_origin: null,
+        synced_at: textoOuNulo(row.updated_at) ?? new Date().toISOString(),
+        color_name: textoOuNulo(row.color_name),
+        color_hex: textoOuNulo(row.color_hex),
+        your_price: preco,
+        no_replenishment: row.is_stockout === true,
+        _estoque: estoque,
+      });
+      continue;
+    }
+
+    if (preco !== null && (atual.your_price === null || atual.your_price === undefined || preco < atual.your_price)) {
+      atual.your_price = preco;
+    }
+    atual._estoque += estoque;
+    atual.color_name ??= textoOuNulo(row.color_name);
+    atual.color_hex ??= textoOuNulo(row.color_hex);
+    atual.no_replenishment = atual.no_replenishment === true && row.is_stockout === true;
+    atual.main_image_url ??= textoOuNulo(row.image_url);
+    atual.type_code_legacy ??= textoOuNulo(row.type_code_legacy);
+    atual.type_code_new ??= textoOuNulo(row.type_code_new);
+    const colecoes = row.catalogs;
+    if (Array.isArray(colecoes)) {
+      for (const colecao of colecoes) {
+        if (typeof colecao === 'string' && !atual.catalogs.includes(colecao)) atual.catalogs.push(colecao);
+      }
+    }
+  }
+
+  return [...porProduto.values()].map(({ _estoque, ...produto }) => ({
+    ...produto,
+    em_estoque: _estoque > 0,
+  }));
+}
+
+/** Lê o catálogo do SPOT no PIM, paginando até esgotar (ou bater o teto da tela). */
+async function lerCatalogoSpot(termo: string): Promise<BridgeRow[]> {
+  const base: Record<string, unknown> = { supplier_code: SPOT_SUPPLIER_CODE };
+  if (termo) base.name = termo;
+
+  const todos: BridgeRow[] = [];
+  for (let offset = 0; offset < SPOT_BRIDGE_MAX_ROWS; offset += SPOT_BRIDGE_PAGE) {
+    const pagina = await invokeBridgeSelect<BridgeRow>('v_compras_catalogo', {
+      filters: base,
+      limit: SPOT_BRIDGE_PAGE,
+      offset,
+    });
+    todos.push(...pagina);
+    if (pagina.length < SPOT_BRIDGE_PAGE) break;
+  }
+  return todos;
+}
+
+/**
+ * A categoria da tela é um recorte do catálogo SPOT (caneca, garrafa, ecobag...).
+ * A view do PIM expõe `supplier_reference`; quando ela trouxer o código de tipo do
+ * produto (`type_code_legacy`) o código serve de filtro. Sem código, nada é escondido.
+ */
+function filtrarPorCategoria(
+  produtos: SpotCachedProduct[],
+  typeCodes: SpotCatalogFilters['typeCodes'],
+): SpotCachedProduct[] {
+  if (!typeCodes) return produtos;
+  const aceitos = [typeCodes.legacy, ...typeCodes.modern].filter((c): c is string => Boolean(c));
+  if (aceitos.length === 0) return produtos;
+
+  const comCodigo = produtos.filter((p) => (p.type_code_legacy ?? '') !== '');
+  // O filtro só vale quando o PIM entrega o código; senão zeraria a tela.
+  if (comCodigo.length === 0) return produtos;
+
+  const aceita = (p: SpotCachedProduct) =>
+    aceitos.some((codigo) => (p.type_code_legacy ?? '').startsWith(codigo));
+  return comCodigo.some(aceita) ? produtos.filter(aceita) : produtos;
+}
+
 export function useSpotProducts(filters: SpotCatalogFilters) {
   return useQuery({
     queryKey: ['spot-produtos', filters],
     staleTime: 5 * 60 * 1000,
     queryFn: async (): Promise<SpotCachedProduct[]> => {
-      let query = supabase
-        .from('spot_produtos')
-        .select('reference,name,category_name,type_code_legacy,type_code_new,catalogs,brand,country_of_origin,main_image_url,synced_at')
-        .order('name')
-        .limit(SPOT_CATALOG_PAGE_SIZE);
-
-      // Etapa QA 060 (SEC-10): o termo vinha cru para dentro do `.or()`, e `,` `(` `)`
-      // sao delimitadores estruturais do PostgREST - a busca podia fechar o grupo e
-      // acrescentar condicoes na consulta. escapeIlike e o mesmo helper dos outros 8
-      // filtros de busca do app.
-      const searchTerm = escapeIlike(filters.search);
-      if (searchTerm) {
-        const term = `%${searchTerm}%`;
-        query = query.or(`name.ilike.${term},reference.ilike.${term}`);
-      }
-      if (filters.collection) {
-        query = query.contains('catalogs', [filters.collection]);
-      }
-      if (filters.typeCodes) {
-        const clauses: string[] = [];
-        if (filters.typeCodes.legacy) clauses.push(`type_code_legacy.eq.${filters.typeCodes.legacy}`);
-        for (const modern of filters.typeCodes.modern) clauses.push(`type_code_new.eq.${modern}`);
-        if (clauses.length > 0) query = query.or(clauses.join(','));
-      }
-
-      const { data, error } = await query;
-      if (error) throw new Error(error.message);
-      return (data ?? []) as SpotCachedProduct[];
+      const termo = filters.search.trim();
+      // Etapa QA 060 (SEC-10): o termo vai como filtro estruturado ao bridge, que
+      // valida coluna e operador — nunca interpolado em texto de query.
+      const rows = await lerCatalogoSpot(termo);
+      const produtos = agruparProdutosPim(rows);
+      const daColecao = filters.collection
+        ? produtos.filter((p) => p.catalogs.includes(filters.collection as string))
+        : produtos;
+      return filtrarPorCategoria(daColecao, filters.typeCodes);
     },
   });
 }
@@ -100,12 +219,24 @@ export function useSpotSkus(productReferences: string[]) {
     enabled: productReferences.length > 0,
     staleTime: 5 * 60 * 1000,
     queryFn: async (): Promise<SpotCachedSku[]> => {
-      const { data, error } = await supabase
-        .from('spot_skus')
-        .select('sku,product_reference,color_name,color_hex,your_price,handling_costs,no_replenishment')
-        .in('product_reference', productReferences);
-      if (error) throw new Error(error.message);
-      return (data ?? []) as SpotCachedSku[];
+      const alvo = new Set(productReferences);
+      const rows = await lerCatalogoSpot('');
+      const skus: SpotCachedSku[] = [];
+      for (const row of rows) {
+        const referencia = textoOuNulo(row.supplier_reference);
+        const sku = textoOuNulo(row.sku);
+        if (!referencia || !sku || !alvo.has(referencia)) continue;
+        skus.push({
+          sku,
+          product_reference: referencia,
+          color_name: textoOuNulo(row.color_name),
+          color_hex: textoOuNulo(row.color_hex),
+          your_price: numeroOuNulo(row.cost_price),
+          handling_costs: null,
+          no_replenishment: row.is_stockout === true,
+        });
+      }
+      return skus;
     },
   });
 }
@@ -116,12 +247,22 @@ export function useSpotStock(productReferences: string[]) {
     enabled: productReferences.length > 0,
     staleTime: 60 * 1000,
     queryFn: async (): Promise<SpotStockRow[]> => {
-      const { data, error } = await supabase
-        .from('spot_estoque')
-        .select('sku,product_reference,quantity,incoming_date,synced_at')
-        .in('product_reference', productReferences);
-      if (error) throw new Error(error.message);
-      return (data ?? []) as SpotStockRow[];
+      const alvo = new Set(productReferences);
+      const rows = await lerCatalogoSpot('');
+      const estoque: SpotStockRow[] = [];
+      for (const row of rows) {
+        const referencia = textoOuNulo(row.supplier_reference);
+        const sku = textoOuNulo(row.sku);
+        if (!referencia || !sku || !alvo.has(referencia)) continue;
+        estoque.push({
+          sku,
+          product_reference: referencia,
+          quantity: numeroOuNulo(row.stock_quantity) ?? 0,
+          incoming_date: null,
+          synced_at: textoOuNulo(row.last_stock_update_at) ?? textoOuNulo(row.updated_at) ?? new Date().toISOString(),
+        });
+      }
+      return estoque;
     },
   });
 }
@@ -142,12 +283,12 @@ export function useSpotSyncStatus() {
   });
 }
 
-export type SpotSyncAction = 'syncCatalog' | 'syncCustomization' | 'syncStock' | 'getOrders';
+export type SpotSyncAction = 'getOrders';
 
 /**
- * Dispara a sincronização na edge function `spot-api`.
- * A API oficial tem quota diária, então a chamada é explícita (botão) e não
- * automática: cada clique consome 1 requisição do limite.
+ * Ação transacional da edge `spot-api` (catálogo não é mais sincronizado aqui:
+ * vem do PIM sob demanda). Mantido porque `getOrders` ainda depende da cota da
+ * API oficial e a tela mostra quando foi a última rodada.
  */
 export function useTriggerSpotSync() {
   const queryClient = useQueryClient();
@@ -163,7 +304,7 @@ export function useTriggerSpotSync() {
       void queryClient.invalidateQueries({ queryKey: ['spot-sync-status'] });
       void queryClient.invalidateQueries({ queryKey: ['spot-produtos'] });
       void queryClient.invalidateQueries({ queryKey: ['spot-skus'] });
-            void queryClient.invalidateQueries({ queryKey: ['spot-estoque'] });
+      void queryClient.invalidateQueries({ queryKey: ['spot-estoque'] });
     },
   });
 }
