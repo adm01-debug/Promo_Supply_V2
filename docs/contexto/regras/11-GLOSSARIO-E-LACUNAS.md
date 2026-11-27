@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `130cb6f604` · branch `main` · 2026-11-27 01:55 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0ae3c1de5d` · branch `main` · 2026-11-27 02:08 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -20,13 +20,13 @@
 | `approval_workflows` | _(sem COMMENT ON TABLE — significado não documentado)_ | 15 colunas | migration |
 | `auction_bids` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `audit_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 19 colunas | migration |
-| `audit_logs_202605` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
-| `audit_logs_202606` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
-| `audit_logs_202607` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
-| `audit_logs_202608` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
-| `audit_logs_202609` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `audit_logs_202605` | _(sem COMMENT ON TABLE — significado não documentado)_ | 0 colunas | migration |
+| `audit_logs_202606` | _(sem COMMENT ON TABLE — significado não documentado)_ | 0 colunas | migration |
+| `audit_logs_202607` | _(sem COMMENT ON TABLE — significado não documentado)_ | 0 colunas | migration |
+| `audit_logs_202608` | _(sem COMMENT ON TABLE — significado não documentado)_ | 0 colunas | migration |
+| `audit_logs_202609` | _(sem COMMENT ON TABLE — significado não documentado)_ | 0 colunas | migration |
 | `audit_logs_ancora` | _(sem COMMENT ON TABLE — significado não documentado)_ | 4 colunas | types.ts |
-| `audit_logs_legacy_20260712` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `audit_logs_legacy_20260712` | _(sem COMMENT ON TABLE — significado não documentado)_ | 0 colunas | migration |
 | `blocked_countries` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | types.ts |
 | `blocked_ips` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
 | `budget_audit_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
@@ -135,12 +135,12 @@
 | `system_alerts` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
 | `table_size_snapshots` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
 | `telemetry_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `telemetry_logs_202605` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `telemetry_logs_202606` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `telemetry_logs_202607` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `telemetry_logs_202608` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `telemetry_logs_202609` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `telemetry_logs_legacy_20260712` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
+| `telemetry_logs_202605` | _(sem COMMENT ON TABLE — significado não documentado)_ | 0 colunas | migration |
+| `telemetry_logs_202606` | _(sem COMMENT ON TABLE — significado não documentado)_ | 0 colunas | migration |
+| `telemetry_logs_202607` | _(sem COMMENT ON TABLE — significado não documentado)_ | 0 colunas | migration |
+| `telemetry_logs_202608` | _(sem COMMENT ON TABLE — significado não documentado)_ | 0 colunas | migration |
+| `telemetry_logs_202609` | _(sem COMMENT ON TABLE — significado não documentado)_ | 0 colunas | migration |
+| `telemetry_logs_legacy_20260712` | _(sem COMMENT ON TABLE — significado não documentado)_ | 0 colunas | migration |
 | `temp_file_snapshots` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `tenants` | _(sem COMMENT ON TABLE — significado não documentado)_ | 21 colunas | migration |
 | `unspsc_codes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
@@ -348,54 +348,6 @@
 | rls | `qualification_requirements`: acessada do front (1 arquivo(s)) e nenhuma migration do repo liga RLS nela — NÃO VERIFICADO, confirme no banco real | `src/hooks/useSupplierQualification.ts` |
 | rls | `supplier_documents`: acessada do front (1 arquivo(s)) e nenhuma migration do repo liga RLS nela — NÃO VERIFICADO, confirme no banco real | `src/hooks/useSupplierQualification.ts` |
 | rls | `supplier_qualification_scores`: acessada do front (3 arquivo(s)) e nenhuma migration do repo liga RLS nela — NÃO VERIFICADO, confirme no banco real | `src/components/compras/scorecard/supplierScorecardData.ts`<br>`src/hooks/useSupplierQualification.ts`<br>`src/pages/portal-fornecedor/portalFornecedorData.ts` |
-| tenant | `saved_filters` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `entity_versions` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `historico_compras` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `dashboard_filter_favorites` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `push_subscriptions` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `notification_preferences` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `permissions` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `blocked_ips` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `ip_whitelist` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `webauthn_credentials` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `webauthn_challenges` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `allowed_countries` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `password_reset_requests` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `account_lockouts` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `user_tour_preferences` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `spot_sessions` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `negotiation_analyses` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `query_telemetry` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `dependency_health` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `dependency_health_history` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `user_filter_preferences` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `dashboard_layouts` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `erp_field_mappings` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `currencies` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `exchange_rates` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `estoque` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `estoque_movimentacoes` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `aliquotas_tributarias` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `webhook_events` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `wal_rate_snapshots` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `checkpoint_snapshots` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `temp_file_snapshots` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `deadlock_snapshots` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `health_scan_runs` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `alert_subscriptions` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `security_definer_baseline` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `secret_rotation_schedule` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `table_size_snapshots` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `cron_heartbeats` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `xbz_cores` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `spot_produtos` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `spot_skus` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `spot_customization_options` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `spot_estoque` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `cron_watchdog_seen` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `blocked_countries` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `qualification_history` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `qualification_requirements` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | dinâmico | 4 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `src/hooks/useOfflineSync.ts` |
 | dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/check-sla-alerts/index.ts` |
 | dinâmico | 4 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/external-db-bridge/index.ts` |

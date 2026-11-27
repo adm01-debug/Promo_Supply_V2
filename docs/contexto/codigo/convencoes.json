@@ -42,7 +42,7 @@
   "hooks": "use + PascalCase",
   "servicos": "camelCase (96%)",
   "edge_functions": "kebab-case (98%)",
-  "tabelas": "snake_case (89%)"
+  "tabelas": "snake_case (88%)"
  },
  "barrels_index": 4,
  "extensao_componentes": [
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(db): sincronizar types.ts com o banco [auto] (#616)",
    "chore(db): remove as 12 tabelas orfas do particionamento abandonado (#615)",
    "docs(ledger): etapas 090/092/137/138 passam a [x] (PR #599 mergeada e migrations aplicadas em producao) (#614)",
    "chore(db): sincronizar types.ts com o banco [auto] (#612)",
-   "chore(progresso): 21 etapas com PR aberta passam a [A] e citam a PR (#607)",
-   "fix(db): neg10 volta a ser idempotente e aplicavel (policy ja existia em prod) (#610)"
+   "chore(progresso): 21 etapas com PR aberta passam a [A] e citam a PR (#607)"
   ]
  },
  "pr_template": null,

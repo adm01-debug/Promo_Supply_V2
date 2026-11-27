@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `130cb6f60471d7baa895e450bf0f1973cf0ff98d` (2026-11-26T22:51:19-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0ae3c1de5d6c9beebc761c510fdd519ffeffe49d` (2026-11-26T23:03:26-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1593 |
 | arquivos_codigo | 972 |
-| linhas_codigo | 193822 |
+| linhas_codigo | 193153 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -45,7 +45,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | componentes | 329 |
 | hooks | 95 |
 | edge_functions | 41 |
-| tabelas | 166 |
+| tabelas | 154 |
 | migrations | 386 |
 | cron_jobs | 80 |
 | testes | 326 |
@@ -63,7 +63,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
 - docs: (raiz) (4), docs (3)
-- nomenclatura: {"componentes":"PascalCase (84%)","hooks":"use + PascalCase","servicos":"camelCase (96%)","edge_functions":"kebab-case (98%)","tabelas":"snake_case (89%)"}
+- nomenclatura: {"componentes":"PascalCase (84%)","hooks":"use + PascalCase","servicos":"camelCase (96%)","edge_functions":"kebab-case (98%)","tabelas":"snake_case (88%)"}
 - instruções para agentes no repo: AGENTS.md, CLAUDE.md
 
 ## Módulos (menu → domínio)
@@ -346,7 +346,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/qa/05-PROGRESSO.md (219)
 - AGENTS.md (42)
-- src/integrations/supabase/types.ts (13)
+- src/integrations/supabase/types.ts (14)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (9)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `0ae3c1d` chore(db): sincronizar types.ts com o banco [auto] (#616)
 - 2026-11-26 `130cb6f` chore(db): remove as 12 tabelas orfas do particionamento abandonado (#615)
 - 2026-11-26 `4d59524` docs(ledger): etapas 090/092/137/138 passam a [x] (PR #599 mergeada e migrations aplicadas em producao) (#614)
 - 2026-11-26 `adc4ff7` chore(db): sincronizar types.ts com o banco [auto] (#612)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `c82a447` docs(agentes): AGENTS.md volta a declarar o numero real de migrations (377) (#611)
 - 2026-11-26 `a54eaf5` chore(db): sincronizar types.ts com o banco [auto] (#587)
 - 2026-11-26 `a498bae` fix(edge): responses deriva o CORS da requisicao e a constante estatica sai do _shared (#605)
-- 2026-11-26 `3220347` feat(db): alcada de auto-aprovacao configuravel (etapa 114 - NEG-14) (#603)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

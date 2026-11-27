@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "130cb6f60471d7baa895e450bf0f1973cf0ff98d",
+  "sha": "0ae3c1de5d6c9beebc761c510fdd519ffeffe49d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 01:55 UTC",
+  "generated_at": "2026-11-27 02:08 UTC",
   "files_total": 1594,
   "code_files": 1419,
-  "code_lines": 232130,
+  "code_lines": 231461,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "84150a6da584da03",
+ "facts_hash": "884691691186f1e9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -13676,85 +13676,7 @@
     "origin": "migration"
    },
    "telemetry_logs_202605": {
-    "columns": [
-     {
-      "name": "client_ip",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "context",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "created_at",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "level",
-      "type": "Database[\"public\"][\"Enums\"][\"log_level\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "message",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "request_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "tenant_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "url",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_agent",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     }
-    ],
+    "columns": [],
     "constraints": [
      "LIKE public.telemetry_logs INCLUDING ALL"
     ],
@@ -13763,85 +13685,7 @@
     "origin": "migration"
    },
    "telemetry_logs_202606": {
-    "columns": [
-     {
-      "name": "client_ip",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "context",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "created_at",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "level",
-      "type": "Database[\"public\"][\"Enums\"][\"log_level\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "message",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "request_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "tenant_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "url",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_agent",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     }
-    ],
+    "columns": [],
     "constraints": [
      "LIKE public.telemetry_logs INCLUDING ALL"
     ],
@@ -13850,85 +13694,7 @@
     "origin": "migration"
    },
    "telemetry_logs_202607": {
-    "columns": [
-     {
-      "name": "client_ip",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "context",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "created_at",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "level",
-      "type": "Database[\"public\"][\"Enums\"][\"log_level\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "message",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "request_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "tenant_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "url",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_agent",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     }
-    ],
+    "columns": [],
     "constraints": [
      "LIKE public.telemetry_logs INCLUDING ALL"
     ],
@@ -13937,85 +13703,7 @@
     "origin": "migration"
    },
    "telemetry_logs_202608": {
-    "columns": [
-     {
-      "name": "client_ip",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "context",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "created_at",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "level",
-      "type": "Database[\"public\"][\"Enums\"][\"log_level\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "message",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "request_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "tenant_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "url",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_agent",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     }
-    ],
+    "columns": [],
     "constraints": [
      "LIKE public.telemetry_logs INCLUDING ALL"
     ],
@@ -14024,85 +13712,7 @@
     "origin": "migration"
    },
    "telemetry_logs_202609": {
-    "columns": [
-     {
-      "name": "client_ip",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "context",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "created_at",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "level",
-      "type": "Database[\"public\"][\"Enums\"][\"log_level\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "message",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "request_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "tenant_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "url",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_agent",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     }
-    ],
+    "columns": [],
     "constraints": [
      "LIKE public.telemetry_logs INCLUDING ALL"
     ],
@@ -14111,85 +13721,7 @@
     "origin": "migration"
    },
    "telemetry_logs_legacy_20260712": {
-    "columns": [
-     {
-      "name": "client_ip",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "context",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "created_at",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "level",
-      "type": "Database[\"public\"][\"Enums\"][\"log_level\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "message",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "request_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "tenant_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "url",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_agent",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     }
-    ],
+    "columns": [],
     "constraints": [
      "LIKE public.telemetry_logs INCLUDING ALL"
     ],
@@ -14198,120 +13730,7 @@
     "origin": "migration"
    },
    "audit_logs_202605": {
-    "columns": [
-     {
-      "name": "action_type",
-      "type": "Database[\"public\"][\"Enums\"][\"audit_action_type\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "created_at",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_description",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_type",
-      "type": "Database[\"public\"][\"Enums\"][\"audit_entity_type\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "ip_address",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "metadata",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "new_values",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "old_values",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "organization_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "tenant_id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_agent",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_email",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_name",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     }
-    ],
+    "columns": [],
     "constraints": [
      "LIKE public.audit_logs INCLUDING ALL"
     ],
@@ -14320,120 +13739,7 @@
     "origin": "migration"
    },
    "audit_logs_202606": {
-    "columns": [
-     {
-      "name": "action_type",
-      "type": "Database[\"public\"][\"Enums\"][\"audit_action_type\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "created_at",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_description",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_type",
-      "type": "Database[\"public\"][\"Enums\"][\"audit_entity_type\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "ip_address",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "metadata",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "new_values",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "old_values",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "organization_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "tenant_id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_agent",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_email",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_name",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     }
-    ],
+    "columns": [],
     "constraints": [
      "LIKE public.audit_logs INCLUDING ALL"
     ],
@@ -14442,120 +13748,7 @@
     "origin": "migration"
    },
    "audit_logs_202607": {
-    "columns": [
-     {
-      "name": "action_type",
-      "type": "Database[\"public\"][\"Enums\"][\"audit_action_type\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "created_at",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_description",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_type",
-      "type": "Database[\"public\"][\"Enums\"][\"audit_entity_type\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "ip_address",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "metadata",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "new_values",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "old_values",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "organization_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "tenant_id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_agent",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_email",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_name",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     }
-    ],
+    "columns": [],
     "constraints": [
      "LIKE public.audit_logs INCLUDING ALL"
     ],
@@ -14564,120 +13757,7 @@
     "origin": "migration"
    },
    "audit_logs_202608": {
-    "columns": [
-     {
-      "name": "action_type",
-      "type": "Database[\"public\"][\"Enums\"][\"audit_action_type\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "created_at",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_description",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_type",
-      "type": "Database[\"public\"][\"Enums\"][\"audit_entity_type\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "ip_address",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "metadata",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "new_values",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "old_values",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "organization_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "tenant_id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_agent",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_email",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_name",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     }
-    ],
+    "columns": [],
     "constraints": [
      "LIKE public.audit_logs INCLUDING ALL"
     ],
@@ -14686,120 +13766,7 @@
     "origin": "migration"
    },
    "audit_logs_202609": {
-    "columns": [
-     {
-      "name": "action_type",
-      "type": "Database[\"public\"][\"Enums\"][\"audit_action_type\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "created_at",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_description",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_type",
-      "type": "Database[\"public\"][\"Enums\"][\"audit_entity_type\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "ip_address",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "metadata",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "new_values",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "old_values",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "organization_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "tenant_id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_agent",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_email",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_name",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     }
-    ],
+    "columns": [],
     "constraints": [
      "LIKE public.audit_logs INCLUDING ALL"
     ],
@@ -14808,120 +13775,7 @@
     "origin": "migration"
    },
    "audit_logs_legacy_20260712": {
-    "columns": [
-     {
-      "name": "action_type",
-      "type": "Database[\"public\"][\"Enums\"][\"audit_action_type\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "created_at",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_description",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "entity_type",
-      "type": "Database[\"public\"][\"Enums\"][\"audit_entity_type\"] not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "ip_address",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "metadata",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "new_values",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "old_values",
-      "type": "Json | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "organization_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "tenant_id",
-      "type": "string not null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_agent",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_email",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_id",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     },
-     {
-      "name": "user_name",
-      "type": "string | null",
-      "fk": "",
-      "generated": "",
-      "src": "src/integrations/supabase/types.ts"
-     }
-    ],
+    "columns": [],
     "constraints": [
      "LIKE public.audit_logs INCLUDING ALL"
     ],
@@ -36534,7 +35388,7 @@
   {
    "module": "src/integrations",
    "files": 3,
-   "lines": 10596,
+   "lines": 9927,
    "tables": [],
    "exports": [
     "index.ts: lovable",
@@ -51236,48 +50090,8 @@
    },
    {
     "table": "telemetry_logs_202605",
-    "column": "created_at",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202605",
-    "column": "id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202605",
-    "column": "level",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202605",
-    "column": "message",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202605",
     "column": "(tabela)",
     "rule": "LIKE public.telemetry_logs INCLUDING ALL"
-   },
-   {
-    "table": "telemetry_logs_202606",
-    "column": "created_at",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202606",
-    "column": "id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202606",
-    "column": "level",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202606",
-    "column": "message",
-    "rule": "obrigatório"
    },
    {
     "table": "telemetry_logs_202606",
@@ -51286,48 +50100,8 @@
    },
    {
     "table": "telemetry_logs_202607",
-    "column": "created_at",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202607",
-    "column": "id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202607",
-    "column": "level",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202607",
-    "column": "message",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202607",
     "column": "(tabela)",
     "rule": "LIKE public.telemetry_logs INCLUDING ALL"
-   },
-   {
-    "table": "telemetry_logs_202608",
-    "column": "created_at",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202608",
-    "column": "id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202608",
-    "column": "level",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202608",
-    "column": "message",
-    "rule": "obrigatório"
    },
    {
     "table": "telemetry_logs_202608",
@@ -51336,48 +50110,8 @@
    },
    {
     "table": "telemetry_logs_202609",
-    "column": "created_at",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202609",
-    "column": "id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202609",
-    "column": "level",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202609",
-    "column": "message",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_202609",
     "column": "(tabela)",
     "rule": "LIKE public.telemetry_logs INCLUDING ALL"
-   },
-   {
-    "table": "telemetry_logs_legacy_20260712",
-    "column": "created_at",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_legacy_20260712",
-    "column": "id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_legacy_20260712",
-    "column": "level",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "telemetry_logs_legacy_20260712",
-    "column": "message",
-    "rule": "obrigatório"
    },
    {
     "table": "telemetry_logs_legacy_20260712",
@@ -51386,58 +50120,8 @@
    },
    {
     "table": "audit_logs_202605",
-    "column": "action_type",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202605",
-    "column": "created_at",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202605",
-    "column": "entity_type",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202605",
-    "column": "id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202605",
-    "column": "tenant_id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202605",
     "column": "(tabela)",
     "rule": "LIKE public.audit_logs INCLUDING ALL"
-   },
-   {
-    "table": "audit_logs_202606",
-    "column": "action_type",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202606",
-    "column": "created_at",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202606",
-    "column": "entity_type",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202606",
-    "column": "id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202606",
-    "column": "tenant_id",
-    "rule": "obrigatório"
    },
    {
     "table": "audit_logs_202606",
@@ -51446,58 +50130,8 @@
    },
    {
     "table": "audit_logs_202607",
-    "column": "action_type",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202607",
-    "column": "created_at",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202607",
-    "column": "entity_type",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202607",
-    "column": "id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202607",
-    "column": "tenant_id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202607",
     "column": "(tabela)",
     "rule": "LIKE public.audit_logs INCLUDING ALL"
-   },
-   {
-    "table": "audit_logs_202608",
-    "column": "action_type",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202608",
-    "column": "created_at",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202608",
-    "column": "entity_type",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202608",
-    "column": "id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202608",
-    "column": "tenant_id",
-    "rule": "obrigatório"
    },
    {
     "table": "audit_logs_202608",
@@ -51506,58 +50140,8 @@
    },
    {
     "table": "audit_logs_202609",
-    "column": "action_type",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202609",
-    "column": "created_at",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202609",
-    "column": "entity_type",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202609",
-    "column": "id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202609",
-    "column": "tenant_id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_202609",
     "column": "(tabela)",
     "rule": "LIKE public.audit_logs INCLUDING ALL"
-   },
-   {
-    "table": "audit_logs_legacy_20260712",
-    "column": "action_type",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_legacy_20260712",
-    "column": "created_at",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_legacy_20260712",
-    "column": "entity_type",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_legacy_20260712",
-    "column": "id",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "audit_logs_legacy_20260712",
-    "column": "tenant_id",
-    "rule": "obrigatório"
    },
    {
     "table": "audit_logs_legacy_20260712",
@@ -92410,72 +90994,11 @@
    "xbz_produtos",
    "xbz_produto_fiscal",
    "xbz_carrinho_log",
-   "telemetry_logs_202605",
-   "telemetry_logs_202606",
-   "telemetry_logs_202607",
-   "telemetry_logs_202608",
-   "telemetry_logs_202609",
-   "telemetry_logs_legacy_20260712",
-   "audit_logs_202605",
-   "audit_logs_202606",
-   "audit_logs_202607",
-   "audit_logs_202608",
-   "audit_logs_202609",
-   "audit_logs_legacy_20260712",
    "supplier_documents",
    "supplier_qualification_scores"
   ],
-  "tenant_missing": [
-   "saved_filters",
-   "entity_versions",
-   "historico_compras",
-   "dashboard_filter_favorites",
-   "push_subscriptions",
-   "notification_preferences",
-   "permissions",
-   "blocked_ips",
-   "ip_whitelist",
-   "webauthn_credentials",
-   "webauthn_challenges",
-   "allowed_countries",
-   "password_reset_requests",
-   "account_lockouts",
-   "user_tour_preferences",
-   "spot_sessions",
-   "negotiation_analyses",
-   "query_telemetry",
-   "dependency_health",
-   "dependency_health_history",
-   "user_filter_preferences",
-   "dashboard_layouts",
-   "erp_field_mappings",
-   "currencies",
-   "exchange_rates",
-   "estoque",
-   "estoque_movimentacoes",
-   "aliquotas_tributarias",
-   "webhook_events",
-   "wal_rate_snapshots",
-   "checkpoint_snapshots",
-   "temp_file_snapshots",
-   "deadlock_snapshots",
-   "health_scan_runs",
-   "alert_subscriptions",
-   "security_definer_baseline",
-   "secret_rotation_schedule",
-   "table_size_snapshots",
-   "cron_heartbeats",
-   "xbz_cores",
-   "spot_produtos",
-   "spot_skus",
-   "spot_customization_options",
-   "spot_estoque",
-   "cron_watchdog_seen",
-   "blocked_countries",
-   "qualification_history",
-   "qualification_requirements"
-  ],
-  "tenant_cov": 0.61,
+  "tenant_missing": [],
+  "tenant_cov": 0.54,
   "soft_delete": [
    [
     "categorias",
@@ -93028,42 +91551,18 @@
     "created_at"
    ],
    "cron_watchdog_seen": [],
-   "telemetry_logs_202605": [
-    "created_at"
-   ],
-   "telemetry_logs_202606": [
-    "created_at"
-   ],
-   "telemetry_logs_202607": [
-    "created_at"
-   ],
-   "telemetry_logs_202608": [
-    "created_at"
-   ],
-   "telemetry_logs_202609": [
-    "created_at"
-   ],
-   "telemetry_logs_legacy_20260712": [
-    "created_at"
-   ],
-   "audit_logs_202605": [
-    "created_at"
-   ],
-   "audit_logs_202606": [
-    "created_at"
-   ],
-   "audit_logs_202607": [
-    "created_at"
-   ],
-   "audit_logs_202608": [
-    "created_at"
-   ],
-   "audit_logs_202609": [
-    "created_at"
-   ],
-   "audit_logs_legacy_20260712": [
-    "created_at"
-   ],
+   "telemetry_logs_202605": [],
+   "telemetry_logs_202606": [],
+   "telemetry_logs_202607": [],
+   "telemetry_logs_202608": [],
+   "telemetry_logs_202609": [],
+   "telemetry_logs_legacy_20260712": [],
+   "audit_logs_202605": [],
+   "audit_logs_202606": [],
+   "audit_logs_202607": [],
+   "audit_logs_202608": [],
+   "audit_logs_202609": [],
+   "audit_logs_legacy_20260712": [],
    "audit_logs_ancora": [
     "atualizado_em"
    ],
@@ -93179,30 +91678,6 @@
    [
     "xbz_credentials",
     "cnpj"
-   ],
-   [
-    "audit_logs_202605",
-    "ip_address"
-   ],
-   [
-    "audit_logs_202606",
-    "ip_address"
-   ],
-   [
-    "audit_logs_202607",
-    "ip_address"
-   ],
-   [
-    "audit_logs_202608",
-    "ip_address"
-   ],
-   [
-    "audit_logs_202609",
-    "ip_address"
-   ],
-   [
-    "audit_logs_legacy_20260712",
-    "ip_address"
    ],
    [
     "geo_access_logs",
@@ -94298,246 +92773,6 @@
      "src/hooks/useSupplierQualification.ts",
      "src/pages/portal-fornecedor/portalFornecedorData.ts"
     ]
-   },
-   {
-    "kind": "tenant",
-    "msg": "`saved_filters` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`entity_versions` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`historico_compras` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`dashboard_filter_favorites` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`push_subscriptions` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`notification_preferences` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`permissions` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`blocked_ips` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`ip_whitelist` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`webauthn_credentials` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`webauthn_challenges` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`allowed_countries` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`password_reset_requests` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`account_lockouts` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`user_tour_preferences` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`spot_sessions` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`negotiation_analyses` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`query_telemetry` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`dependency_health` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`dependency_health_history` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`user_filter_preferences` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`dashboard_layouts` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`erp_field_mappings` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`currencies` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`exchange_rates` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`estoque` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`estoque_movimentacoes` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`aliquotas_tributarias` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`webhook_events` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`wal_rate_snapshots` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`checkpoint_snapshots` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`temp_file_snapshots` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`deadlock_snapshots` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`health_scan_runs` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`alert_subscriptions` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`security_definer_baseline` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`secret_rotation_schedule` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`table_size_snapshots` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`cron_heartbeats` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`xbz_cores` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`spot_produtos` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`spot_skus` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`spot_customization_options` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`spot_estoque` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`cron_watchdog_seen` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`blocked_countries` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`qualification_history` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
-    "msg": "`qualification_requirements` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
    },
    {
     "kind": "dinâmico",
@@ -110570,7 +108805,7 @@
   },
   "src/integrations/supabase/types.ts": {
    "path": "src/integrations/supabase/types.ts",
-   "lines": 10537,
+   "lines": 9868,
    "exports": [
     "type Json",
     "type Database",
@@ -126857,10 +125092,19 @@
   }
  },
  "git": {
-  "sha": "130cb6f60471d7baa895e450bf0f1973cf0ff98d",
+  "sha": "0ae3c1de5d6c9beebc761c510fdd519ffeffe49d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0ae3c1d",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#616)",
+    "files": [
+     "src/integrations/supabase/types.ts"
+    ]
+   },
    {
     "sha": "130cb6f",
     "date": "2026-11-26",
@@ -127206,15 +125450,6 @@
     "date": "2026-11-26",
     "author": "github-actions[bot]",
     "subject": "chore(db): sincronizar types.ts com o banco [auto] (#583)",
-    "files": [
-     "src/integrations/supabase/types.ts"
-    ]
-   },
-   {
-    "sha": "d15d49f",
-    "date": "2026-11-26",
-    "author": "github-actions[bot]",
-    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#577)",
     "files": [
      "src/integrations/supabase/types.ts"
     ]
