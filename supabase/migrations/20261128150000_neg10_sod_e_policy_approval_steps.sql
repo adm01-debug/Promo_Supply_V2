@@ -74,6 +74,7 @@ REVOKE ALL ON FUNCTION public.aprovador_pode_decidir_etapa(UUID, INTEGER, TEXT, 
 GRANT EXECUTE ON FUNCTION public.aprovador_pode_decidir_etapa(UUID, INTEGER, TEXT, UUID, UUID, UUID) TO authenticated;
 
 DROP POLICY IF EXISTS "Approvers can update their steps" ON public.approval_steps;
+DROP POLICY IF EXISTS "approval_steps_aprovador_decide_etapa" ON public.approval_steps; -- tentativa anterior pode ter criado a policy (42710)
 CREATE POLICY "approval_steps_aprovador_decide_etapa" ON public.approval_steps
   FOR UPDATE TO authenticated
   USING (
