@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "0ae3c1de5d6c9beebc761c510fdd519ffeffe49d",
+  "sha": "dd1ca83a1d5733e6e4064b1d54bd724402effc45",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 02:08 UTC",
+  "generated_at": "2026-11-27 03:14 UTC",
   "files_total": 1594,
   "code_files": 1419,
   "code_lines": 231461,
@@ -125092,10 +125092,28 @@
   }
  },
  "git": {
-  "sha": "0ae3c1de5d6c9beebc761c510fdd519ffeffe49d",
+  "sha": "dd1ca83a1d5733e6e4064b1d54bd724402effc45",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "dd1ca83",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "chore(ci): baseline de orfaos encolhe - FornecedorMobileCard agora e importado (#618)",
+    "files": [
+     "docs/qa/baseline-orfaos-componentes.json"
+    ]
+   },
+   {
+    "sha": "a39fb00",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "docs(ledger): etapa 207 passa a [x] e 163-166 passam a [!] (bloqueio por decisao de negocio em INT-01) (#617)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "0ae3c1d",
     "date": "2026-11-26",
@@ -125432,27 +125450,6 @@
      "supabase/migrations/20261128140000_spot_pedidos_tenant.sql",
      "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql"
     ]
-   },
-   {
-    "sha": "f113336",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(banco): filhos de historico e de dinheiro deixam de ser apagados em cascata (etapa 131) (#584)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261128130000_on_delete_restrict_historico_financeiro.sql",
-     "supabase/rollbacks/20261128130000_revert_on_delete_restrict_historico_financeiro.sql"
-    ]
-   },
-   {
-    "sha": "4fb9075",
-    "date": "2026-11-26",
-    "author": "github-actions[bot]",
-    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#583)",
-    "files": [
-     "src/integrations/supabase/types.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -125462,11 +125459,11 @@
    ],
    [
     "AGENTS.md",
-    9
+    8
    ],
    [
     "src/integrations/supabase/types.ts",
-    5
+    4
    ],
    [
     "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
@@ -125479,6 +125476,10 @@
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
+   ],
+   [
+    "docs/qa/baseline-orfaos-componentes.json",
+    1
    ],
    [
     "supabase/migrations/20261128231000_remove_tabelas_orfas_de_particionamento.sql",
@@ -125530,10 +125531,6 @@
    ],
    [
     "supabase/migrations/20261126195500_check_budget_availability_le_department_budgets.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql",
     1
    ]
   ]

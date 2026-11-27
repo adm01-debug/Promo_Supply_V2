@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0ae3c1de5d6c9beebc761c510fdd519ffeffe49d` (2026-11-26T23:03:26-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `dd1ca83a1d5733e6e4064b1d54bd724402effc45` (2026-11-26T23:18:53-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -344,10 +344,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (219)
+- docs/qa/05-PROGRESSO.md (220)
 - AGENTS.md (42)
 - src/integrations/supabase/types.ts (14)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (10)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (9)
 - src/hooks/useDevolucoes.ts (9)
@@ -428,6 +428,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `dd1ca83` chore(ci): baseline de orfaos encolhe - FornecedorMobileCard agora e importado (#618)
+- 2026-11-26 `a39fb00` docs(ledger): etapa 207 passa a [x] e 163-166 passam a [!] (bloqueio por decisao de negocio em INT-01) (#617)
 - 2026-11-26 `0ae3c1d` chore(db): sincronizar types.ts com o banco [auto] (#616)
 - 2026-11-26 `130cb6f` chore(db): remove as 12 tabelas orfas do particionamento abandonado (#615)
 - 2026-11-26 `4d59524` docs(ledger): etapas 090/092/137/138 passam a [x] (PR #599 mergeada e migrations aplicadas em producao) (#614)
@@ -441,8 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `3ec8bec` Merge remote-tracking branch 'origin/main' into claude/fix-tenant-id-default-invalido-261126-1650 (#593)
 - 2026-11-26 `85e4768` fix(tipos): inserts informam tenant_id e destravam o types-sync (issue #131) (#609)
 - 2026-11-26 `c82a447` docs(agentes): AGENTS.md volta a declarar o numero real de migrations (377) (#611)
-- 2026-11-26 `a54eaf5` chore(db): sincronizar types.ts com o banco [auto] (#587)
-- 2026-11-26 `a498bae` fix(edge): responses deriva o CORS da requisicao e a constante estatica sai do _shared (#605)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

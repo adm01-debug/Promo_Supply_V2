@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0ae3c1de5d6c9beebc761c510fdd519ffeffe49d",
+  "commit": "dd1ca83a1d5733e6e4064b1d54bd724402effc45",
   "branch": "main",
-  "data_commit": "2026-11-26T23:03:26-03:00",
+  "data_commit": "2026-11-26T23:18:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "dd1ca83",
+    "data": "2026-11-26",
+    "assunto": "chore(ci): baseline de orfaos encolhe - FornecedorMobileCard agora e importado (#618)"
+   },
+   {
+    "sha": "a39fb00",
+    "data": "2026-11-26",
+    "assunto": "docs(ledger): etapa 207 passa a [x] e 163-166 passam a [!] (bloqueio por decisao de negocio em INT-01) (#617)"
+   },
    {
     "sha": "0ae3c1d",
     "data": "2026-11-26",
@@ -121,27 +131,17 @@
     "sha": "0943a88",
     "data": "2026-11-26",
     "assunto": "fix(ci): inventario cobre tests-rls e tests-e2e e a suite de RLS reprova em vez de pular (etapas 040 e 041) (#598)"
-   },
-   {
-    "sha": "bf32408",
-    "data": "2026-11-26",
-    "assunto": "fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)"
-   },
-   {
-    "sha": "4a068aa",
-    "data": "2026-11-26",
-    "assunto": "fix(ci): regenera a matriz edge-tabela apos a #592 (#595)"
    }
   ],
   "arquivos_mudados_7d": 1612,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 219
+    "mudancas": 220
    },
    {
     "pasta": "src/components/compras",
-    "mudancas": 211
+    "mudancas": 210
    },
    {
     "pasta": "src/components/ui",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 219
+    "mudancas": 220
    },
    {
     "arquivo": "AGENTS.md",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
