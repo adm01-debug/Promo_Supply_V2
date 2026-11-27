@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5068a49b2f9132b1fbf77a0b82eac395c081db95` (2026-11-26T22:14:43-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e623754d33be59adfcb48963b6c0a2acf9b1c340` (2026-11-26T22:18:28-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `e623754` fix(db): neg10 volta a ser idempotente e aplicavel (policy ja existia em prod) (#610)
 - 2026-11-26 `5068a49` fix(orcamento): trava le department_budgets e gatilhos param de perder/duplicar o gasto (090/092/137/138) (#599)
 - 2026-11-26 `14f107a` fix(rls): arquivo de auditoria/telemetria e leitura de organizacao passam a filtrar empresa (etapas 066, 067 e 068) (#59
 - 2026-11-26 `675838c` fix(orcamento): trava de orcamento le department_budgets (#606)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `fea414f` fix(sod): conserta a checagem de segregacao e fecha a decisao de etapa (093) (#601)
 - 2026-11-26 `8383ee7` fix(banco): lockout normaliza e-mail e deriva o IP do request (etapa 140) (#597)
 - 2026-11-26 `2b1e27a` fix(seguranca): multa e bloqueio de fornecedor notificam so a empresa do evento (#139) (#591)
-- 2026-11-26 `7723079` fix(storage): bucket product-images passa a limitar tipo e tamanho de arquivo (etapa 062) (#589)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

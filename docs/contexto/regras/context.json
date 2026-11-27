@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "5068a49b2f9132b1fbf77a0b82eac395c081db95",
+  "sha": "e623754d33be59adfcb48963b6c0a2acf9b1c340",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 01:15 UTC",
+  "generated_at": "2026-11-27 01:18 UTC",
   "files_total": 1592,
   "code_files": 1417,
-  "code_lines": 232026,
+  "code_lines": 232027,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "5ef3ab11e789ebb5",
+ "facts_hash": "8e45a0e3742e87ac",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -37474,7 +37474,7 @@
   {
    "module": "supabase/migrations",
    "files": 385,
-   "lines": 33896,
+   "lines": 33897,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -126685,7 +126685,7 @@
   },
   "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql": {
    "path": "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
-   "lines": 186,
+   "lines": 187,
    "role_checks": [
     "admin",
     "coordinator"
@@ -127249,10 +127249,19 @@
   }
  },
  "git": {
-  "sha": "5068a49b2f9132b1fbf77a0b82eac395c081db95",
+  "sha": "e623754d33be59adfcb48963b6c0a2acf9b1c340",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "e623754",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(db): neg10 volta a ser idempotente e aplicavel (policy ja existia em prod) (#610)",
+    "files": [
+     "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql"
+    ]
+   },
    {
     "sha": "5068a49",
     "date": "2026-11-26",
@@ -127615,32 +127624,24 @@
      "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
      "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql"
     ]
-   },
-   {
-    "sha": "53abd53",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
-     "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    24
+    23
    ],
    [
     "AGENTS.md",
-    12
+    11
    ],
    [
     "src/integrations/supabase/types.ts",
     5
+   ],
+   [
+    "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
+    2
    ],
    [
     "supabase/functions/alert-dispatcher/index.ts",
@@ -127704,10 +127705,6 @@
    ],
    [
     "supabase/migrations/20261128198000_claim_alerts_batch.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261128198000_revert_claim_alerts_batch.sql",
     1
    ]
   ]

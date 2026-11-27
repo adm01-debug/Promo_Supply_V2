@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5068a49b2f9132b1fbf77a0b82eac395c081db95",
+  "commit": "e623754d33be59adfcb48963b6c0a2acf9b1c340",
   "branch": "main",
-  "data_commit": "2026-11-26T22:14:43-03:00",
+  "data_commit": "2026-11-26T22:18:28-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "e623754",
+    "data": "2026-11-26",
+    "assunto": "fix(db): neg10 volta a ser idempotente e aplicavel (policy ja existia em prod) (#610)"
+   },
    {
     "sha": "5068a49",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "4fb9075",
     "data": "2026-11-26",
     "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#583)"
-   },
-   {
-    "sha": "d15d49f",
-    "data": "2026-11-26",
-    "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#577)"
    }
   ],
   "arquivos_mudados_7d": 1610,
