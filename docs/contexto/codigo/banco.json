@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 385,
+ "migrations": 386,
  "seeds": [],
  "avisos": [
   "55 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -3694,14 +3694,7 @@
   "audit_logs_202605": {
    "colunas": {},
    "rls": false,
-   "policies": [
-    {
-     "nome": "tenant_isolation_audit_logs_202605",
-     "comando": "all",
-     "para": "authenticated",
-     "tipo": "restrictive"
-    }
-   ],
+   "policies": [],
    "indices": [],
    "fks": [],
    "criada_em": null,
@@ -3732,14 +3725,7 @@
   "audit_logs_202606": {
    "colunas": {},
    "rls": false,
-   "policies": [
-    {
-     "nome": "tenant_isolation_audit_logs_202606",
-     "comando": "all",
-     "para": "authenticated",
-     "tipo": "restrictive"
-    }
-   ],
+   "policies": [],
    "indices": [],
    "fks": [],
    "criada_em": null,
@@ -3770,14 +3756,7 @@
   "audit_logs_202607": {
    "colunas": {},
    "rls": false,
-   "policies": [
-    {
-     "nome": "tenant_isolation_audit_logs_202607",
-     "comando": "all",
-     "para": "authenticated",
-     "tipo": "restrictive"
-    }
-   ],
+   "policies": [],
    "indices": [],
    "fks": [],
    "criada_em": null,
@@ -3808,14 +3787,7 @@
   "audit_logs_202608": {
    "colunas": {},
    "rls": false,
-   "policies": [
-    {
-     "nome": "tenant_isolation_audit_logs_202608",
-     "comando": "all",
-     "para": "authenticated",
-     "tipo": "restrictive"
-    }
-   ],
+   "policies": [],
    "indices": [],
    "fks": [],
    "criada_em": null,
@@ -3846,14 +3818,7 @@
   "audit_logs_202609": {
    "colunas": {},
    "rls": false,
-   "policies": [
-    {
-     "nome": "tenant_isolation_audit_logs_202609",
-     "comando": "all",
-     "para": "authenticated",
-     "tipo": "restrictive"
-    }
-   ],
+   "policies": [],
    "indices": [],
    "fks": [],
    "criada_em": null,
@@ -3935,24 +3900,11 @@
   },
   "audit_logs_legacy_20260712": {
    "colunas": {},
-   "rls": true,
-   "policies": [
-    {
-     "nome": "audit_logs_legacy_admin_read",
-     "comando": "select",
-     "para": "authenticated",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "tenant_isolation_audit_logs_legacy_20260712",
-     "comando": "all",
-     "para": "authenticated",
-     "tipo": "restrictive"
-    }
-   ],
+   "rls": false,
+   "policies": [],
    "indices": [],
    "fks": [],
-   "criada_em": "20260712223300_6f689f47-2c15-468b-b667-679e47facc11.sql",
+   "criada_em": null,
    "colunas_types": {
     "action_type": "Database[\"public\"][\"Enums\"][\"audit_action_type\"]",
     "created_at": "string",
@@ -20004,15 +19956,8 @@
   },
   "telemetry_logs_202605": {
    "colunas": {},
-   "rls": true,
-   "policies": [
-    {
-     "nome": "tenant_isolation_telemetry_logs_202605",
-     "comando": "all",
-     "para": "authenticated",
-     "tipo": "restrictive"
-    }
-   ],
+   "rls": false,
+   "policies": [],
    "indices": [],
    "fks": [],
    "criada_em": null,
@@ -20037,15 +19982,8 @@
   },
   "telemetry_logs_202606": {
    "colunas": {},
-   "rls": true,
-   "policies": [
-    {
-     "nome": "tenant_isolation_telemetry_logs_202606",
-     "comando": "all",
-     "para": "authenticated",
-     "tipo": "restrictive"
-    }
-   ],
+   "rls": false,
+   "policies": [],
    "indices": [],
    "fks": [],
    "criada_em": null,
@@ -20070,15 +20008,8 @@
   },
   "telemetry_logs_202607": {
    "colunas": {},
-   "rls": true,
-   "policies": [
-    {
-     "nome": "tenant_isolation_telemetry_logs_202607",
-     "comando": "all",
-     "para": "authenticated",
-     "tipo": "restrictive"
-    }
-   ],
+   "rls": false,
+   "policies": [],
    "indices": [],
    "fks": [],
    "criada_em": null,
@@ -20103,15 +20034,8 @@
   },
   "telemetry_logs_202608": {
    "colunas": {},
-   "rls": true,
-   "policies": [
-    {
-     "nome": "tenant_isolation_telemetry_logs_202608",
-     "comando": "all",
-     "para": "authenticated",
-     "tipo": "restrictive"
-    }
-   ],
+   "rls": false,
+   "policies": [],
    "indices": [],
    "fks": [],
    "criada_em": null,
@@ -20136,15 +20060,8 @@
   },
   "telemetry_logs_202609": {
    "colunas": {},
-   "rls": true,
-   "policies": [
-    {
-     "nome": "tenant_isolation_telemetry_logs_202609",
-     "comando": "all",
-     "para": "authenticated",
-     "tipo": "restrictive"
-    }
-   ],
+   "rls": false,
+   "policies": [],
    "indices": [],
    "fks": [],
    "criada_em": null,
@@ -20168,138 +20085,12 @@
    "nao_usada": true
   },
   "telemetry_logs_legacy_20260712": {
-   "colunas": {
-    "client_ip": {
-     "tipo": "text",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "context": {
-     "tipo": "jsonb",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": true,
-     "pk": false,
-     "default": "timezone('utc'::text, now())",
-     "ref": null
-    },
-    "id": {
-     "tipo": "uuid",
-     "nn": false,
-     "pk": true,
-     "default": "gen_random_uuid()",
-     "ref": null
-    },
-    "level": {
-     "tipo": "public",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "message": {
-     "tipo": "text",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "request_id": {
-     "tipo": "uuid",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "tenant_id": {
-     "tipo": "uuid",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "url": {
-     "tipo": "text",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "user_agent": {
-     "tipo": "text",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "user_id": {
-     "tipo": "uuid",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": "auth"
-    }
-   },
-   "rls": true,
-   "policies": [
-    {
-     "nome": "Admins can view telemetry logs",
-     "comando": "select",
-     "para": "public",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "admins_read_legacy_telemetry",
-     "comando": "select",
-     "para": "public",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "authenticated_insert_telemetry_logs",
-     "comando": "insert",
-     "para": "authenticated",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "tenant_isolation_telemetry_logs_legacy_20260712",
-     "comando": "all",
-     "para": "authenticated",
-     "tipo": "restrictive"
-    }
-   ],
-   "indices": [
-    {
-     "nome": "brin_telemetry_logs_created",
-     "colunas": "created_at",
-     "unico": false
-    },
-    {
-     "nome": "idx_telemetry_logs_created_at",
-     "colunas": "created_at DESC",
-     "unico": false
-    },
-    {
-     "nome": "idx_telemetry_logs_level",
-     "colunas": "level",
-     "unico": false
-    },
-    {
-     "nome": "idx_telemetry_logs_user_id",
-     "colunas": "user_id",
-     "unico": false
-    }
-   ],
-   "fks": [
-    "user_id->auth"
-   ],
-   "criada_em": "20260519164652_18fe7bbd-76ae-408f-9612-4dd1a3bebec9.sql",
+   "colunas": {},
+   "rls": false,
+   "policies": [],
+   "indices": [],
+   "fks": [],
+   "criada_em": null,
    "colunas_types": {
     "client_ip": "string | null",
     "context": "Json | null",
@@ -20312,10 +20103,6 @@
     "url": "string | null",
     "user_agent": "string | null",
     "user_id": "string | null"
-   },
-   "drift": {
-    "so_na_migration": [],
-    "so_no_types": []
    },
    "usada_no_front": 0,
    "usada_em_edges": [],

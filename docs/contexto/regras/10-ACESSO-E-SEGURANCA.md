@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `adc4ff7e1d` · branch `main` · 2026-11-27 01:36 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `130cb6f604` · branch `main` · 2026-11-27 01:52 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -32,13 +32,13 @@
 | `approval_workflows` | enabled | authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')<br>public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())<br>public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())<br>authenticated: public.tenant_in_my_group(tenant_id) | authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)<br>public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())<br>authenticated: public.tenant_in_my_group(tenant_id) | authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)<br>public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())<br>authenticated: public.tenant_in_my_group(tenant_id) | public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())<br>authenticated: public.tenant_in_my_group(tenant_id) |
 | `auction_bids` | enabled | authenticated: public.tenant_in_my_group(tenant_id) | authenticated: public.tenant_in_my_group(tenant_id) | authenticated: public.tenant_in_my_group(tenant_id) | authenticated: public.tenant_in_my_group(tenant_id) |
 | `audit_logs` | enabled | authenticated: has_role(auth.uid(), 'admin'::app_role)<br>authenticated: public.tenant_in_my_group(tenant_id) | authenticated: tenant_in_my_group(tenant_id) AND auth.uid() IS NOT NULL<br>authenticated: public.tenant_in_my_group(tenant_id) | authenticated: public.tenant_in_my_group(tenant_id) | authenticated: public.tenant_in_my_group(tenant_id) |
-| `audit_logs_202605` | não encontrado | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() |
-| `audit_logs_202606` | não encontrado | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() |
-| `audit_logs_202607` | não encontrado | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() |
-| `audit_logs_202608` | não encontrado | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() |
-| `audit_logs_202609` | não encontrado | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() |
+| `audit_logs_202605` | não encontrado | ? | ? | ? | ? |
+| `audit_logs_202606` | não encontrado | ? | ? | ? | ? |
+| `audit_logs_202607` | não encontrado | ? | ? | ? | ? |
+| `audit_logs_202608` | não encontrado | ? | ? | ? | ? |
+| `audit_logs_202609` | não encontrado | ? | ? | ? | ? |
 | `audit_logs_ancora` | não encontrado | ? | ? | ? | ? |
-| `audit_logs_legacy_20260712` | enabled | authenticated: has_role(auth.uid(), 'admin'::app_role)<br>service_role: true<br>authenticated: public.has_role(auth.uid(), 'admin'::app_role) | service_role: true | service_role: true | service_role: true |
+| `audit_logs_legacy_20260712` | não encontrado | ? | ? | ? | ? |
 | `blocked_countries` | não encontrado | authenticated: public.has_role(auth.uid(), 'admin'::app_role) | ? | ? | ? |
 | `blocked_ips` | enabled | public: has_role(auth.uid(), 'admin')<br>authenticated: has_role(auth.uid(), 'admin'::app_role) | public: has_role(auth.uid(), 'admin') | public: has_role(auth.uid(), 'admin') | public: has_role(auth.uid(), 'admin') |
 | `budget_audit_logs` | enabled | authenticated: public.has_role(auth.uid(), 'admin') | — | — | — |
@@ -147,12 +147,12 @@
 | `system_alerts` | enabled | authenticated: (tenant_id IS NOT NULL AND public.tenant_in_my_group(tenant_id)) OR (tenant_id IS NULL AND public.has_role(auth.uid(), 'admin | — | — | — |
 | `table_size_snapshots` | enabled | authenticated: public.has_role(auth.uid(), 'admin') | — | — | — |
 | `telemetry_logs` | enabled | public: EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text = 'admin' ) | authenticated: auth.uid() = user_id | — | — |
-| `telemetry_logs_202605` | enabled | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() |
-| `telemetry_logs_202606` | enabled | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() |
-| `telemetry_logs_202607` | enabled | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() |
-| `telemetry_logs_202608` | enabled | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() |
-| `telemetry_logs_202609` | enabled | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() | authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id() |
-| `telemetry_logs_legacy_20260712` | enabled | public: EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text = 'admin' )<br>public: public.has_role(auth.uid(), 'admin')<br>service_role: true<br>authenticated: public.has_role(auth.uid(), 'admin'::app_role) | authenticated: auth.uid() = user_id<br>service_role: true | service_role: true | service_role: true |
+| `telemetry_logs_202605` | não encontrado | ? | ? | ? | ? |
+| `telemetry_logs_202606` | não encontrado | ? | ? | ? | ? |
+| `telemetry_logs_202607` | não encontrado | ? | ? | ? | ? |
+| `telemetry_logs_202608` | não encontrado | ? | ? | ? | ? |
+| `telemetry_logs_202609` | não encontrado | ? | ? | ? | ? |
+| `telemetry_logs_legacy_20260712` | não encontrado | ? | ? | ? | ? |
 | `temp_file_snapshots` | enabled | authenticated: public.has_role(auth.uid(), 'admin') | — | — | — |
 | `tenants` | enabled | authenticated: public.user_belongs_to_tenant(auth.uid(), id) | — | — | — |
 | `unspsc_codes` | enabled | authenticated: auth.uid() IS NOT NULL | — | — | — |
@@ -472,7 +472,6 @@ Middleware matcher (Next.js): nenhum
 
 | Ação | Para/De | Privilégios | Objetos |
 |---|---|---|---|
-| grant | anon, authenticated | delete, update, truncate | `audit_logs_legacy_20260712`, `telemetry_logs_legacy_20260712` |
 | grant | anon, authenticated | execute | `has_role`, `has_permission`, `get_user_role`, `is_ip_blocked`, `log_login_attempt` |
 | grant | anon, authenticated | select, insert | `audit_logs_legacy_20260712`, `telemetry_logs_legacy_20260712` |
 | grant | anon, authenticated, service_role | execute | `record_failed_login`, `is_account_locked`, `log_login_attempt` |
@@ -530,7 +529,7 @@ Middleware matcher (Next.js): nenhum
 
 ## Multi-tenancy
 
-- Chave de tenant: **`tenant_id`** presente em 99 tabela(s): `solicitacoes`, `cotacoes`, `fornecedores`, `profiles`, `contracts`, `contract_items`, `contract_documents`, `contract_history`, `order_contracts`, `notifications`, `categorias`, `produtos`, `pedidos`, `pedido_itens`, `pagamentos`, `active_sessions`, `contact_notes`, `approval_rules`, `approval_delegations`, `approval_workflows`, `approval_steps`, `approval_history`, `spot_pedidos`, `department_budgets`, `fiscal_documents`, `repurchase_suggestions`, `contract_penalties`, `receiving_checklists`, `penalty_escalation_config`, `supplier_bonifications`, `devolucoes`, `devolucao_itens`, `creditos_fornecedor`, `payment_history`, `licitacoes`, `licitacao_propostas`, `licitacao_lances`, `category_strategies`, `sourcing_pipeline`, `spend_forecasts`, `sourcing_events`, `sourcing_event_lots`, `sourcing_event_questions`, `sourcing_event_criteria`, `sourcing_invitations`, `sourcing_responses`, `sourcing_response_items`, `sourcing_response_answers`, `auction_bids`, `sourcing_awards`, `cost_centers`, `budget_transactions`, `approval_hierarchy`, `user_tenants`, `unspsc_codes`, `sso_configurations`, `scim_provisioning_log`, `punchout_catalogs`, `punchout_sessions`, `erp_connections`, `erp_sync_log`, `fiscal_events`, `sourcing_projects`, `savings_tracker`, `workflow_templates`, `workflow_nodes`, `workflow_edges`, `workflow_instances`, `workflow_approvals`, `workflow_logs`, `workflow_sod_rules`, `workflow_tasks`, `workflow_audit_log`, `fornecedor_categorias`, `produto_fornecedores`, `system_alerts`, `integration_outbox`, `telemetry_logs_legacy_20260712`, `telemetry_logs`, `audit_logs_legacy_20260712`, `audit_logs`, `xbz_credentials`, `xbz_pedidos`, `xbz_pedido_status_history`, `xbz_produtos`, `xbz_produto_fiscal`, `xbz_carrinho_log`, `audit_logs_202605`, `audit_logs_202606`, `audit_logs_202607`, `audit_logs_202608`, `audit_logs_202609`, `supplier_documents`, `supplier_qualification_scores`, `telemetry_logs_202605`, `telemetry_logs_202606`, `telemetry_logs_202607`, `telemetry_logs_202608`, `telemetry_logs_202609`
+- Chave de tenant: **`tenant_id`** presente em 99 tabela(s): `solicitacoes`, `cotacoes`, `fornecedores`, `profiles`, `contracts`, `contract_items`, `contract_documents`, `contract_history`, `order_contracts`, `notifications`, `categorias`, `produtos`, `pedidos`, `pedido_itens`, `pagamentos`, `active_sessions`, `contact_notes`, `approval_rules`, `approval_delegations`, `approval_workflows`, `approval_steps`, `approval_history`, `spot_pedidos`, `department_budgets`, `fiscal_documents`, `repurchase_suggestions`, `contract_penalties`, `receiving_checklists`, `penalty_escalation_config`, `supplier_bonifications`, `devolucoes`, `devolucao_itens`, `creditos_fornecedor`, `payment_history`, `licitacoes`, `licitacao_propostas`, `licitacao_lances`, `category_strategies`, `sourcing_pipeline`, `spend_forecasts`, `sourcing_events`, `sourcing_event_lots`, `sourcing_event_questions`, `sourcing_event_criteria`, `sourcing_invitations`, `sourcing_responses`, `sourcing_response_items`, `sourcing_response_answers`, `auction_bids`, `sourcing_awards`, `cost_centers`, `budget_transactions`, `approval_hierarchy`, `user_tenants`, `unspsc_codes`, `sso_configurations`, `scim_provisioning_log`, `punchout_catalogs`, `punchout_sessions`, `erp_connections`, `erp_sync_log`, `fiscal_events`, `sourcing_projects`, `savings_tracker`, `workflow_templates`, `workflow_nodes`, `workflow_edges`, `workflow_instances`, `workflow_approvals`, `workflow_logs`, `workflow_sod_rules`, `workflow_tasks`, `workflow_audit_log`, `fornecedor_categorias`, `produto_fornecedores`, `system_alerts`, `integration_outbox`, `telemetry_logs`, `audit_logs`, `xbz_credentials`, `xbz_pedidos`, `xbz_pedido_status_history`, `xbz_produtos`, `xbz_produto_fiscal`, `xbz_carrinho_log`, `telemetry_logs_202605`, `telemetry_logs_202606`, `telemetry_logs_202607`, `telemetry_logs_202608`, `telemetry_logs_202609`, `telemetry_logs_legacy_20260712`, `audit_logs_202605`, `audit_logs_202606`, `audit_logs_202607`, `audit_logs_202608`, `audit_logs_202609`, `audit_logs_legacy_20260712`, `supplier_documents`, `supplier_qualification_scores`
 - Cobertura: 61% das tabelas. Tabelas SEM a chave (verificar isolamento): `saved_filters`, `entity_versions`, `historico_compras`, `dashboard_filter_favorites`, `push_subscriptions`, `notification_preferences`, `permissions`, `blocked_ips`, `ip_whitelist`, `webauthn_credentials`, `webauthn_challenges`, `allowed_countries`, `password_reset_requests`, `account_lockouts`, `user_tour_preferences`, `spot_sessions`, `negotiation_analyses`, `query_telemetry`, `dependency_health`, `dependency_health_history`, `user_filter_preferences`, `dashboard_layouts`, `erp_field_mappings`, `currencies`, `exchange_rates`, `estoque`, `estoque_movimentacoes`, `aliquotas_tributarias`, `webhook_events`, `wal_rate_snapshots`, `checkpoint_snapshots`, `temp_file_snapshots`, `deadlock_snapshots`, `health_scan_runs`, `alert_subscriptions`, `security_definer_baseline`, `secret_rotation_schedule`, `table_size_snapshots`, `cron_heartbeats`, `xbz_cores`, `spot_produtos`, `spot_skus`, `spot_customization_options`, `spot_estoque`, `cron_watchdog_seen`, `blocked_countries`, `qualification_history`, `qualification_requirements`
 
 ## Soft delete (registros 'apagados' continuam na tabela — filtre!)
@@ -671,9 +670,7 @@ Middleware matcher (Next.js): nenhum
 | `alert_subscriptions` | `created_at`, `updated_at` |
 | `security_definer_baseline` | `created_at` |
 | `secret_rotation_schedule` | `created_at`, `updated_at` |
-| `telemetry_logs_legacy_20260712` | `created_at` |
 | `telemetry_logs` | `created_at` |
-| `audit_logs_legacy_20260712` | `created_at` |
 | `audit_logs` | `created_at` |
 | `cron_heartbeats` | `updated_at` |
 | `xbz_credentials` | `created_at`, `created_by`, `updated_at` |
@@ -688,22 +685,24 @@ Middleware matcher (Next.js): nenhum
 | `spot_customization_options` | `created_at`, `updated_at` |
 | `spot_estoque` | `created_at`, `updated_at` |
 | `spot_api_sync_log` | `created_at` |
+| `telemetry_logs_202605` | `created_at` |
+| `telemetry_logs_202606` | `created_at` |
+| `telemetry_logs_202607` | `created_at` |
+| `telemetry_logs_202608` | `created_at` |
+| `telemetry_logs_202609` | `created_at` |
+| `telemetry_logs_legacy_20260712` | `created_at` |
 | `audit_logs_202605` | `created_at` |
 | `audit_logs_202606` | `created_at` |
 | `audit_logs_202607` | `created_at` |
 | `audit_logs_202608` | `created_at` |
 | `audit_logs_202609` | `created_at` |
+| `audit_logs_legacy_20260712` | `created_at` |
 | `audit_logs_ancora` | `atualizado_em` |
 | `geo_access_logs` | `created_at` |
 | `qualification_history` | `created_at` |
 | `qualification_requirements` | `created_at`, `updated_at` |
 | `supplier_documents` | `created_at`, `updated_at` |
 | `supplier_qualification_scores` | `created_at`, `updated_at` |
-| `telemetry_logs_202605` | `created_at` |
-| `telemetry_logs_202606` | `created_at` |
-| `telemetry_logs_202607` | `created_at` |
-| `telemetry_logs_202608` | `created_at` |
-| `telemetry_logs_202609` | `created_at` |
 
 ## Dados pessoais / sensíveis (LGPD — cuidado em logs, exports, prompts de IA)
 
@@ -730,7 +729,6 @@ Middleware matcher (Next.js): nenhum
 | `financial_audit_logs` | `ip_address` |
 | `tenants` | `cnpj` |
 | `alert_subscriptions` | `email` |
-| `audit_logs_legacy_20260712` | `ip_address` |
 | `audit_logs` | `ip_address` |
 | `xbz_credentials` | `cnpj` |
 | `audit_logs_202605` | `ip_address` |
@@ -738,6 +736,7 @@ Middleware matcher (Next.js): nenhum
 | `audit_logs_202607` | `ip_address` |
 | `audit_logs_202608` | `ip_address` |
 | `audit_logs_202609` | `ip_address` |
+| `audit_logs_legacy_20260712` | `ip_address` |
 | `geo_access_logs` | `ip_address` |
 
 ## Colunas de dinheiro (tipo importa: numeric ✅ / float ❌)

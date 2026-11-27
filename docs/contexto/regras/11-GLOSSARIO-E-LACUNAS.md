@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `adc4ff7e1d` · branch `main` · 2026-11-27 01:36 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `130cb6f604` · branch `main` · 2026-11-27 01:52 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -20,11 +20,11 @@
 | `approval_workflows` | _(sem COMMENT ON TABLE — significado não documentado)_ | 15 colunas | migration |
 | `auction_bids` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `audit_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 19 colunas | migration |
-| `audit_logs_202605` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | types.ts |
-| `audit_logs_202606` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | types.ts |
-| `audit_logs_202607` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | types.ts |
-| `audit_logs_202608` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | types.ts |
-| `audit_logs_202609` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | types.ts |
+| `audit_logs_202605` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `audit_logs_202606` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `audit_logs_202607` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `audit_logs_202608` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `audit_logs_202609` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
 | `audit_logs_ancora` | _(sem COMMENT ON TABLE — significado não documentado)_ | 4 colunas | types.ts |
 | `audit_logs_legacy_20260712` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
 | `blocked_countries` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | types.ts |
@@ -135,11 +135,11 @@
 | `system_alerts` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
 | `table_size_snapshots` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
 | `telemetry_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `telemetry_logs_202605` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | types.ts |
-| `telemetry_logs_202606` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | types.ts |
-| `telemetry_logs_202607` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | types.ts |
-| `telemetry_logs_202608` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | types.ts |
-| `telemetry_logs_202609` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | types.ts |
+| `telemetry_logs_202605` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
+| `telemetry_logs_202606` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
+| `telemetry_logs_202607` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
+| `telemetry_logs_202608` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
+| `telemetry_logs_202609` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `telemetry_logs_legacy_20260712` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `temp_file_snapshots` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `tenants` | _(sem COMMENT ON TABLE — significado não documentado)_ | 21 colunas | migration |

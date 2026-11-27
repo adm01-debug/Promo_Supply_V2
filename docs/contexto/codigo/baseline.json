@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "adc4ff7e1d0f4845dc007e0d1fa20249b55178e0",
+  "commit": "130cb6f60471d7baa895e450bf0f1973cf0ff98d",
   "branch": "main",
-  "data_commit": "2026-11-26T22:35:35-03:00",
+  "data_commit": "2026-11-26T22:51:19-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "130cb6f",
+    "data": "2026-11-26",
+    "assunto": "chore(db): remove as 12 tabelas orfas do particionamento abandonado (#615)"
+   },
+   {
+    "sha": "4d59524",
+    "data": "2026-11-26",
+    "assunto": "docs(ledger): etapas 090/092/137/138 passam a [x] (PR #599 mergeada e migrations aplicadas em producao) (#614)"
+   },
    {
     "sha": "adc4ff7",
     "data": "2026-11-26",
@@ -121,23 +131,13 @@
     "sha": "803a3a2",
     "data": "2026-11-26",
     "assunto": "fix(aprovacoes): historico de escalonamento grava o tenant e nao se perde (#144) (#592)"
-   },
-   {
-    "sha": "061c335",
-    "data": "2026-11-26",
-    "assunto": "fix(edge): spot-api e spot-proxy passam a resolver a empresa do chamador (etapa 051) (#586)"
-   },
-   {
-    "sha": "cc209d3",
-    "data": "2026-11-26",
-    "assunto": "fix(banco): spot_pedidos ganha empresa e isolamento por grupo (etapa 050) (#585)"
    }
   ],
-  "arquivos_mudados_7d": 1610,
+  "arquivos_mudados_7d": 1612,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 218
+    "mudancas": 219
    },
    {
     "pasta": "src/components/compras",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "AGENTS.md",
-    "mudancas": 41
+    "mudancas": 42
    },
    {
     "pasta": "src/lib/__tests__",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 218
+    "mudancas": 219
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 41
+    "mudancas": 42
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
@@ -262,10 +262,6 @@
     "mudancas": 7
    },
    {
-    "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
-    "mudancas": 7
-   },
-   {
     "arquivo": "supabase/functions/alert-dispatcher/index.ts",
     "mudancas": 7
    },
@@ -282,11 +278,11 @@
     "mudancas": 6
    },
    {
-    "arquivo": "docs/pendencias/_indice.md",
+    "arquivo": "scripts/ci/paridade-migrations-banco.allowlist.json",
     "mudancas": 6
    },
    {
-    "arquivo": "scripts/ci/paridade-migrations-banco.allowlist.json",
+    "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
     "mudancas": 6
    },
    {
@@ -296,6 +292,10 @@
    {
     "arquivo": "supabase/functions/check-approval-escalations/index.ts",
     "mudancas": 6
+   },
+   {
+    "arquivo": "docs/agentes/github-ci.md",
+    "mudancas": 5
    }
   ],
   "autores_30d": [
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1591,
+  "arquivos_total": 1593,
   "arquivos_codigo": 972,
   "linhas_codigo": 193822,
   "rotas": 56,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 166,
-  "migrations": 385,
+  "migrations": 386,
   "cron_jobs": 80,
   "testes": 326,
   "workflows": 15,

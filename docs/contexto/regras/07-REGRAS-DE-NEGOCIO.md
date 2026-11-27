@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `adc4ff7e1d` · branch `main` · 2026-11-27 01:36 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `130cb6f604` · branch `main` · 2026-11-27 01:52 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -162,14 +162,12 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `user_tenants` | user_tenants own rows | SELECT | authenticated | permissive | `user_id = auth.uid()` |  |
 | `erp_field_mappings` | ERP field mappings are visible to tenant admins | ALL | authenticated | permissive | `EXISTS ( SELECT 1 FROM public.erp_connections c WHERE c.id = connection_id AND c.tenant_id = public.current_tenant_id() )` |  |
 | `cost_centers` | Apenas administradores podem inserir centros de custo | INSERT | authenticated | permissive |  | `has_role(auth.uid(), 'admin'::app_role)` |
-| `telemetry_logs_legacy_20260712` | Admins can view telemetry logs | SELECT | public | permissive | `EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text = 'admin' )` |  |
 | `fornecedor_categorias` | tenant_isolation | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `currencies` | Authenticated can read currencies | SELECT | authenticated | permissive | `true` |  |
 | `exchange_rates` | Authenticated can read exchange_rates | SELECT | authenticated | permissive | `true` |  |
 | `profiles` | Users can view profiles in their tenant | SELECT | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
 | `currencies` | currencies_authenticated_read | SELECT | authenticated | permissive | `true` |  |
 | `exchange_rates` | exchange_rates_authenticated_read | SELECT | authenticated | permissive | `true` |  |
-| `telemetry_logs_legacy_20260712` | authenticated_insert_telemetry_logs | INSERT | authenticated | permissive |  | `auth.uid() = user_id` |
 | `budget_audit_logs` | admin_view_budget_audit_logs | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin')` |  |
 | `dependency_health` | authenticated_read_dependency_health | SELECT | authenticated | permissive | `auth.uid() IS NOT NULL` |  |
 | `dependency_health_history` | authenticated_read_dependency_health_history | SELECT | authenticated | permissive | `auth.uid() IS NOT NULL` |  |
@@ -199,8 +197,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `secret_rotation_schedule` | Admins manage secret rotation schedule | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin')` | `public.has_role(auth.uid(), 'admin')` |
 | `telemetry_logs` | Admins can view telemetry logs | SELECT | public | permissive | `EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text = 'admin' )` |  |
 | `telemetry_logs` | authenticated_insert_telemetry_logs | INSERT | authenticated | permissive |  | `auth.uid() = user_id` |
-| `telemetry_logs_legacy_20260712` | admins_read_legacy_telemetry | SELECT | public | permissive | `public.has_role(auth.uid(), 'admin')` |  |
-| `audit_logs_legacy_20260712` | audit_logs_legacy_admin_read | SELECT | authenticated | permissive | `has_role(auth.uid(), 'admin'::app_role)` |  |
 | `audit_logs` | Admins can view all audit logs | SELECT | authenticated | permissive | `has_role(auth.uid(), 'admin'::app_role)` |  |
 | `audit_logs` | authenticated_insert_audit_logs | INSERT | authenticated | permissive |  | `tenant_in_my_group(tenant_id) AND auth.uid() IS NOT NULL` |
 | `table_size_snapshots` | admins_read_table_size_snapshots | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin')` |  |
@@ -317,18 +313,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `storage.objects` | storage_produtos_dono_delete | DELETE | authenticated | permissive | `bucket_id = 'product-images' AND (owner = auth.uid() OR owner_id = (auth.uid())::text)` |  |
 | `entity_versions` | Authenticated can view versions | SELECT | authenticated | permissive | `true` |  |
 | `entity_versions` | Authenticated can insert versions | INSERT | authenticated | permissive |  | `changed_by IS NULL OR auth.uid() = changed_by` |
-| `audit_logs_legacy_20260712` | service_role_all_partition | ALL | service_role | permissive | `true` | `true` |
-| `telemetry_logs_legacy_20260712` | service_role_all_partition | ALL | service_role | permissive | `true` | `true` |
-| `audit_logs_202605` | tenant_isolation_audit_logs_202605 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
-| `audit_logs_202606` | tenant_isolation_audit_logs_202606 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
-| `audit_logs_202607` | tenant_isolation_audit_logs_202607 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
-| `audit_logs_202608` | tenant_isolation_audit_logs_202608 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
-| `audit_logs_202609` | tenant_isolation_audit_logs_202609 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
-| `telemetry_logs_202605` | tenant_isolation_telemetry_logs_202605 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
-| `telemetry_logs_202606` | tenant_isolation_telemetry_logs_202606 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
-| `telemetry_logs_202607` | tenant_isolation_telemetry_logs_202607 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
-| `telemetry_logs_202608` | tenant_isolation_telemetry_logs_202608 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
-| `telemetry_logs_202609` | tenant_isolation_telemetry_logs_202609 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
 | `notifications` | tenant_isolation_notifications | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `category_strategies` | tenant_isolation | ALL | authenticated | permissive | `organization_id = public.get_my_organization()` |  |
 | `sso_configurations` | SSO configurations isolated by tenant | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
@@ -362,8 +346,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `punchout_sessions` | tenant isolation punchout_sessions | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `fiscal_events` | fiscal_events tenant isolation | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `estoque_movimentacoes` | Movimentações: inserir na própria organização | INSERT | authenticated | permissive |  | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |
-| `audit_logs_legacy_20260712` | admin_read_partition | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role)` |  |
-| `telemetry_logs_legacy_20260712` | admin_read_partition | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role)` |  |
 | `approval_steps` | Approvers can update their steps | UPDATE | public | permissive | `auth.uid() = aprovador_id OR auth.uid() = aprovador_efetivo_id OR has_role(auth.uid(), 'admin'::app_role)` |  |
 | `storage.objects` | storage_produtos_leitura_publica | SELECT | anon, authenticated | permissive | `bucket_id = 'product-images'` |  |
 | `organizations` | Users can see their organizations | SELECT | public | permissive | `id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
@@ -673,7 +655,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `ip_whitelist` | `ip_address` | obrigatório; único |
 | `ip_whitelist` | `created_by` | FK → users.id |
 | `ip_whitelist` | `created_at` | default now() |
-| … +1088 linhas — lista completa em `context.json` | | |
+| … +1098 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
