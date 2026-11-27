@@ -4,30 +4,26 @@ CREATE OR REPLACE FUNCTION public.sync_budget_on_payment()
  SECURITY DEFINER
  SET search_path TO 'public'
 AS $function$
-DECLARE
-    v_cost_center_id UUID;
 BEGIN
-    -- Determinar o centro de custo (do pagamento ou da solicitação vinculada ao pedido)
-    v_cost_center_id := COALESCE(
-        NEW.cost_center_id,
-        (SELECT s.cost_center_id
-           FROM public.pedidos pe
-           JOIN public.solicitacoes s ON s.id = pe.solicitacao_id
-          WHERE pe.id = NEW.pedido_id
-          LIMIT 1)
-    );
+    IF NEW.cost_center_id IS NULL OR NEW.pedido_id IS NOT NULL THEN
+        RETURN NEW;
+    END IF;
 
-    IF v_cost_center_id IS NOT NULL THEN
-        -- Se o status mudou para 'pago'
-        IF (NEW.status = 'pago' AND (OLD.status IS NULL OR OLD.status != 'pago')) THEN
-            UPDATE public.department_budgets
-            SET
-                valor_utilizado = valor_utilizado + NEW.valor,
-                valor_comprometido = GREATEST(0, valor_comprometido - NEW.valor)
-            WHERE cost_center_id = v_cost_center_id
-            AND ano = EXTRACT(YEAR FROM NEW.created_at)
-            AND (mes IS NULL OR mes = EXTRACT(MONTH FROM NEW.created_at));
-        END IF;
+    IF NEW.status = 'pago' AND (OLD.status IS NULL OR OLD.status <> 'pago') THEN
+        UPDATE public.department_budgets
+           SET valor_utilizado = valor_utilizado + COALESCE(NEW.valor, 0),
+               updated_at = now()
+         WHERE cost_center_id = NEW.cost_center_id
+           AND ano = EXTRACT(YEAR FROM NEW.created_at)
+           AND (mes IS NULL OR mes = EXTRACT(MONTH FROM NEW.created_at));
+
+    ELSIF OLD.status = 'pago' AND NEW.status <> 'pago' THEN
+        UPDATE public.department_budgets
+           SET valor_utilizado = GREATEST(0, valor_utilizado - COALESCE(OLD.valor, 0)),
+               updated_at = now()
+         WHERE cost_center_id = NEW.cost_center_id
+           AND ano = EXTRACT(YEAR FROM OLD.created_at)
+           AND (mes IS NULL OR mes = EXTRACT(MONTH FROM OLD.created_at));
     END IF;
 
     RETURN NEW;

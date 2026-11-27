@@ -45,21 +45,6 @@
 | public.audit_logs | organization_id | public.organizations | id | NO ACTION | NO ACTION |
 | public.audit_logs | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.audit_logs | user_id | auth.users | id | SET NULL | NO ACTION |
-| public.audit_logs_202605 | organization_id | public.organizations | id | NO ACTION | NO ACTION |
-| public.audit_logs_202605 | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
-| public.audit_logs_202605 | user_id | auth.users | id | SET NULL | NO ACTION |
-| public.audit_logs_202606 | organization_id | public.organizations | id | NO ACTION | NO ACTION |
-| public.audit_logs_202606 | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
-| public.audit_logs_202606 | user_id | auth.users | id | SET NULL | NO ACTION |
-| public.audit_logs_202607 | organization_id | public.organizations | id | NO ACTION | NO ACTION |
-| public.audit_logs_202607 | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
-| public.audit_logs_202607 | user_id | auth.users | id | SET NULL | NO ACTION |
-| public.audit_logs_202608 | organization_id | public.organizations | id | NO ACTION | NO ACTION |
-| public.audit_logs_202608 | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
-| public.audit_logs_202608 | user_id | auth.users | id | SET NULL | NO ACTION |
-| public.audit_logs_202609 | organization_id | public.organizations | id | NO ACTION | NO ACTION |
-| public.audit_logs_202609 | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
-| public.audit_logs_202609 | user_id | auth.users | id | SET NULL | NO ACTION |
 | public.blocked_countries | blocked_by | auth.users | id | NO ACTION | NO ACTION |
 | public.blocked_ips | blocked_by | auth.users | id | NO ACTION | NO ACTION |
 | public.budget_audit_logs | budget_id | public.department_budgets | id | CASCADE | NO ACTION |
@@ -275,7 +260,6 @@
 | public.supplier_documents | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.supplier_qualification_scores | fornecedor_id | public.fornecedores | id | CASCADE | NO ACTION |
 | public.supplier_qualification_scores | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
-| public.telemetry_logs_legacy_20260712 | user_id | auth.users | id | NO ACTION | NO ACTION |
 | public.tenants | default_currency | public.currencies | code | NO ACTION | NO ACTION |
 | public.tenants | organization_id | public.organizations | id | SET NULL | NO ACTION |
 | public.unspsc_codes | parent_code | public.unspsc_codes | code | NO ACTION | NO ACTION |

@@ -66,61 +66,7 @@ Uso e tamanho em `stats.md`.
 | public.audit_logs | idx_audit_logs_org_created | btree | organization_id, created_at | não | sim |  |
 | public.audit_logs | idx_audit_logs_tenant | btree | tenant_id | não | sim |  |
 | public.audit_logs | idx_audit_logs_user_id | btree | user_id | não | sim |  |
-| public.audit_logs_202605 | audit_logs_202605_action_type_idx | btree | action_type | não | sim |  |
-| public.audit_logs_202605 | audit_logs_202605_created_at_idx | btree | created_at | não | sim |  |
-| public.audit_logs_202605 | audit_logs_202605_entity_id_idx | btree | entity_id | não | sim |  |
-| public.audit_logs_202605 | audit_logs_202605_entity_type_entity_id_idx | btree | entity_type, entity_id | não | sim |  |
-| public.audit_logs_202605 | audit_logs_202605_entity_type_idx | btree | entity_type | não | sim |  |
-| public.audit_logs_202605 | audit_logs_202605_organization_id_created_at_idx | btree | organization_id, created_at | não | sim |  |
-| public.audit_logs_202605 | audit_logs_202605_pkey | btree | id, created_at | sim | sim |  |
-| public.audit_logs_202605 | audit_logs_202605_tenant_id_idx | btree | tenant_id | não | sim |  |
-| public.audit_logs_202605 | audit_logs_202605_user_id_idx | btree | user_id | não | sim |  |
-| public.audit_logs_202606 | audit_logs_202606_action_type_idx | btree | action_type | não | sim |  |
-| public.audit_logs_202606 | audit_logs_202606_created_at_idx | btree | created_at | não | sim |  |
-| public.audit_logs_202606 | audit_logs_202606_entity_id_idx | btree | entity_id | não | sim |  |
-| public.audit_logs_202606 | audit_logs_202606_entity_type_entity_id_idx | btree | entity_type, entity_id | não | sim |  |
-| public.audit_logs_202606 | audit_logs_202606_entity_type_idx | btree | entity_type | não | sim |  |
-| public.audit_logs_202606 | audit_logs_202606_organization_id_created_at_idx | btree | organization_id, created_at | não | sim |  |
-| public.audit_logs_202606 | audit_logs_202606_pkey | btree | id, created_at | sim | sim |  |
-| public.audit_logs_202606 | audit_logs_202606_tenant_id_idx | btree | tenant_id | não | sim |  |
-| public.audit_logs_202606 | audit_logs_202606_user_id_idx | btree | user_id | não | sim |  |
-| public.audit_logs_202607 | audit_logs_202607_action_type_idx | btree | action_type | não | sim |  |
-| public.audit_logs_202607 | audit_logs_202607_created_at_idx | btree | created_at | não | sim |  |
-| public.audit_logs_202607 | audit_logs_202607_entity_id_idx | btree | entity_id | não | sim |  |
-| public.audit_logs_202607 | audit_logs_202607_entity_type_entity_id_idx | btree | entity_type, entity_id | não | sim |  |
-| public.audit_logs_202607 | audit_logs_202607_entity_type_idx | btree | entity_type | não | sim |  |
-| public.audit_logs_202607 | audit_logs_202607_organization_id_created_at_idx | btree | organization_id, created_at | não | sim |  |
-| public.audit_logs_202607 | audit_logs_202607_pkey | btree | id, created_at | sim | sim |  |
-| public.audit_logs_202607 | audit_logs_202607_tenant_id_idx | btree | tenant_id | não | sim |  |
-| public.audit_logs_202607 | audit_logs_202607_user_id_idx | btree | user_id | não | sim |  |
-| public.audit_logs_202608 | audit_logs_202608_action_type_idx | btree | action_type | não | sim |  |
-| public.audit_logs_202608 | audit_logs_202608_created_at_idx | btree | created_at | não | sim |  |
-| public.audit_logs_202608 | audit_logs_202608_entity_id_idx | btree | entity_id | não | sim |  |
-| public.audit_logs_202608 | audit_logs_202608_entity_type_entity_id_idx | btree | entity_type, entity_id | não | sim |  |
-| public.audit_logs_202608 | audit_logs_202608_entity_type_idx | btree | entity_type | não | sim |  |
-| public.audit_logs_202608 | audit_logs_202608_organization_id_created_at_idx | btree | organization_id, created_at | não | sim |  |
-| public.audit_logs_202608 | audit_logs_202608_pkey | btree | id, created_at | sim | sim |  |
-| public.audit_logs_202608 | audit_logs_202608_tenant_id_idx | btree | tenant_id | não | sim |  |
-| public.audit_logs_202608 | audit_logs_202608_user_id_idx | btree | user_id | não | sim |  |
-| public.audit_logs_202609 | audit_logs_202609_action_type_idx | btree | action_type | não | sim |  |
-| public.audit_logs_202609 | audit_logs_202609_created_at_idx | btree | created_at | não | sim |  |
-| public.audit_logs_202609 | audit_logs_202609_entity_id_idx | btree | entity_id | não | sim |  |
-| public.audit_logs_202609 | audit_logs_202609_entity_type_entity_id_idx | btree | entity_type, entity_id | não | sim |  |
-| public.audit_logs_202609 | audit_logs_202609_entity_type_idx | btree | entity_type | não | sim |  |
-| public.audit_logs_202609 | audit_logs_202609_organization_id_created_at_idx | btree | organization_id, created_at | não | sim |  |
-| public.audit_logs_202609 | audit_logs_202609_pkey | btree | id, created_at | sim | sim |  |
-| public.audit_logs_202609 | audit_logs_202609_tenant_id_idx | btree | tenant_id | não | sim |  |
-| public.audit_logs_202609 | audit_logs_202609_user_id_idx | btree | user_id | não | sim |  |
 | public.audit_logs_ancora | audit_logs_ancora_pkey | btree | id | sim | sim |  |
-| public.audit_logs_legacy_20260712 | audit_logs_legacy_20260712_action_type_idx | btree | action_type | não | sim |  |
-| public.audit_logs_legacy_20260712 | audit_logs_legacy_20260712_created_at_idx | btree | created_at | não | sim |  |
-| public.audit_logs_legacy_20260712 | audit_logs_legacy_20260712_entity_id_idx | btree | entity_id | não | sim |  |
-| public.audit_logs_legacy_20260712 | audit_logs_legacy_20260712_entity_type_entity_id_idx | btree | entity_type, entity_id | não | sim |  |
-| public.audit_logs_legacy_20260712 | audit_logs_legacy_20260712_entity_type_idx | btree | entity_type | não | sim |  |
-| public.audit_logs_legacy_20260712 | audit_logs_legacy_20260712_organization_id_created_at_idx | btree | organization_id, created_at | não | sim |  |
-| public.audit_logs_legacy_20260712 | audit_logs_legacy_20260712_pkey | btree | id | sim | sim |  |
-| public.audit_logs_legacy_20260712 | audit_logs_legacy_20260712_tenant_id_idx | btree | tenant_id | não | sim |  |
-| public.audit_logs_legacy_20260712 | audit_logs_legacy_20260712_user_id_idx | btree | user_id | não | sim |  |
 | public.blocked_countries | blocked_countries_country_code_key | btree | country_code | sim | sim |  |
 | public.blocked_countries | blocked_countries_pkey | btree | id | sim | sim |  |
 | public.blocked_countries | idx_blocked_countries_blocked_by | btree | blocked_by | não | sim |  |
@@ -576,36 +522,6 @@ Uso e tamanho em `stats.md`.
 | public.telemetry_logs | idx_telemetry_logs_level | btree | level | não | sim |  |
 | public.telemetry_logs | idx_telemetry_logs_user_id | btree | user_id | não | sim |  |
 | public.telemetry_logs | telemetry_logs_pkey | btree | id, created_at | sim | sim |  |
-| public.telemetry_logs_202605 | telemetry_logs_202605_created_at_idx | btree | created_at | não | sim |  |
-| public.telemetry_logs_202605 | telemetry_logs_202605_created_at_idx1 | brin | created_at | não | sim |  |
-| public.telemetry_logs_202605 | telemetry_logs_202605_level_idx | btree | level | não | sim |  |
-| public.telemetry_logs_202605 | telemetry_logs_202605_pkey | btree | id, created_at | sim | sim |  |
-| public.telemetry_logs_202605 | telemetry_logs_202605_user_id_idx | btree | user_id | não | sim |  |
-| public.telemetry_logs_202606 | telemetry_logs_202606_created_at_idx | btree | created_at | não | sim |  |
-| public.telemetry_logs_202606 | telemetry_logs_202606_created_at_idx1 | brin | created_at | não | sim |  |
-| public.telemetry_logs_202606 | telemetry_logs_202606_level_idx | btree | level | não | sim |  |
-| public.telemetry_logs_202606 | telemetry_logs_202606_pkey | btree | id, created_at | sim | sim |  |
-| public.telemetry_logs_202606 | telemetry_logs_202606_user_id_idx | btree | user_id | não | sim |  |
-| public.telemetry_logs_202607 | telemetry_logs_202607_created_at_idx | btree | created_at | não | sim |  |
-| public.telemetry_logs_202607 | telemetry_logs_202607_created_at_idx1 | brin | created_at | não | sim |  |
-| public.telemetry_logs_202607 | telemetry_logs_202607_level_idx | btree | level | não | sim |  |
-| public.telemetry_logs_202607 | telemetry_logs_202607_pkey | btree | id, created_at | sim | sim |  |
-| public.telemetry_logs_202607 | telemetry_logs_202607_user_id_idx | btree | user_id | não | sim |  |
-| public.telemetry_logs_202608 | telemetry_logs_202608_created_at_idx | btree | created_at | não | sim |  |
-| public.telemetry_logs_202608 | telemetry_logs_202608_created_at_idx1 | brin | created_at | não | sim |  |
-| public.telemetry_logs_202608 | telemetry_logs_202608_level_idx | btree | level | não | sim |  |
-| public.telemetry_logs_202608 | telemetry_logs_202608_pkey | btree | id, created_at | sim | sim |  |
-| public.telemetry_logs_202608 | telemetry_logs_202608_user_id_idx | btree | user_id | não | sim |  |
-| public.telemetry_logs_202609 | telemetry_logs_202609_created_at_idx | btree | created_at | não | sim |  |
-| public.telemetry_logs_202609 | telemetry_logs_202609_created_at_idx1 | brin | created_at | não | sim |  |
-| public.telemetry_logs_202609 | telemetry_logs_202609_level_idx | btree | level | não | sim |  |
-| public.telemetry_logs_202609 | telemetry_logs_202609_pkey | btree | id, created_at | sim | sim |  |
-| public.telemetry_logs_202609 | telemetry_logs_202609_user_id_idx | btree | user_id | não | sim |  |
-| public.telemetry_logs_legacy_20260712 | brin_telemetry_logs_legacy_created | brin | created_at | não | sim |  |
-| public.telemetry_logs_legacy_20260712 | idx_telemetry_logs_legacy_created_at | btree | created_at | não | sim |  |
-| public.telemetry_logs_legacy_20260712 | idx_telemetry_logs_legacy_level | btree | level | não | sim |  |
-| public.telemetry_logs_legacy_20260712 | idx_telemetry_logs_legacy_user_id | btree | user_id | não | sim |  |
-| public.telemetry_logs_legacy_20260712 | telemetry_logs_legacy_20260712_pkey | btree | id | sim | sim |  |
 | public.temp_file_snapshots | idx_temp_file_snapshots_captured_at | btree | captured_at | não | sim |  |
 | public.temp_file_snapshots | temp_file_snapshots_pkey | btree | id | sim | sim |  |
 | public.tenants | idx_tenants_default_currency | btree | default_currency | não | sim |  |

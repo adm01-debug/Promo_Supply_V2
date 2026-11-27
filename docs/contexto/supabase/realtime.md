@@ -20,7 +20,6 @@
 | supabase_realtime | public.pedidos | default |
 | supabase_realtime | public.solicitacoes | default |
 | supabase_realtime | public.system_alerts | default |
-| supabase_realtime_messages_publication | realtime.messages_2026_11_23 |  |
 | supabase_realtime_messages_publication | realtime.messages_2026_11_24 |  |
 | supabase_realtime_messages_publication | realtime.messages_2026_11_25 |  |
 | supabase_realtime_messages_publication | realtime.messages_2026_11_26 |  |

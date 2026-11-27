@@ -63,11 +63,6 @@
 | public.approval_workflows | approval_workflows_tenant_id_fkey | tenant_id | NO ACTION |
 | public.auction_bids | auction_bids_tenant_id_fkey | tenant_id | NO ACTION |
 | public.audit_logs | audit_logs_tenant_id_fkey | tenant_id | NO ACTION |
-| public.audit_logs_202605 | audit_logs_tenant_id_fkey | tenant_id | NO ACTION |
-| public.audit_logs_202606 | audit_logs_tenant_id_fkey | tenant_id | NO ACTION |
-| public.audit_logs_202607 | audit_logs_tenant_id_fkey | tenant_id | NO ACTION |
-| public.audit_logs_202608 | audit_logs_tenant_id_fkey | tenant_id | NO ACTION |
-| public.audit_logs_202609 | audit_logs_tenant_id_fkey | tenant_id | NO ACTION |
 | public.budget_transactions | budget_transactions_tenant_id_fkey | tenant_id | NO ACTION |
 | public.categorias | categorias_tenant_id_fkey | tenant_id | NO ACTION |
 | public.category_strategies | category_strategies_tenant_id_fkey | tenant_id | NO ACTION |

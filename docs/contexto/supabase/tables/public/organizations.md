@@ -45,11 +45,6 @@
 | public.approval_steps | approval_steps_organization_id_fkey | organization_id | NO ACTION |
 | public.approval_workflows | approval_workflows_organization_id_fkey | organization_id | NO ACTION |
 | public.audit_logs | audit_logs_organization_id_fkey | organization_id | NO ACTION |
-| public.audit_logs_202605 | audit_logs_organization_id_fkey | organization_id | NO ACTION |
-| public.audit_logs_202606 | audit_logs_organization_id_fkey | organization_id | NO ACTION |
-| public.audit_logs_202607 | audit_logs_organization_id_fkey | organization_id | NO ACTION |
-| public.audit_logs_202608 | audit_logs_organization_id_fkey | organization_id | NO ACTION |
-| public.audit_logs_202609 | audit_logs_organization_id_fkey | organization_id | NO ACTION |
 | public.categorias | categorias_organization_id_fkey | organization_id | NO ACTION |
 | public.category_strategies | category_strategies_organization_id_fkey | organization_id | NO ACTION |
 | public.contracts | contracts_organization_id_fkey | organization_id | NO ACTION |

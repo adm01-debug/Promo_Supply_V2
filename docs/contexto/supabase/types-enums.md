@@ -3,12 +3,12 @@
 | tipo | kind | valores / definição | usado em |
 |---|---|---|---|
 | public.app_role | enum | admin, coordinator, buyer, finance, viewer | public.role_permissions.role, public.sso_configurations.default_role, public.user_roles.role, public.user_tenants.role, public.workflow_approvals.role_required, public.workflow_tasks.assigned_to_role |
-| public.audit_action_type | enum | create, update, delete, view, export, login, logout, approve, reject, cancel | public.audit_logs.action_type, public.audit_logs_202605.action_type, public.audit_logs_202606.action_type, public.audit_logs_202607.action_type, public.audit_logs_202608.action_type, public.audit_logs_202609.action_type, public.audit_logs_legacy_20260712.action_type |
-| public.audit_entity_type | enum | solicitacao, cotacao, pedido, pagamento, fornecedor, usuario, configuracao, relatorio | public.audit_logs.entity_type, public.audit_logs_202605.entity_type, public.audit_logs_202606.entity_type, public.audit_logs_202607.entity_type, public.audit_logs_202608.entity_type, public.audit_logs_202609.entity_type, public.audit_logs_legacy_20260712.entity_type |
+| public.audit_action_type | enum | create, update, delete, view, export, login, logout, approve, reject, cancel | public.audit_logs.action_type |
+| public.audit_entity_type | enum | solicitacao, cotacao, pedido, pagamento, fornecedor, usuario, configuracao, relatorio | public.audit_logs.entity_type |
 | public.audit_event_type | enum | create, update, delete, approve, reject, auth, security, export |  |
 | public.bid_status | enum | valid, rejected, withdrawn, winning | public.auction_bids.status |
 | public.invitation_status | enum | pending, viewed, declined, submitted, expired | public.sourcing_invitations.status |
-| public.log_level | enum | info, warn, error, debug | public.telemetry_logs.level, public.telemetry_logs_202605.level, public.telemetry_logs_202606.level, public.telemetry_logs_202607.level, public.telemetry_logs_202608.level, public.telemetry_logs_202609.level, public.telemetry_logs_legacy_20260712.level |
+| public.log_level | enum | info, warn, error, debug | public.telemetry_logs.level |
 | public.question_type | enum | text, number, single_choice, multi_choice, file, date | public.sourcing_event_questions.type |
 | public.regime_tributario | enum | simples_nacional, lucro_presumido, lucro_real, mei | public.aliquotas_tributarias.regime, public.tenants.regime_tributario |
 | public.saving_type | enum | negotiated, avoidance, process, specification | public.savings_tracker.type |
