@@ -261,7 +261,7 @@ export type Database = {
           id?: string
           motivo?: string | null
           organization_id?: string | null
-          tenant_id?: string
+          tenant_id: string
           updated_at?: string
           valor_maximo?: number | null
         }
@@ -313,7 +313,7 @@ export type Database = {
           id?: string
           max_approval_amount?: number | null
           superior_id?: string | null
-          tenant_id?: string
+          tenant_id: string
           user_id: string
         }
         Update: {
@@ -362,7 +362,7 @@ export type Database = {
           id?: string
           solicitacao_id?: string | null
           step_id?: string | null
-          tenant_id?: string
+          tenant_id: string
           usuario_id?: string | null
           usuario_nome?: string | null
           workflow_id?: string | null
@@ -450,7 +450,7 @@ export type Database = {
           prioridade?: number
           requer_unanimidade?: boolean
           tempo_limite_horas?: number
-          tenant_id?: string
+          tenant_id: string
           updated_at?: string
           valor_max?: number
           valor_min?: number
@@ -540,7 +540,7 @@ export type Database = {
           organization_id?: string | null
           prazo_limite?: string | null
           status?: string
-          tenant_id?: string
+          tenant_id: string
           workflow_id: string
         }
         Update: {
@@ -621,7 +621,7 @@ export type Database = {
           rule_id?: string | null
           solicitacao_id?: string | null
           status?: string
-          tenant_id?: string
+          tenant_id: string
           total_etapas?: number
           updated_at?: string
           valor: number
@@ -705,7 +705,7 @@ export type Database = {
           lot_id?: string | null
           rejection_reason?: string | null
           status?: Database["public"]["Enums"]["bid_status"]
-          tenant_id?: string
+          tenant_id: string
           triggered_extension?: boolean | null
         }
         Update: {
@@ -1408,7 +1408,7 @@ export type Database = {
           id?: string
           reference_id?: string | null
           reference_type?: string | null
-          tenant_id?: string
+          tenant_id: string
           type: string
         }
         Update: {
@@ -1527,7 +1527,7 @@ export type Database = {
           risk_level?: string | null
           spend_impact?: string | null
           strategy_description?: string | null
-          tenant_id?: string
+          tenant_id: string
           updated_at?: string | null
         }
         Update: {
@@ -1631,7 +1631,7 @@ export type Database = {
           created_at?: string
           fornecedor_id?: string | null
           id?: string
-          tenant_id?: string
+          tenant_id: string
           updated_at?: string
         }
         Update: {
@@ -1688,7 +1688,7 @@ export type Database = {
           file_type?: string | null
           file_url: string
           id?: string
-          tenant_id?: string
+          tenant_id: string
           uploaded_by?: string | null
         }
         Update: {
@@ -1740,7 +1740,7 @@ export type Database = {
           new_values?: Json | null
           old_values?: Json | null
           performed_by?: string | null
-          tenant_id?: string
+          tenant_id: string
         }
         Update: {
           action_description?: string | null
@@ -1790,7 +1790,7 @@ export type Database = {
           id?: string
           item_name: string
           quantity?: number
-          tenant_id?: string
+          tenant_id: string
           total_price?: number
           unit: string
           unit_price?: number
@@ -1854,7 +1854,7 @@ export type Database = {
           penalty_type?: string
           penalty_value?: number
           status?: string
-          tenant_id?: string
+          tenant_id: string
           updated_at?: string
         }
         Update: {
@@ -1966,7 +1966,7 @@ export type Database = {
           status?: string
           supplier_id: string
           supplier_name: string
-          tenant_id?: string
+          tenant_id: string
           title: string
           total_value?: number
           updated_at?: string
@@ -2020,6 +2020,20 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "contracts_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contracts_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
             foreignKeyName: "contracts_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
@@ -2056,7 +2070,7 @@ export type Database = {
           manager_id?: string | null
           name: string
           parent_id?: string | null
-          tenant_id?: string
+          tenant_id: string
           total_budget?: number | null
           updated_at?: string
           used_amount?: number | null
@@ -2279,7 +2293,7 @@ export type Database = {
           id?: string
           saldo?: number
           status?: string
-          tenant_id?: string
+          tenant_id: string
           tipo?: string
           updated_at?: string
           utilizado_em_pagamento_id?: string | null
@@ -2554,7 +2568,7 @@ export type Database = {
           id?: string
           mes?: number | null
           organization_id?: string | null
-          tenant_id?: string
+          tenant_id: string
           updated_at?: string
           valor_comprometido?: number
           valor_total?: number
@@ -2678,7 +2692,7 @@ export type Database = {
           pedido_item_id?: string | null
           quantidade?: number
           quantidade_aceita?: number | null
-          tenant_id?: string
+          tenant_id: string
           valor_total?: number
           valor_unitario?: number
         }
@@ -2766,7 +2780,7 @@ export type Database = {
           resolucao?: string | null
           solicitante_id?: string | null
           status?: string
-          tenant_id?: string
+          tenant_id: string
           tipo?: string
           transportadora?: string | null
           updated_at?: string
@@ -3741,7 +3755,7 @@ export type Database = {
           fornecedor_id?: string | null
           id?: string
           licitacao_id?: string | null
-          tenant_id?: string
+          tenant_id: string
           valor_lance: number
         }
         Update: {
@@ -3821,7 +3835,7 @@ export type Database = {
           score_tecnico?: number | null
           score_total?: number | null
           status?: string
-          tenant_id?: string
+          tenant_id: string
           updated_at?: string
           valor_proposta?: number
           vencedora?: boolean | null
@@ -3930,7 +3944,7 @@ export type Database = {
           organization_id?: string | null
           responsavel_id?: string | null
           status?: string
-          tenant_id?: string
+          tenant_id: string
           tipo?: string
           titulo: string
           updated_at?: string
@@ -4234,7 +4248,7 @@ export type Database = {
           created_at?: string
           id?: string
           order_id: string
-          tenant_id?: string
+          tenant_id: string
         }
         Update: {
           contract_id?: string
@@ -4491,7 +4505,7 @@ export type Database = {
           observacoes?: string | null
           pagamento_id: string
           registrado_por?: string | null
-          tenant_id?: string
+          tenant_id: string
           valor_parcela?: number
         }
         Update: {
@@ -4788,7 +4802,7 @@ export type Database = {
           max_infractions?: number | null
           min_infractions?: number
           penalty_multiplier?: number
-          tenant_id?: string
+          tenant_id: string
           updated_at?: string
         }
         Update: {
@@ -5494,7 +5508,7 @@ export type Database = {
           quantity_score?: number
           rejection_reason?: string | null
           status?: string
-          tenant_id?: string
+          tenant_id: string
           updated_at?: string
         }
         Update: {
@@ -6114,7 +6128,7 @@ export type Database = {
           lot_id?: string | null
           pedido_id?: string | null
           saving_estimado?: number | null
-          tenant_id?: string
+          tenant_id: string
           valor_adjudicado: number
           winner_response_id: string
         }
@@ -6204,7 +6218,7 @@ export type Database = {
           id?: string
           nome: string
           peso: number
-          tenant_id?: string
+          tenant_id: string
         }
         Update: {
           config?: Json | null
@@ -6259,7 +6273,7 @@ export type Database = {
           ordem?: number
           preco_referencia?: number | null
           quantidade?: number
-          tenant_id?: string
+          tenant_id: string
           unidade?: string
         }
         Update: {
@@ -6318,7 +6332,7 @@ export type Database = {
           ordem?: number
           pergunta: string
           peso?: number
-          tenant_id?: string
+          tenant_id: string
           type: Database["public"]["Enums"]["question_type"]
           validacao?: Json | null
         }
@@ -6395,7 +6409,7 @@ export type Database = {
           sealed_bid?: boolean
           starts_at?: string | null
           status?: Database["public"]["Enums"]["sourcing_status"]
-          tenant_id?: string
+          tenant_id: string
           title: string
           type: Database["public"]["Enums"]["sourcing_type"]
           updated_at?: string
@@ -6476,7 +6490,7 @@ export type Database = {
           nome_contato?: string | null
           reminder_count?: number
           status?: Database["public"]["Enums"]["invitation_status"]
-          tenant_id?: string
+          tenant_id: string
           token: string
           viewed_at?: string | null
         }
@@ -6558,7 +6572,7 @@ export type Database = {
           start_date?: string | null
           status?: string | null
           target_saving_percent?: number | null
-          tenant_id?: string
+          tenant_id: string
           titulo: string
           updated_at?: string | null
         }
@@ -6687,7 +6701,7 @@ export type Database = {
           resposta_number?: number | null
           resposta_text?: string | null
           score_manual?: number | null
-          tenant_id?: string
+          tenant_id: string
         }
         Update: {
           id?: string
@@ -6748,7 +6762,7 @@ export type Database = {
           preco_total: number
           preco_unitario: number
           response_id: string
-          tenant_id?: string
+          tenant_id: string
           validade_dias?: number | null
         }
         Update: {
@@ -6813,7 +6827,7 @@ export type Database = {
           observacoes?: string | null
           ranking?: number | null
           submitted_at?: string | null
-          tenant_id?: string
+          tenant_id: string
           termos_aceitos?: boolean
           total_preco?: number | null
           total_score?: number | null
@@ -6893,7 +6907,7 @@ export type Database = {
           id?: string
           metadata?: Json | null
           organization_id?: string | null
-          tenant_id?: string
+          tenant_id: string
         }
         Update: {
           categoria_id?: string | null
@@ -7371,7 +7385,7 @@ export type Database = {
           period_end?: string | null
           period_start?: string
           reason: string
-          tenant_id?: string
+          tenant_id: string
           total_deliveries?: number | null
           updated_at?: string
           value_percent?: number | null
@@ -7460,7 +7474,7 @@ export type Database = {
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
-          tenant_id?: string
+          tenant_id: string
           updated_at?: string
           uploaded_by?: string | null
         }
@@ -7554,7 +7568,7 @@ export type Database = {
           next_expiry_date?: string | null
           overall_score?: number
           qualification_status?: string
-          tenant_id?: string
+          tenant_id: string
           updated_at?: string
         }
         Update: {
@@ -7608,7 +7622,7 @@ export type Database = {
           created_at: string | null
           description: string | null
           dispatch_error: string | null
-                    dispatch_lease_until: string | null
+          dispatch_lease_until: string | null
           dispatch_status: string | null
           dispatched_at: string | null
           id: string
@@ -7626,7 +7640,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           dispatch_error?: string | null
-                    dispatch_lease_until?: string | null
+          dispatch_lease_until?: string | null
           dispatch_status?: string | null
           dispatched_at?: string | null
           id?: string
@@ -7644,7 +7658,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           dispatch_error?: string | null
-                  dispatch_lease_until?: string | null
+          dispatch_lease_until?: string | null
           dispatch_status?: string | null
           dispatched_at?: string | null
           id?: string
@@ -9444,6 +9458,17 @@ export type Database = {
         }[]
       }
       apply_lgpd_retention: { Args: never; Returns: Json }
+      aprovador_pode_decidir_etapa: {
+        Args: {
+          p_aprovador_efetivo_id: string
+          p_aprovador_id: string
+          p_etapa: number
+          p_status: string
+          p_uid: string
+          p_workflow_id: string
+        }
+        Returns: boolean
+      }
       archive_audit_logs_older_than: {
         Args: { _months?: number }
         Returns: {
@@ -9478,7 +9503,7 @@ export type Database = {
         Returns: number
       }
       check_budget_availability: {
-        Args: { p_cost_center_id: string; p_valor: number }
+        Args: { p_cost_center_id: string; p_data?: string; p_valor: number }
         Returns: Json
       }
       check_escalation: { Args: never; Returns: undefined }
@@ -9797,6 +9822,10 @@ export type Database = {
       mask_sensitive_data: { Args: { data: Json }; Returns: Json }
       normalize_phone_br: { Args: { _raw: string }; Returns: string }
       pg_activity_watchdog: { Args: never; Returns: number }
+      recalculate_department_budgets: {
+        Args: { p_cost_center_id?: string }
+        Returns: number
+      }
       recalculate_saldo_comprometido: {
         Args: { p_fornecedor_id: string }
         Returns: number
@@ -9810,6 +9839,7 @@ export type Database = {
           created_at: string | null
           description: string | null
           dispatch_error: string | null
+          dispatch_lease_until: string | null
           dispatch_status: string | null
           dispatched_at: string | null
           id: string
@@ -10129,6 +10159,10 @@ export type Database = {
       simulate_scan_sla_loop: {
         Args: { p_scenarios?: number; p_seed?: number }
         Returns: Json
+      }
+      solicitacao_retem_orcamento: {
+        Args: { p_solicitacao_id: string; p_status: string }
+        Returns: boolean
       }
       suggest_unspsc_code: { Args: { item_name: string }; Returns: string }
       tenant_in_my_group: { Args: { _tenant_id: string }; Returns: boolean }
