@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 383,
+ "migrations": 385,
  "seeds": [],
  "avisos": [
   "55 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -270,6 +270,7 @@
   "normalize_phone_br",
   "pg_activity_watchdog",
   "recalculate_all_solicitacao_cotacoes",
+  "recalculate_department_budgets",
   "recalculate_saldo_comprometido",
   "record_failed_login",
   "refresh_mv_dashboard_kpis",
@@ -314,6 +315,7 @@
   "scan_wal_generation_rate",
   "scan_xid_wraparound",
   "simulate_scan_sla_loop",
+  "solicitacao_retem_orcamento",
   "suggest_unspsc_code",
   "sync_budget_on_payment",
   "system_alerts_severity_canonica",

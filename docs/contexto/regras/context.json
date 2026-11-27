@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "14f107a53289d18f4b2782f5fbc347d9ffb6351e",
+  "sha": "5068a49b2f9132b1fbf77a0b82eac395c081db95",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 01:10 UTC",
-  "files_total": 1588,
-  "code_files": 1413,
-  "code_lines": 231318,
+  "generated_at": "2026-11-27 01:15 UTC",
+  "files_total": 1592,
+  "code_files": 1417,
+  "code_lines": 232026,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "9ce17d965b39dbe4",
+ "facts_hash": "5ef3ab11e789ebb5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,8 +278,8 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 456,
+   ".sql": 443,
    ".tsx": 441,
-   ".sql": 439,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -20648,7 +20648,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "src": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_old_status TEXT := NULL; v_new_status TEXT := NEW.status; v_cost_center_id UUID := NEW.cost_center_id; v_old_cost_center_id UUID := NULL; BEGIN IF (TG_OP = 'DELETE') THEN IF (OLD.status != 'cancelada' AND OLD.status != 'finalizada' AND OLD.cost_center_id IS NOT NULL) THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(OLD.valor_estimado, 0) WHERE cost_center_id = OLD.cost_center_id AND ano = EXTRACT(YEAR FROM OLD.created_at) AND (mes IS NULL OR mes = EXTRACT(MONTH FROM OLD.created_at)); END IF; RETURN OLD; END IF; IF (TG_OP = 'INSERT') THEN IF (NEW.status != 'cancelada' AND NEW.status != 'finalizada' AND v_cost_center_id IS NOT NULL) THEN UP …",
@@ -20664,7 +20664,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql",
+    "src": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_solicitacao_id UUID; v_cost_center_id UUID; v_valor_solicitado NUMERIC; v_sol_created_at TIMESTAMPTZ; BEGIN SELECT id, cost_center_id, valor_estimado, created_at INTO v_solicitacao_id, v_cost_center_id, v_valor_solicitado, v_sol_created_at FROM public.solicitacoes WHERE id = NEW.solicitacao_id; IF v_cost_center_id IS NOT NULL THEN IF (NEW.status IN ('aprovado', 'concluido', 'recebido') AND (OLD.status IS NULL OR OLD.status NOT IN ('aprovado', 'concluido', 'recebido'))) THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(v_valor_solicitado, 0), valor_utilizado = valor_utilizado + COALESCE(NEW.valor_total, 0) WHERE cost_center_id = v_cost_cent …",
@@ -20693,7 +20693,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
+    "src": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_cost_center_id UUID; BEGIN v_cost_center_id := COALESCE( NEW.cost_center_id, (SELECT s.cost_center_id FROM public.pedidos pe JOIN public.solicitacoes s ON s.id = pe.solicitacao_id WHERE pe.id = NEW.pedido_id LIMIT 1) ); IF v_cost_center_id IS NOT NULL THEN IF (NEW.status = 'pago' AND (OLD.status IS NULL OR OLD.status != 'pago')) THEN UPDATE public.department_budgets SET valor_utilizado = valor_utilizado + NEW.valor, valor_comprometido = GREATEST(0, valor_comprometido - NEW.valor) WHERE cost_center_id = v_cost_center_id AND ano = EXTRACT(YEAR FROM NEW.created_at) AND (mes IS NULL OR mes = EXTRACT(MONTH FROM NEW.created_at)); END IF; END IF; RETURN NEW; END;",
@@ -20716,20 +20716,6 @@
     "raises": [],
     "tables": [
      "cost_centers"
-    ]
-   },
-   "check_budget_availability": {
-    "args": "p_cost_center_id UUID, p_valor DECIMAL",
-    "returns": "JSON",
-    "lang": "plpgsql",
-    "src": "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql",
-    "security_definer": true,
-    "search_path": false,
-    "body": "DECLARE v_total DECIMAL; v_committed DECIMAL; v_used DECIMAL; v_available DECIMAL; v_cc_name TEXT; BEGIN SELECT name, COALESCE(total_budget, 0), COALESCE(committed_amount, 0), COALESCE(used_amount, 0) INTO v_cc_name, v_total, v_committed, v_used FROM public.cost_centers WHERE id = p_cost_center_id; v_available := v_total - (v_committed + v_used); IF v_available >= p_valor THEN RETURN json_build_object( 'available', true, 'has_budget', v_total > 0, 'budget_total', v_total, 'budget_available', v_available, 'message', 'Saldo disponível no centro de custo ' || v_cc_name ); ELSE RETURN json_build_object( 'available', false, 'has_budget', v_total > 0, 'budget_total', v_total, 'budget_available', v …",
-    "raises": [],
-    "tables": [
-     "cost_centers",
-     "v_cc_name"
     ]
    },
    "calculate_cotacao_scores": {
@@ -22796,6 +22782,20 @@
     "body": "BEGIN IF NEW.severity IS NOT NULL THEN NEW.severity := upper(btrim(NEW.severity)); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": []
+   },
+   "check_budget_availability": {
+    "args": "p_cost_center_id UUID, p_valor DECIMAL",
+    "returns": "JSON",
+    "lang": "plpgsql",
+    "src": "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql",
+    "security_definer": true,
+    "search_path": false,
+    "body": "DECLARE v_total DECIMAL; v_committed DECIMAL; v_used DECIMAL; v_available DECIMAL; v_cc_name TEXT; BEGIN SELECT name, COALESCE(total_budget, 0), COALESCE(committed_amount, 0), COALESCE(used_amount, 0) INTO v_cc_name, v_total, v_committed, v_used FROM public.cost_centers WHERE id = p_cost_center_id; v_available := v_total - (v_committed + v_used); IF v_available >= p_valor THEN RETURN json_build_object( 'available', true, 'has_budget', v_total > 0, 'budget_total', v_total, 'budget_available', v_available, 'message', 'Saldo disponível no centro de custo ' || v_cc_name ); ELSE RETURN json_build_object( 'available', false, 'has_budget', v_total > 0, 'budget_total', v_total, 'budget_available', v …",
+    "raises": [],
+    "tables": [
+     "cost_centers",
+     "v_cc_name"
+    ]
    },
    "execute_read_query": {
     "args": "p_sql text",
@@ -27606,6 +27606,8 @@
    "supabase/migrations/20261128198000_claim_alerts_batch.sql",
    "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql",
    "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
+   "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql",
+   "supabase/migrations/20261128230100_check_budget_availability_le_department_budgets.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "supabase/rollbacks/20261126121047_revert_guard_pedido_exige_solicitacao_aprovada.sql",
    "supabase/rollbacks/20261126122905_revert_handle_new_user_papel_viewer.sql",
@@ -27642,6 +27644,8 @@
    "supabase/rollbacks/20261128198000_revert_claim_alerts_batch.sql",
    "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
    "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
+   "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+   "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -31942,6 +31946,46 @@
     "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
    },
    {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "solicitacao_retem_orcamento",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "recalculate_department_budgets",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "recalculate_department_budgets",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "check_budget_availability",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261128230100_check_budget_availability_le_department_budgets.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "check_budget_availability",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261128230100_check_budget_availability_le_department_budgets.sql"
+   },
+   {
     "kind": "grant",
     "privs": "execute",
     "object": "maintain_monthly_partitions",
@@ -32012,6 +32056,22 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "check_budget_availability",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "check_budget_availability",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql"
    }
   ],
   "raises": [
@@ -36347,7 +36407,7 @@
   {
    "module": "src/features/solicitacoes",
    "files": 19,
-   "lines": 2030,
+   "lines": 2038,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -37413,8 +37473,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 383,
-   "lines": 33438,
+   "files": 385,
+   "lines": 33896,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37505,8 +37565,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 36,
-   "lines": 2154,
+   "files": 38,
+   "lines": 2396,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37548,7 +37608,9 @@
     "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql",
     "supabase/rollbacks/20261128198000_revert_claim_alerts_batch.sql",
     "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
-    "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql"
+    "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
+    "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql"
    ]
   },
   {
@@ -58777,6 +58839,84 @@
     "file": "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
     "field": "status",
     "value": "entregue",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "status",
+    "value": "cancelada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "status",
+    "value": "finalizada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "status",
+    "value": "cancelada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "status",
+    "value": "finalizada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "v_old_status",
+    "value": "cancelada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "v_old_status",
+    "value": "finalizada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "v_new_status",
+    "value": "cancelada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "v_new_status",
+    "value": "finalizada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "v_old_status",
+    "value": "finalizada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "v_old_status",
+    "value": "cancelada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "v_new_status",
+    "value": "cancelada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "v_new_status",
+    "value": "finalizada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    "field": "status",
+    "value": "pago",
     "kind": "compara"
    }
   ],
@@ -80190,7 +80330,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "src": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_old_status TEXT := NULL; v_new_status TEXT := NEW.status; v_cost_center_id UUID := NEW.cost_center_id; v_old_cost_center_id UUID := NULL; BEGIN IF (TG_OP = 'DELETE') THEN IF (OLD.status != 'cancelada' AND OLD.status != 'finalizada' AND OLD.cost_center_id IS NOT NULL) THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(OLD.valor_estimado, 0) WHERE cost_center_id = OLD.cost_center_id AND ano = EXTRACT(YEAR FROM OLD.created_at) AND (mes IS NULL OR mes = EXTRACT(MONTH FROM OLD.created_at)); END IF; RETURN OLD; END IF; IF (TG_OP = 'INSERT') THEN IF (NEW.status != 'cancelada' AND NEW.status != 'finalizada' AND v_cost_center_id IS NOT NULL) THEN UP …",
@@ -80206,7 +80346,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql",
+    "src": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_solicitacao_id UUID; v_cost_center_id UUID; v_valor_solicitado NUMERIC; v_sol_created_at TIMESTAMPTZ; BEGIN SELECT id, cost_center_id, valor_estimado, created_at INTO v_solicitacao_id, v_cost_center_id, v_valor_solicitado, v_sol_created_at FROM public.solicitacoes WHERE id = NEW.solicitacao_id; IF v_cost_center_id IS NOT NULL THEN IF (NEW.status IN ('aprovado', 'concluido', 'recebido') AND (OLD.status IS NULL OR OLD.status NOT IN ('aprovado', 'concluido', 'recebido'))) THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(v_valor_solicitado, 0), valor_utilizado = valor_utilizado + COALESCE(NEW.valor_total, 0) WHERE cost_center_id = v_cost_cent …",
@@ -80235,7 +80375,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
+    "src": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_cost_center_id UUID; BEGIN v_cost_center_id := COALESCE( NEW.cost_center_id, (SELECT s.cost_center_id FROM public.pedidos pe JOIN public.solicitacoes s ON s.id = pe.solicitacao_id WHERE pe.id = NEW.pedido_id LIMIT 1) ); IF v_cost_center_id IS NOT NULL THEN IF (NEW.status = 'pago' AND (OLD.status IS NULL OR OLD.status != 'pago')) THEN UPDATE public.department_budgets SET valor_utilizado = valor_utilizado + NEW.valor, valor_comprometido = GREATEST(0, valor_comprometido - NEW.valor) WHERE cost_center_id = v_cost_center_id AND ano = EXTRACT(YEAR FROM NEW.created_at) AND (mes IS NULL OR mes = EXTRACT(MONTH FROM NEW.created_at)); END IF; END IF; RETURN NEW; END;",
@@ -80258,20 +80398,6 @@
     "raises": [],
     "tables": [
      "cost_centers"
-    ]
-   },
-   "check_budget_availability": {
-    "args": "p_cost_center_id UUID, p_valor DECIMAL",
-    "returns": "JSON",
-    "lang": "plpgsql",
-    "src": "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql",
-    "security_definer": true,
-    "search_path": false,
-    "body": "DECLARE v_total DECIMAL; v_committed DECIMAL; v_used DECIMAL; v_available DECIMAL; v_cc_name TEXT; BEGIN SELECT name, COALESCE(total_budget, 0), COALESCE(committed_amount, 0), COALESCE(used_amount, 0) INTO v_cc_name, v_total, v_committed, v_used FROM public.cost_centers WHERE id = p_cost_center_id; v_available := v_total - (v_committed + v_used); IF v_available >= p_valor THEN RETURN json_build_object( 'available', true, 'has_budget', v_total > 0, 'budget_total', v_total, 'budget_available', v_available, 'message', 'Saldo disponível no centro de custo ' || v_cc_name ); ELSE RETURN json_build_object( 'available', false, 'has_budget', v_total > 0, 'budget_total', v_total, 'budget_available', v …",
-    "raises": [],
-    "tables": [
-     "cost_centers",
-     "v_cc_name"
     ]
    },
    "calculate_cotacao_scores": {
@@ -82339,6 +82465,20 @@
     "raises": [],
     "tables": []
    },
+   "check_budget_availability": {
+    "args": "p_cost_center_id UUID, p_valor DECIMAL",
+    "returns": "JSON",
+    "lang": "plpgsql",
+    "src": "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql",
+    "security_definer": true,
+    "search_path": false,
+    "body": "DECLARE v_total DECIMAL; v_committed DECIMAL; v_used DECIMAL; v_available DECIMAL; v_cc_name TEXT; BEGIN SELECT name, COALESCE(total_budget, 0), COALESCE(committed_amount, 0), COALESCE(used_amount, 0) INTO v_cc_name, v_total, v_committed, v_used FROM public.cost_centers WHERE id = p_cost_center_id; v_available := v_total - (v_committed + v_used); IF v_available >= p_valor THEN RETURN json_build_object( 'available', true, 'has_budget', v_total > 0, 'budget_total', v_total, 'budget_available', v_available, 'message', 'Saldo disponível no centro de custo ' || v_cc_name ); ELSE RETURN json_build_object( 'available', false, 'has_budget', v_total > 0, 'budget_total', v_total, 'budget_available', v …",
+    "raises": [],
+    "tables": [
+     "cost_centers",
+     "v_cc_name"
+    ]
+   },
    "execute_read_query": {
     "args": "p_sql text",
     "returns": "jsonb",
@@ -84230,6 +84370,7 @@
       "compara:src/pages/kanban/KanbanWorkflow.tsx",
       "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
       "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+      "compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
       "escreve:src/pages/licitacoes/LicitacaoDetailDialog.tsx"
      ],
      "entregue": [
@@ -84356,7 +84497,8 @@
       "compara:src/pages/pagamentos/Pagamentos.tsx",
       "compara:supabase/functions/weekly-report/index.ts",
       "compara:supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql",
-      "compara:supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+      "compara:supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
+      "compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql"
      ],
      "cancelado": [
       "compara:src/components/pagamentos/PagamentoFinancialDashboard.tsx",
@@ -84674,7 +84816,8 @@
      ],
      "finalizada": [
       "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
-      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
+      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+      "compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql"
      ],
      "succeeded": [
       "compara:supabase/migrations/20260711183343_43dc2b31-4f1c-4e2d-bea9-1da967fe29e5.sql"
@@ -84890,21 +85033,25 @@
     "v_old_status": {
      "cancelada": [
       "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
-      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
+      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+      "compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql"
      ],
      "finalizada": [
       "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
-      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
+      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+      "compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql"
      ]
     },
     "v_new_status": {
      "cancelada": [
       "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
-      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
+      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+      "compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql"
      ],
      "finalizada": [
       "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
-      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
+      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+      "compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql"
      ]
     }
    }
@@ -91820,6 +91967,46 @@
     "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
    },
    {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "solicitacao_retem_orcamento",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "recalculate_department_budgets",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "recalculate_department_budgets",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "check_budget_availability",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261128230100_check_budget_availability_le_department_budgets.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "check_budget_availability",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261128230100_check_budget_availability_le_department_budgets.sql"
+   },
+   {
     "kind": "grant",
     "privs": "execute",
     "object": "maintain_monthly_partitions",
@@ -91890,6 +92077,22 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "check_budget_availability",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "check_budget_availability",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql"
    }
   ],
   "guards": [
@@ -94282,7 +94485,8 @@
     "msg": "valor `finalizada` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
-     "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
+     "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+     "compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql"
     ]
    },
    {
@@ -94413,7 +94617,8 @@
     "msg": "valor `finalizada` para `v_old_status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
-     "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
+     "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+     "compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql"
     ]
    },
    {
@@ -94421,7 +94626,8 @@
     "msg": "valor `finalizada` para `v_new_status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
-     "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
+     "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+     "compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql"
     ]
    },
    {
@@ -94994,16 +95200,16 @@
    },
    {
     "kind": "segurança",
-    "msg": "função `check_budget_availability` é SECURITY DEFINER sem `set search_path` (risco de escalação)",
+    "msg": "função `update_estoque_saldo` é SECURITY DEFINER sem `set search_path` (risco de escalação)",
     "where": [
-     "supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql"
+     "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql"
     ]
    },
    {
     "kind": "segurança",
-    "msg": "função `update_estoque_saldo` é SECURITY DEFINER sem `set search_path` (risco de escalação)",
+    "msg": "função `check_budget_availability` é SECURITY DEFINER sem `set search_path` (risco de escalação)",
     "where": [
-     "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql"
+     "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql"
     ]
    }
   ],
@@ -106451,7 +106657,7 @@
   },
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": {
    "path": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-   "lines": 464,
+   "lines": 472,
    "exports": [
     "type CostCenter",
     "type Solicitacao",
@@ -126552,6 +126758,14 @@
    "path": "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
    "lines": 333
   },
+  "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql": {
+   "path": "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql",
+   "lines": 322
+  },
+  "supabase/migrations/20261128230100_check_budget_availability_le_department_budgets.sql": {
+   "path": "supabase/migrations/20261128230100_check_budget_availability_le_department_budgets.sql",
+   "lines": 136
+  },
   "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "lines": 67
@@ -126723,6 +126937,81 @@
   "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql": {
    "path": "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
    "lines": 156
+  },
+  "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql": {
+   "path": "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+   "lines": 191,
+   "status_values": [
+    {
+     "field": "status",
+     "value": "cancelada",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "finalizada",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "cancelada",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "finalizada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_old_status",
+     "value": "cancelada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_old_status",
+     "value": "finalizada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_new_status",
+     "value": "cancelada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_new_status",
+     "value": "finalizada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_old_status",
+     "value": "finalizada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_old_status",
+     "value": "cancelada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_new_status",
+     "value": "cancelada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_new_status",
+     "value": "finalizada",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "pago",
+     "kind": "compara"
+    }
+   ]
+  },
+  "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql": {
+   "path": "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql",
+   "lines": 51
   },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
@@ -126960,10 +127249,25 @@
   }
  },
  "git": {
-  "sha": "14f107a53289d18f4b2782f5fbc347d9ffb6351e",
+  "sha": "5068a49b2f9132b1fbf77a0b82eac395c081db95",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "5068a49",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(orcamento): trava le department_budgets e gatilhos param de perder/duplicar o gasto (090/092/137/138) (#599)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+     "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql",
+     "supabase/migrations/20261128230100_check_budget_availability_le_department_budgets.sql",
+     "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+     "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql"
+    ]
+   },
    {
     "sha": "14f107a",
     "date": "2026-11-26",
@@ -127323,18 +127627,6 @@
      "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
      "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
     ]
-   },
-   {
-    "sha": "63f3816",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(banco): numero de devolucao passa a ser unico como nas outras seis numeracoes (#576)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126173000_devolucoes_numero_unique.sql",
-     "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -127357,6 +127649,26 @@
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
+   ],
+   [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    1
+   ],
+   [
+    "supabase/migrations/20261128230000_fix_orcamento_comprometido_utilizado.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261128230100_check_budget_availability_le_department_budgets.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql",
+    1
    ],
    [
     "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
@@ -127396,26 +127708,6 @@
    ],
    [
     "supabase/rollbacks/20261128198000_revert_claim_alerts_batch.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261128194000_revert_supplier_qualification_scores_tenant.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql",
-    1
-   ],
-   [
-    "src/components/compras/ContractDetailsModal.tsx",
     1
    ]
   ]

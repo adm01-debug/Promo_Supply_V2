@@ -617,7 +617,7 @@
     "useSolicitacoes",
     "useSolicitacoesKPIs"
    ],
-   "linhas": 464,
+   "linhas": 472,
    "dominio": "features/solicitacoes",
    "tabelas": [
     "approval_history",

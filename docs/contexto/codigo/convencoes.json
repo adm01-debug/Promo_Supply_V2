@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(orcamento): trava le department_budgets e gatilhos param de perder/duplicar o gasto (090/092/137/138) (#599)",
    "fix(rls): arquivo de auditoria/telemetria e leitura de organizacao passam a filtrar empresa (etapas 066, 067 e 068) (#590)",
    "fix(orcamento): trava de orcamento le department_budgets (#606)",
    "fix(alertas): claim atomico da fila do alert-dispatcher (#596)",
-   "Merge remote-tracking branch 'origin/main' into claude/fix-tenant-id-default-invalido-261126-1650 (#593)",
-   "fix(tipos): inserts informam tenant_id e destravam o types-sync (issue #131) (#609)"
+   "Merge remote-tracking branch 'origin/main' into claude/fix-tenant-id-default-invalido-261126-1650 (#593)"
   ]
  },
  "pr_template": null,

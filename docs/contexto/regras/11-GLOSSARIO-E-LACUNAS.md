@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `14f107a532` · branch `main` · 2026-11-27 01:10 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5068a49b2f` · branch `main` · 2026-11-27 01:15 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -317,7 +317,7 @@
 | status | valor `quota_blocked` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts`<br>`filtra:supabase/functions/spot-api/index.ts` |
 | status | valor `PROCESSING` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
 | status | valor `ALL` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
-| status | valor `finalizada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
+| status | valor `finalizada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql`<br>`compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql` |
 | status | valor `succeeded` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260711183343_43dc2b31-4f1c-4e2d-bea9-1da967fe29e5.sql` |
 | status | valor `blocked` para `qualification_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/scorecard/supplierScorecardData.ts`<br>`compara:src/pages/portal-fornecedor/PortalFornecedor.tsx` |
 | status | valor `qualified` para `qualification_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/qualificacao/QualificacaoFornecedores.tsx` |
@@ -335,8 +335,8 @@
 | status | valor `suppressed_dedup` para `dispatch_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/alert-dispatcher/index.ts` |
 | status | valor `notificado` para `follow_up_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/check-cotacao-followup/index.ts` |
 | status | valor `dispatch_error` para `sefaz_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/fiscal-orchestrator/index.ts`<br>`escreve:supabase/functions/fiscal-orchestrator/index.ts` |
-| status | valor `finalizada` para `v_old_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
-| status | valor `finalizada` para `v_new_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
+| status | valor `finalizada` para `v_old_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql`<br>`compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql` |
+| status | valor `finalizada` para `v_new_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql`<br>`compara:supabase/rollbacks/20261128230000_revert_fix_orcamento_comprometido_utilizado.sql` |
 | coluna | coluna `categorias_atendidas` usada no código não existe no schema de `fornecedores` |  |
 | coluna | coluna `action` usada no código não existe no schema de `audit_logs` |  |
 | coluna | coluna `actor_id` usada no código não existe no schema de `audit_logs` |  |
@@ -433,8 +433,8 @@
 | segurança | função `log_budget_changes` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512141452_3be6aedb-f8fa-4312-b1be-610e86b46974.sql` |
 | segurança | função `audit_pagamento_changes` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql` |
 | segurança | função `update_cost_center_budget_totals` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql` |
-| segurança | função `check_budget_availability` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/rollbacks/20261126195500_revert_check_budget_availability_le_department_budgets.sql` |
 | segurança | função `update_estoque_saldo` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql` |
+| segurança | função `check_budget_availability` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/rollbacks/20261128230100_revert_check_budget_availability_le_department_budgets.sql` |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

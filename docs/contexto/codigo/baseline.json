@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "14f107a53289d18f4b2782f5fbc347d9ffb6351e",
+  "commit": "5068a49b2f9132b1fbf77a0b82eac395c081db95",
   "branch": "main",
-  "data_commit": "2026-11-26T22:09:20-03:00",
+  "data_commit": "2026-11-26T22:14:43-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "5068a49",
+    "data": "2026-11-26",
+    "assunto": "fix(orcamento): trava le department_budgets e gatilhos param de perder/duplicar o gasto (090/092/137/138) (#599)"
+   },
    {
     "sha": "14f107a",
     "data": "2026-11-26",
@@ -126,18 +131,13 @@
     "sha": "d15d49f",
     "data": "2026-11-26",
     "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#577)"
-   },
-   {
-    "sha": "2a8af5d",
-    "data": "2026-11-26",
-    "assunto": "fix(documentos): importacao de NF-e idempotente e conferencia com fornecedor (#582)"
    }
   ],
-  "arquivos_mudados_7d": 1606,
+  "arquivos_mudados_7d": 1610,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 216
+    "mudancas": 217
    },
    {
     "pasta": "src/components/compras",
@@ -161,18 +161,18 @@
    },
    {
     "pasta": "AGENTS.md",
-    "mudancas": 40
+    "mudancas": 41
    },
    {
     "pasta": "src/lib/__tests__",
     "mudancas": 37
    },
    {
-    "pasta": "src/features/auth",
-    "mudancas": 26
+    "pasta": "src/features/solicitacoes",
+    "mudancas": 27
    },
    {
-    "pasta": "src/features/solicitacoes",
+    "pasta": "src/features/auth",
     "mudancas": 26
    },
    {
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 216
+    "mudancas": 217
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 40
+    "mudancas": 41
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
@@ -215,6 +215,10 @@
    },
    {
     "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "mudancas": 9
    },
    {
@@ -235,10 +239,6 @@
    },
    {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "mudancas": 8
    },
    {
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1587,
+  "arquivos_total": 1591,
   "arquivos_codigo": 972,
-  "linhas_codigo": 193780,
+  "linhas_codigo": 193788,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 166,
-  "migrations": 383,
+  "migrations": 385,
   "cron_jobs": 80,
   "testes": 326,
   "workflows": 15,
@@ -432,7 +432,7 @@
   },
   "src/features": {
    "arquivos": 97,
-   "linhas": 12027
+   "linhas": 12035
   },
   "src/hooks": {
    "arquivos": 104,
