@@ -1585,8 +1585,8 @@
   {
    "modulo": "components/ui",
    "arquivos": 61,
-   "testes": 4,
-   "linhas": 7477,
+   "testes": 5,
+   "linhas": 7490,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

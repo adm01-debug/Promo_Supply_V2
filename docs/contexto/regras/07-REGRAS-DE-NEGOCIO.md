@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `130224ee5d` · branch `main` · 2026-11-27 16:08 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6e6213a9d9` · branch `main` · 2026-11-27 17:23 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2538,7 +2538,7 @@ _nenhum item encontrado_
 | `coordinator` | `supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql` |
 | `admin` | `supabase/migrations/20261128160000_lockout_servidor_guarda.sql` |
 
-## K. Testes como especificação (3604 testes em 274 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3609 testes em 275 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2720,6 +2720,7 @@ _nenhum item encontrado_
 | `src/components/compras/__tests__/contratoAbasItensDocs.test.tsx` | 5 | ContractDetailsModal - abas Itens e Docs (etapa 292) · todo gatilho de aba tem um conteudo correspondente · lista os itens do contrato e as ordens de compra vinculadas · lista os documentos e expoe o input de anexo … |
 | `src/components/compras/__tests__/contratoCamposRotulos.test.tsx` | 5 | ContractModal - nome acessivel dos campos (etapa 239) · associa os 3 rotulos de select ao gatilho certo · associa as duas janelas de data ao botao que as abre · todo label[for] do modal aponta para um elemento existente … |
 | `src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx` | 5 | SourcingIntelligenceBanner - LISTAR/CONECTAR deixa de ser botao morto (QA 253) · o CONECTAR leva o comprador a tela de catalogo de produtos · o LISTAR tambem navega quando o produto ja tem parceiros · sem produto vinculado, o bloco explica o vazio em vez de so mostrar o cabecalho … |
+| `src/components/ui/__tests__/calendarDayPickerV10.test.tsx` | 5 | Calendar (react-day-picker v10) · aplica os classNames da API v10 nos elementos do mes · nao repassa chaves removidas na v10 (caption, table, head_row) · renderiza os chevrons de navegacao pelo componente Chevron … |
 | `src/features/layout/__tests__/AppSidebar.a11y.test.tsx` | 5 | AppSidebar acessibilidade (UX-04 1/4) · sidebar recolhida: os links de modulo continuam com nome acessivel · sidebar recolhida: os dois controles do rodape tem nome · sidebar expandida: o nome visivel continua sendo o nome acessivel, sem aria-label … |
 | `src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx` | 5 | CommandPalette: atalhos e badges (etapa 044) · nao anuncia nenhum atalho ausente do registry de teclado · exibe a combinacao real do registry em cada item · le os badges do hook de contagens vivas, nao de literais … |
 | `src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx` | 5 | usePedidos - exclusao guardada por checklist de recebimento · recusa excluir pedido com checklist de recebimento · bulkDelete recusa o lote inteiro quando algum pedido tem checklist · erro na contagem de checklist cancela a exclusao … |

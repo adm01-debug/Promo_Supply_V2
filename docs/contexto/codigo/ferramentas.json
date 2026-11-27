@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (897)",
+   "TypeScript (898)",
    "SQL (445)",
    "Markdown (101)",
    "JavaScript (72)",
@@ -97,7 +97,7 @@
    "i18next-browser-languagedetector": "^8.3.0",
    "next-themes": "^0.4.6",
    "react": "^18.3.1",
-   "react-day-picker": "^8.10.2",
+   "react-day-picker": "^10.0.2",
    "react-dom": "^18.3.1",
    "react-error-boundary": "^6.1.6",
    "react-hook-form": "^7.92.0",

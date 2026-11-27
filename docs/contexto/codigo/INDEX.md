@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `130224ee5dd431d291951c7d2731b4e5668d913e` (2026-11-27T13:08:10-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6e6213a9d945ce2be26fa0ba4d6e46d4727bae17` (2026-11-27T14:22:50-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (897), SQL (445), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (898), SQL (445), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1593 |
-| arquivos_codigo | 972 |
-| linhas_codigo | 193153 |
+| arquivos_total | 1594 |
+| arquivos_codigo | 973 |
+| linhas_codigo | 193215 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 154 |
 | migrations | 386 |
 | cron_jobs | 80 |
-| testes | 326 |
+| testes | 327 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 101 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (214), src/pages (79), src/features (33)
 - hooks: src/hooks (62), src/features (14), src/components (11)
 - servicos_logica: src/lib (31), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (228), co-localizado (*.test) (44), outro (44)
+- testes: co-localizado (__tests__) (229), co-localizado (*.test) (44), outro (44)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -347,14 +347,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/qa/05-PROGRESSO.md (220)
 - AGENTS.md (42)
 - src/integrations/supabase/types.ts (14)
+- bun.lock (9)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (9)
+- package.json (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (9)
 - src/hooks/useDevolucoes.ts (9)
 - src/hooks/usePagamentos.ts (9)
 - src/pages/pedidos/Pedidos.tsx (9)
-- bun.lock (8)
-- package.json (8)
 - src/features/auth/hooks/useAuth.tsx (8)
 - src/hooks/useApprovalWorkflow.ts (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-27 `6e6213a` chore(deps): bump react-day-picker from 8.10.2 to 10.0.2 (#479)
 - 2026-11-27 `130224e` chore(deps): bump i18next from 26.7.2 to 27.2.4 (#481)
 - 2026-11-26 `dd1ca83` chore(ci): baseline de orfaos encolhe - FornecedorMobileCard agora e importado (#618)
 - 2026-11-26 `a39fb00` docs(ledger): etapa 207 passa a [x] e 163-166 passam a [!] (bloqueio por decisao de negocio em INT-01) (#617)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `675838c` fix(orcamento): trava de orcamento le department_budgets (#606)
 - 2026-11-26 `416e381` fix(alertas): claim atomico da fila do alert-dispatcher (#596)
 - 2026-11-26 `3ec8bec` Merge remote-tracking branch 'origin/main' into claude/fix-tenant-id-default-invalido-261126-1650 (#593)
-- 2026-11-26 `85e4768` fix(tipos): inserts informam tenant_id e destravam o types-sync (issue #131) (#609)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

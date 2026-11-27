@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "130224ee5dd431d291951c7d2731b4e5668d913e",
+  "sha": "6e6213a9d945ce2be26fa0ba4d6e46d4727bae17",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 16:08 UTC",
-  "files_total": 1594,
-  "code_files": 1419,
-  "code_lines": 231461,
+  "generated_at": "2026-11-27 17:23 UTC",
+  "files_total": 1595,
+  "code_files": 1420,
+  "code_lines": 231523,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "3699927be4d681cb",
+ "facts_hash": "f1c2c4428aabb6af",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 456,
    ".sql": 445,
-   ".tsx": 441,
+   ".tsx": 442,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -33476,7 +33476,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 323,
+  "components_count": 324,
   "hooks": [
    {
     "name": "useContacts",
@@ -34563,8 +34563,8 @@
   },
   {
    "module": "src/components",
-   "files": 287,
-   "lines": 52594,
+   "files": 288,
+   "lines": 52656,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -61787,6 +61787,26 @@
    {
     "file": "src/components/security/__tests__/permissionChanges.test.ts",
     "name": "devolve grupos vazios quando nao ha alteracoes"
+   },
+   {
+    "file": "src/components/ui/__tests__/calendarDayPickerV10.test.tsx",
+    "name": "Calendar (react-day-picker v10)"
+   },
+   {
+    "file": "src/components/ui/__tests__/calendarDayPickerV10.test.tsx",
+    "name": "aplica os classNames da API v10 nos elementos do mes"
+   },
+   {
+    "file": "src/components/ui/__tests__/calendarDayPickerV10.test.tsx",
+    "name": "nao repassa chaves removidas na v10 (caption, table, head_row)"
+   },
+   {
+    "file": "src/components/ui/__tests__/calendarDayPickerV10.test.tsx",
+    "name": "renderiza os chevrons de navegacao pelo componente Chevron"
+   },
+   {
+    "file": "src/components/ui/__tests__/calendarDayPickerV10.test.tsx",
+    "name": "marca o intervalo selecionado e navega para o proximo mes"
    },
    {
     "file": "src/components/ui/__tests__/celebrationConfigs.test.ts",
@@ -101895,7 +101915,7 @@
   },
   "src/components/ui/calendar.tsx": {
    "path": "src/components/ui/calendar.tsx",
-   "lines": 55,
+   "lines": 68,
    "exports": [
     "type CalendarProps"
    ]
@@ -102369,6 +102389,18 @@
    ],
    "hooks": [
     "useUndoToast"
+   ]
+  },
+  "src/components/ui/__tests__/calendarDayPickerV10.test.tsx": {
+   "path": "src/components/ui/__tests__/calendarDayPickerV10.test.tsx",
+   "lines": 49,
+   "is_test": true,
+   "tests": [
+    "Calendar (react-day-picker v10)",
+    "aplica os classNames da API v10 nos elementos do mes",
+    "nao repassa chaves removidas na v10 (caption, table, head_row)",
+    "renderiza os chevrons de navegacao pelo componente Chevron",
+    "marca o intervalo selecionado e navega para o proximo mes"
    ]
   },
   "src/components/ui/__tests__/celebrationConfigs.test.ts": {
@@ -125092,10 +125124,23 @@
   }
  },
  "git": {
-  "sha": "130224ee5dd431d291951c7d2731b4e5668d913e",
+  "sha": "6e6213a9d945ce2be26fa0ba4d6e46d4727bae17",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6e6213a",
+    "date": "2026-11-27",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps): bump react-day-picker from 8.10.2 to 10.0.2 (#479)",
+    "files": [
+     "bun.lock",
+     "package.json",
+     "src/components/ui/__tests__/calendarDayPickerV10.test.tsx",
+     "src/components/ui/calendar.tsx",
+     "src/pages/historico/HistoricoCompras.tsx"
+    ]
+   },
    {
     "sha": "130224e",
     "date": "2026-11-27",
@@ -125434,26 +125479,12 @@
      "docs/qa/05-PROGRESSO.md",
      "supabase/functions/check-approval-escalations/index.ts"
     ]
-   },
-   {
-    "sha": "061c335",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(edge): spot-api e spot-proxy passam a resolver a empresa do chamador (etapa 051) (#586)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/usePermissions.test.tsx",
-     "src/hooks/usePermissions.ts",
-     "supabase/functions/spot-api/index.ts",
-     "supabase/functions/spot-proxy/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    20
+    19
    ],
    [
     "AGENTS.md",
@@ -125464,6 +125495,14 @@
     4
    ],
    [
+    "bun.lock",
+    2
+   ],
+   [
+    "package.json",
+    2
+   ],
+   [
     "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
     2
    ],
@@ -125472,15 +125511,15 @@
     2
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    2
-   ],
-   [
-    "bun.lock",
+    "src/components/ui/__tests__/calendarDayPickerV10.test.tsx",
     1
    ],
    [
-    "package.json",
+    "src/components/ui/calendar.tsx",
+    1
+   ],
+   [
+    "src/pages/historico/HistoricoCompras.tsx",
     1
    ],
    [
@@ -125521,14 +125560,6 @@
    ],
    [
     "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261128181000_rls_organizations_spend_forecasts_tenant.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261128180000_revert_rls_logs_arquivo_tenant.sql",
     1
    ]
   ]
