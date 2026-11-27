@@ -33,7 +33,7 @@ describe("useTriggerSpotSync - invalidacao das chaves reais (HK-06)", () => {
 
     const { result } = renderHook(() => useTriggerSpotSync(), { wrapper: wrapperCom(qc) });
     await act(async () => {
-      await result.current.mutateAsync("syncCatalog");
+      await result.current.mutateAsync("getOrders");
     });
 
     const invalidada = (chave: unknown[]) => qc.getQueryState(chave)?.isInvalidated === true;

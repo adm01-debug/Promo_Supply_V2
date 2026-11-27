@@ -21,16 +21,15 @@ export interface SpotCatalogTabProps {
 }
 
 /**
- * Mesmo limiar que o painel de sincronização usa para o endpoint `Stocks`
- * (`SpotSyncPanel`, maxAgeMinutes 45): passando disso, o estoque já perdeu
- * mais de uma rodada do cron e a tela precisa avisar em vez de exibir o
+ * Mesmo limiar que o painel de integração usa para a leitura de pedidos
+ * (`SpotSyncPanel`): passando disso, a tela precisa avisar em vez de exibir o
  * número como se fosse corrente.
  */
 const STOCK_STALE_MINUTES = 45;
 
 /**
- * Catálogo SPOT servido pelo cache local (tabelas spot_produtos/spot_skus/spot_estoque).
- * A busca não dispara chamadas à API oficial — a quota diária é de 22 req/dia.
+ * Catálogo SPOT servido pelo PIM (`v_compras_catalogo`, filtro fornecedor `SPOT`).
+ * A busca não dispara chamadas à API oficial — preço e estoque são do PIM.
  */
 export const SpotCatalogTab = ({ onAddToCart, disabled = false }: SpotCatalogTabProps) => {
   const [search, setSearch] = useState('');

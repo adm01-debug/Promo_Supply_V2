@@ -113,6 +113,26 @@ async function invokeBridge<T>(body: BridgeBody): Promise<BridgeResponse<T>> {
 }
 
 // ---------------------------------------------------------------------------
+// invokeBridgeSelect
+// Leitura pontual da view, fora de um componente (ex.: hook do catálogo SPOT
+// usa dentro de queryFn). Mesmo envelope e mesmo tratamento de erro.
+// ---------------------------------------------------------------------------
+export async function invokeBridgeSelect<T = Record<string, unknown>>(
+  table: string,
+  opts: { filters?: Record<string, unknown>; limit?: number; offset?: number; selectColumns?: string } = {},
+): Promise<T[]> {
+  const resp = await invokeBridge<T>({
+    operation: 'select',
+    table,
+    selectColumns: opts.selectColumns ?? '*',
+    limit: opts.limit ?? 100,
+    offset: opts.offset ?? 0,
+    filters: opts.filters ?? {},
+  });
+  return resp.data;
+}
+
+// ---------------------------------------------------------------------------
 // buscarProdutoPorIdEstrito
 // Mesma consulta de buscarProdutoPorId, mas deixa o PimBridgeError subir.
 // Quem congela dado fiscal na OC (NCM, IPI, codigo do fornecedor) nao pode

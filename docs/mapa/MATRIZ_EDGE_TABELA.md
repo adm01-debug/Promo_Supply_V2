@@ -42,7 +42,7 @@
 | `run-audit` | — |
 | `scim-v2` | `sso_configurations` |
 | `send-push-notification` | `profiles`, `push_subscriptions`, `user_roles`, `user_tenants` |
-| `spot-api` | `spot_api_sync_log`, `spot_estoque`, `spot_pedidos`, `spot_sessions`, `tenants`, `user_roles`, `user_tenants` |
+| `spot-api` | `spot_api_sync_log`, `spot_pedidos`, `spot_sessions`, `tenants`, `user_roles`, `user_tenants` |
 | `spot-proxy` | `spot_pedidos`, `spot_sessions`, `user_roles`, `user_tenants` |
 | `system-simulation` | — |
 | `telemetry` | `telemetry_logs` |
@@ -86,7 +86,6 @@
 | `query_telemetry` | `external-db-bridge` |
 | `solicitacoes` | `check-approval-escalations`, `check-sla-alerts`, `escalate-solicitacao`, `punchout-receive`, `receive-os-sync`, `weekly-report`, `weekly-summary-report` |
 | `spot_api_sync_log` | `spot-api` |
-| `spot_estoque` | `spot-api` |
 | `spot_pedidos` | `spot-api`, `spot-proxy` |
 | `spot_sessions` | `spot-api`, `spot-proxy` |
 | `sso_configurations` | `scim-v2` |
@@ -121,5 +120,3 @@
 | `_shared/security.ts` | `user_tenants` |
 | `_shared/telemetry.ts` | `telemetry_logs` |
 | `_shared/xbz_auth.ts` | `user_roles`, `user_tenants`, `xbz_carrinho_log`, `xbz_credentials` |
-| `_shared/xbz_catalog_cache.ts` | `xbz_produtos` |
-| `_shared/xbz_fiscal_cache.ts` | `xbz_cores`, `xbz_produto_fiscal` |
