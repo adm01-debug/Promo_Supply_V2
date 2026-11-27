@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `675838c159` · branch `main` · 2026-11-27 00:54 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `14f107a532` · branch `main` · 2026-11-27 01:10 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -145,11 +145,9 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `user_filter_preferences` | ufp_own_insert | INSERT | public | permissive |  | `auth.uid() = user_id` |
 | `user_filter_preferences` | ufp_own_update | UPDATE | public | permissive | `auth.uid() = user_id` | `auth.uid() = user_id` |
 | `user_filter_preferences` | ufp_own_delete | DELETE | public | permissive | `auth.uid() = user_id` |  |
-| `organizations` | Users can see their organizations | SELECT | public | permissive | `id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
 | `user_organizations` | Users can see their own memberships | SELECT | public | permissive | `user_id = auth.uid()` |  |
 | `solicitacoes` | Tenant isolation for solicitacoes | SELECT | public | permissive | `organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
 | `category_strategies` | Tenant isolation for category_strategies | SELECT | public | permissive | `organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
-| `spend_forecasts` | Tenant isolation for spend_forecasts | SELECT | public | permissive | `organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
 | `financial_audit_logs` | Admins can view all audit logs | SELECT | public | permissive | `EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text IN ('admin', 'coordinator'))` |  |
 | `dashboard_layouts` | Users can view their own dashboard layouts | SELECT | public | permissive | `auth.uid() = user_id` |  |
 | `dashboard_layouts` | Users can insert their own dashboard layouts | INSERT | public | permissive |  | `auth.uid() = user_id` |
@@ -321,6 +319,16 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `entity_versions` | Authenticated can insert versions | INSERT | authenticated | permissive |  | `changed_by IS NULL OR auth.uid() = changed_by` |
 | `audit_logs_legacy_20260712` | service_role_all_partition | ALL | service_role | permissive | `true` | `true` |
 | `telemetry_logs_legacy_20260712` | service_role_all_partition | ALL | service_role | permissive | `true` | `true` |
+| `audit_logs_202605` | tenant_isolation_audit_logs_202605 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
+| `audit_logs_202606` | tenant_isolation_audit_logs_202606 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
+| `audit_logs_202607` | tenant_isolation_audit_logs_202607 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
+| `audit_logs_202608` | tenant_isolation_audit_logs_202608 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
+| `audit_logs_202609` | tenant_isolation_audit_logs_202609 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
+| `telemetry_logs_202605` | tenant_isolation_telemetry_logs_202605 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
+| `telemetry_logs_202606` | tenant_isolation_telemetry_logs_202606 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
+| `telemetry_logs_202607` | tenant_isolation_telemetry_logs_202607 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
+| `telemetry_logs_202608` | tenant_isolation_telemetry_logs_202608 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
+| `telemetry_logs_202609` | tenant_isolation_telemetry_logs_202609 | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` | `public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()` |
 | `notifications` | tenant_isolation_notifications | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `category_strategies` | tenant_isolation | ALL | authenticated | permissive | `organization_id = public.get_my_organization()` |  |
 | `sso_configurations` | SSO configurations isolated by tenant | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
@@ -358,6 +366,8 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `telemetry_logs_legacy_20260712` | admin_read_partition | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role)` |  |
 | `approval_steps` | Approvers can update their steps | UPDATE | public | permissive | `auth.uid() = aprovador_id OR auth.uid() = aprovador_efetivo_id OR has_role(auth.uid(), 'admin'::app_role)` |  |
 | `storage.objects` | storage_produtos_leitura_publica | SELECT | anon, authenticated | permissive | `bucket_id = 'product-images'` |  |
+| `organizations` | Users can see their organizations | SELECT | public | permissive | `id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
+| `spend_forecasts` | Tenant isolation for spend_forecasts | SELECT | public | permissive | `organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 

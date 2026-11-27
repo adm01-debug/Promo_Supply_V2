@@ -2486,7 +2486,7 @@
   {
    "arquivo": "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
    "tipo": "unit",
-   "linhas": 113,
+   "linhas": 126,
    "testa": [],
    "casos": 1
   },

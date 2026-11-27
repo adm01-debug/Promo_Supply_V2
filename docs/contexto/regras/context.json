@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "675838c159b64ac91acdf7e77859b3c996f11205",
+  "sha": "14f107a53289d18f4b2782f5fbc347d9ffb6351e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-27 00:54 UTC",
-  "files_total": 1584,
-  "code_files": 1409,
-  "code_lines": 231091,
+  "generated_at": "2026-11-27 01:10 UTC",
+  "files_total": 1588,
+  "code_files": 1413,
+  "code_lines": 231318,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "298fc2864b152b6e",
+ "facts_hash": "9ce17d965b39dbe4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 456,
    ".tsx": 441,
-   ".sql": 435,
+   ".sql": 439,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -16804,16 +16804,6 @@
     "src": "supabase/migrations/20260422191619_9240a0f1-728d-427a-a76f-44cf2be7c87d.sql"
    },
    {
-    "name": "Users can see their organizations",
-    "table": "organizations",
-    "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
-    "check": "",
-    "src": "supabase/migrations/20260507204629_613f960b-b35e-4038-be10-871affc0a828.sql"
-   },
-   {
     "name": "Users can see their own memberships",
     "table": "user_organizations",
     "cmd": "SELECT",
@@ -16836,16 +16826,6 @@
    {
     "name": "Tenant isolation for category_strategies",
     "table": "category_strategies",
-    "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
-    "check": "",
-    "src": "supabase/migrations/20260507205217_c1daf575-4225-464d-98fa-da42f4a035ce.sql"
-   },
-   {
-    "name": "Tenant isolation for spend_forecasts",
-    "table": "spend_forecasts",
     "cmd": "SELECT",
     "roles": "public",
     "mode": "permissive",
@@ -18564,6 +18544,106 @@
     "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
    },
    {
+    "name": "tenant_isolation_audit_logs_202605",
+    "table": "audit_logs_202605",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_audit_logs_202606",
+    "table": "audit_logs_202606",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_audit_logs_202607",
+    "table": "audit_logs_202607",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_audit_logs_202608",
+    "table": "audit_logs_202608",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_audit_logs_202609",
+    "table": "audit_logs_202609",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_telemetry_logs_202605",
+    "table": "telemetry_logs_202605",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_telemetry_logs_202606",
+    "table": "telemetry_logs_202606",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_telemetry_logs_202607",
+    "table": "telemetry_logs_202607",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_telemetry_logs_202608",
+    "table": "telemetry_logs_202608",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_telemetry_logs_202609",
+    "table": "telemetry_logs_202609",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
     "name": "tenant_isolation_notifications",
     "table": "notifications",
     "cmd": "ALL",
@@ -18932,6 +19012,26 @@
     "using": "bucket_id = 'product-images'",
     "check": "",
     "src": "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql"
+   },
+   {
+    "name": "Users can see their organizations",
+    "table": "organizations",
+    "cmd": "SELECT",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
+    "check": "",
+    "src": "supabase/rollbacks/20261128181000_revert_rls_organizations_spend_forecasts_tenant.sql"
+   },
+   {
+    "name": "Tenant isolation for spend_forecasts",
+    "table": "spend_forecasts",
+    "cmd": "SELECT",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
+    "check": "",
+    "src": "supabase/rollbacks/20261128181000_revert_rls_organizations_spend_forecasts_tenant.sql"
    }
   ],
   "triggers": [
@@ -27498,6 +27598,8 @@
    "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
    "supabase/migrations/20261128170000_bucket_product_images_config.sql",
    "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql",
+   "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql",
+   "supabase/migrations/20261128181000_rls_organizations_spend_forecasts_tenant.sql",
    "supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql",
    "supabase/migrations/20261128194000_supplier_qualification_scores_tenant.sql",
    "supabase/migrations/20261128195000_tenant_id_sem_default_invalido.sql",
@@ -27532,6 +27634,8 @@
    "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql",
    "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql",
    "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
+   "supabase/rollbacks/20261128180000_revert_rls_logs_arquivo_tenant.sql",
+   "supabase/rollbacks/20261128181000_revert_rls_organizations_spend_forecasts_tenant.sql",
    "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
    "supabase/rollbacks/20261128194000_revert_supplier_qualification_scores_tenant.sql",
    "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql",
@@ -37058,7 +37162,7 @@
   {
    "module": "src/tests",
    "files": 7,
-   "lines": 984,
+   "lines": 997,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -37309,8 +37413,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 381,
-   "lines": 33252,
+   "files": 383,
+   "lines": 33438,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37401,8 +37505,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 34,
-   "lines": 2126,
+   "files": 36,
+   "lines": 2154,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37437,6 +37541,8 @@
     "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql",
     "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql",
     "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
+    "supabase/rollbacks/20261128180000_revert_rls_logs_arquivo_tenant.sql",
+    "supabase/rollbacks/20261128181000_revert_rls_organizations_spend_forecasts_tenant.sql",
     "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
     "supabase/rollbacks/20261128194000_revert_supplier_qualification_scores_tenant.sql",
     "supabase/rollbacks/20261128195000_revert_tenant_id_sem_default_invalido.sql",
@@ -76240,16 +76346,6 @@
     "src": "supabase/migrations/20260422191619_9240a0f1-728d-427a-a76f-44cf2be7c87d.sql"
    },
    {
-    "name": "Users can see their organizations",
-    "table": "organizations",
-    "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
-    "check": "",
-    "src": "supabase/migrations/20260507204629_613f960b-b35e-4038-be10-871affc0a828.sql"
-   },
-   {
     "name": "Users can see their own memberships",
     "table": "user_organizations",
     "cmd": "SELECT",
@@ -76272,16 +76368,6 @@
    {
     "name": "Tenant isolation for category_strategies",
     "table": "category_strategies",
-    "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
-    "check": "",
-    "src": "supabase/migrations/20260507205217_c1daf575-4225-464d-98fa-da42f4a035ce.sql"
-   },
-   {
-    "name": "Tenant isolation for spend_forecasts",
-    "table": "spend_forecasts",
     "cmd": "SELECT",
     "roles": "public",
     "mode": "permissive",
@@ -78000,6 +78086,106 @@
     "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
    },
    {
+    "name": "tenant_isolation_audit_logs_202605",
+    "table": "audit_logs_202605",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_audit_logs_202606",
+    "table": "audit_logs_202606",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_audit_logs_202607",
+    "table": "audit_logs_202607",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_audit_logs_202608",
+    "table": "audit_logs_202608",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_audit_logs_202609",
+    "table": "audit_logs_202609",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_telemetry_logs_202605",
+    "table": "telemetry_logs_202605",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_telemetry_logs_202606",
+    "table": "telemetry_logs_202606",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_telemetry_logs_202607",
+    "table": "telemetry_logs_202607",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_telemetry_logs_202608",
+    "table": "telemetry_logs_202608",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
+    "name": "tenant_isolation_telemetry_logs_202609",
+    "table": "telemetry_logs_202609",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "check": "public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()",
+    "src": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql"
+   },
+   {
     "name": "tenant_isolation_notifications",
     "table": "notifications",
     "cmd": "ALL",
@@ -78368,6 +78554,26 @@
     "using": "bucket_id = 'product-images'",
     "check": "",
     "src": "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql"
+   },
+   {
+    "name": "Users can see their organizations",
+    "table": "organizations",
+    "cmd": "SELECT",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
+    "check": "",
+    "src": "supabase/rollbacks/20261128181000_revert_rls_organizations_spend_forecasts_tenant.sql"
+   },
+   {
+    "name": "Tenant isolation for spend_forecasts",
+    "table": "spend_forecasts",
+    "cmd": "SELECT",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
+    "check": "",
+    "src": "supabase/rollbacks/20261128181000_revert_rls_organizations_spend_forecasts_tenant.sql"
    }
   ],
   "db_triggers": [
@@ -85004,38 +85210,78 @@
    },
    "audit_logs_202605": {
     "rls": "não encontrado",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "SELECT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ]
    },
    "audit_logs_202606": {
     "rls": "não encontrado",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "SELECT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ]
    },
    "audit_logs_202607": {
     "rls": "não encontrado",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "SELECT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ]
    },
    "audit_logs_202608": {
     "rls": "não encontrado",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "SELECT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ]
    },
    "audit_logs_202609": {
     "rls": "não encontrado",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "SELECT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ]
    },
    "audit_logs_ancora": {
     "rls": "não encontrado",
@@ -86528,8 +86774,8 @@
    "spend_forecasts": {
     "rls": "enabled",
     "SELECT": [
-     "public: organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "public: organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())"
     ],
     "INSERT": [
      "authenticated: public.tenant_in_my_group(tenant_id)"
@@ -86723,38 +86969,78 @@
    },
    "telemetry_logs_202605": {
     "rls": "enabled",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "SELECT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ]
    },
    "telemetry_logs_202606": {
     "rls": "enabled",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "SELECT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ]
    },
    "telemetry_logs_202607": {
     "rls": "enabled",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "SELECT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ]
    },
    "telemetry_logs_202608": {
     "rls": "enabled",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "SELECT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ]
    },
    "telemetry_logs_202609": {
     "rls": "enabled",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "SELECT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id) OR tenant_id = public.get_user_grupo_id()"
+    ]
    },
    "telemetry_logs_legacy_20260712": {
     "rls": "enabled",
@@ -118830,7 +119116,7 @@
   },
   "src/tests/security/rls-tenant-isolation-restrictive.test.ts": {
    "path": "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
-   "lines": 113,
+   "lines": 126,
    "is_test": true,
    "rule_comments": [
     "* Regressão: tenant_isolation_<tabela> precisa ser RESTRICTIVE nas tabelas com regra por papel/dono."
@@ -126221,6 +126507,14 @@
     }
    ]
   },
+  "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql": {
+   "path": "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql",
+   "lines": 128
+  },
+  "supabase/migrations/20261128181000_rls_organizations_spend_forecasts_tenant.sql": {
+   "path": "supabase/migrations/20261128181000_rls_organizations_spend_forecasts_tenant.sql",
+   "lines": 58
+  },
   "supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql": {
    "path": "supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql",
    "lines": 174,
@@ -126390,6 +126684,14 @@
      "kind": "compara"
     }
    ]
+  },
+  "supabase/rollbacks/20261128180000_revert_rls_logs_arquivo_tenant.sql": {
+   "path": "supabase/rollbacks/20261128180000_revert_rls_logs_arquivo_tenant.sql",
+   "lines": 18
+  },
+  "supabase/rollbacks/20261128181000_revert_rls_organizations_spend_forecasts_tenant.sql": {
+   "path": "supabase/rollbacks/20261128181000_revert_rls_organizations_spend_forecasts_tenant.sql",
+   "lines": 10
   },
   "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql": {
    "path": "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
@@ -126658,10 +126960,25 @@
   }
  },
  "git": {
-  "sha": "675838c159b64ac91acdf7e77859b3c996f11205",
+  "sha": "14f107a53289d18f4b2782f5fbc347d9ffb6351e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "14f107a",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(rls): arquivo de auditoria/telemetria e leitura de organizacao passam a filtrar empresa (etapas 066, 067 e 068) (#590)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
+     "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql",
+     "supabase/migrations/20261128181000_rls_organizations_spend_forecasts_tenant.sql",
+     "supabase/rollbacks/20261128180000_revert_rls_logs_arquivo_tenant.sql",
+     "supabase/rollbacks/20261128181000_revert_rls_organizations_spend_forecasts_tenant.sql"
+    ]
+   },
    {
     "sha": "675838c",
     "date": "2026-11-26",
@@ -127018,18 +127335,6 @@
      "supabase/migrations/20261126173000_devolucoes_numero_unique.sql",
      "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql"
     ]
-   },
-   {
-    "sha": "054f49e",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(banco): ancora da cadeia de auditoria sobrevive ao expurgo da retencao LGPD (#575)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql",
-     "supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -127052,6 +127357,26 @@
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
+   ],
+   [
+    "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
+    1
+   ],
+   [
+    "supabase/migrations/20261128180000_rls_logs_arquivo_tenant.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261128181000_rls_organizations_spend_forecasts_tenant.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261128180000_revert_rls_logs_arquivo_tenant.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261128181000_revert_rls_organizations_spend_forecasts_tenant.sql",
+    1
    ],
    [
     "supabase/migrations/20261126195500_check_budget_availability_le_department_budgets.sql",
@@ -127091,26 +127416,6 @@
    ],
    [
     "src/components/compras/ContractDetailsModal.tsx",
-    1
-   ],
-   [
-    "src/components/compras/ContractModal.tsx",
-    1
-   ],
-   [
-    "src/components/compras/PenaltyEscalationConfigPanel.tsx",
-    1
-   ],
-   [
-    "src/components/compras/SupplierBonificationsPanel.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/contractFornecedorId.test.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
     1
    ]
   ]

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `675838c159b64ac91acdf7e77859b3c996f11205` (2026-11-26T21:50:02-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `14f107a53289d18f4b2782f5fbc347d9ffb6351e` (2026-11-26T22:09:20-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (897), SQL (435), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (897), SQL (439), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1583 |
+| arquivos_total | 1587 |
 | arquivos_codigo | 972 |
-| linhas_codigo | 193767 |
+| linhas_codigo | 193780 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 95 |
 | edge_functions | 41 |
 | tabelas | 166 |
-| migrations | 381 |
+| migrations | 383 |
 | cron_jobs | 80 |
 | testes | 326 |
 | workflows | 15 |
@@ -344,8 +344,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (215)
-- AGENTS.md (39)
+- docs/qa/05-PROGRESSO.md (216)
+- AGENTS.md (40)
 - src/integrations/supabase/types.ts (12)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `14f107a` fix(rls): arquivo de auditoria/telemetria e leitura de organizacao passam a filtrar empresa (etapas 066, 067 e 068) (#59
 - 2026-11-26 `675838c` fix(orcamento): trava de orcamento le department_budgets (#606)
 - 2026-11-26 `416e381` fix(alertas): claim atomico da fila do alert-dispatcher (#596)
 - 2026-11-26 `3ec8bec` Merge remote-tracking branch 'origin/main' into claude/fix-tenant-id-default-invalido-261126-1650 (#593)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `2b1e27a` fix(seguranca): multa e bloqueio de fornecedor notificam so a empresa do evento (#139) (#591)
 - 2026-11-26 `7723079` fix(storage): bucket product-images passa a limitar tipo e tamanho de arquivo (etapa 062) (#589)
 - 2026-11-26 `9185b53` fix(seguranca): lockout de conta passa a valer no servidor e o front segue o novo contrato (etapas 057, 058 e 141) (#588
-- 2026-11-26 `0943a88` fix(ci): inventario cobre tests-rls e tests-e2e e a suite de RLS reprova em vez de pular (etapas 040 e 041) (#598)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
